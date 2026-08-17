@@ -8,10 +8,26 @@
     "logoUrl": "https://getminds.ai/images/logo.png",
     "company": "Minds",
     "companyUrl": "https://getminds.ai",
-    "addonUrl": "https://getminds.ai/mcp/setup",
+    "addonUrl": "https://getminds.ai/guide/looker-studio",
     "supportUrl": "https://getminds.ai/contact",
-    "description": "Load analytics from a Minds Panel into Looker Studio."
+    "description": "Load analytics from an existing Minds Panel into Looker Studio. A Minds account and API key are required. Create an account at https://getminds.ai and view plans at https://getminds.ai/pricing.",
+    "shortDescription": "Turn Minds Panel analytics into shareable Looker Studio reports.",
+    "privacyPolicyUrl": "https://getminds.ai/legal/dataprivacy",
+    "termsOfServiceUrl": "https://getminds.ai/legal/terms",
+    "authType": [
+      "KEY"
+    ],
+    "feeType": [
+      "FREE_TRIAL",
+      "PAID"
+    ],
+    "sources": [
+      "MINDS_PANEL_ANALYTICS"
+    ]
   },
+  "urlFetchWhitelist": [
+    "https://getminds.ai/api/v1/"
+  ],
   "oauthScopes": [
     "https://www.googleapis.com/auth/script.external_request"
   ]

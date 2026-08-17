@@ -1,21 +1,39 @@
 const cc = DataStudioApp.createCommunityConnector();
 const API_ROOT = "https://getminds.ai";
+const MINDS_API_KEY_PROPERTY = "MINDS_API_KEY";
+
+function throwUserError_(userMessage, debugMessage) {
+  cc.newUserError().setText(userMessage).setDebugText(debugMessage || userMessage).throwException();
+}
 
 function getAuthType() {
   return cc.newAuthTypeResponse().setAuthType(cc.AuthType.KEY).build();
 }
 
 function setCredentials(request) {
-  PropertiesService.getUserProperties().setProperty("MINDS_API_KEY", request.key.trim());
+  const key = request && request.key ? request.key.trim() : "";
+  if (!key) return { errorCode: "INVALID_CREDENTIALS" };
+  let response;
+  try {
+    response = UrlFetchApp.fetch(`${API_ROOT}/api/v1/panels?limit=1`, {
+      method: "get",
+      headers: { Authorization: `Bearer ${key}`, Accept: "application/json" },
+      muteHttpExceptions: true,
+    });
+  } catch (error) {
+    return { errorCode: "INVALID_CREDENTIALS" };
+  }
+  if (response.getResponseCode() >= 400) return { errorCode: "INVALID_CREDENTIALS" };
+  PropertiesService.getUserProperties().setProperty(MINDS_API_KEY_PROPERTY, key);
   return { errorCode: "NONE" };
 }
 
 function resetAuth() {
-  PropertiesService.getUserProperties().deleteProperty("MINDS_API_KEY");
+  PropertiesService.getUserProperties().deleteProperty(MINDS_API_KEY_PROPERTY);
 }
 
 function isAuthValid() {
-  return Boolean(PropertiesService.getUserProperties().getProperty("MINDS_API_KEY"));
+  return Boolean(PropertiesService.getUserProperties().getProperty(MINDS_API_KEY_PROPERTY));
 }
 
 function getConfig() {
@@ -40,18 +58,69 @@ function getSchema() {
 }
 
 function getData(request) {
-  const apiKey = PropertiesService.getUserProperties().getProperty("MINDS_API_KEY");
-  if (!apiKey) throw new Error("Minds API key is not configured");
-  const panelId = request.configParams.panelId;
-  if (!panelId) throw new Error("Panel ID is required");
-  const response = UrlFetchApp.fetch(`${API_ROOT}/api/v1/panels/${encodeURIComponent(panelId)}/analytics`, {
-    method: "get",
-    headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
-    muteHttpExceptions: true,
-  });
-  if (response.getResponseCode() >= 400) throw new Error(`Minds returned HTTP ${response.getResponseCode()}`);
-  const payload = JSON.parse(response.getContentText());
-  const requestedIds = request.fields.map((field) => field.name);
+  const apiKey = PropertiesService.getUserProperties().getProperty(MINDS_API_KEY_PROPERTY);
+  if (!apiKey) {
+    throwUserError_("Connect your Minds account with an API key before loading data.", "Missing Minds API key");
+  }
+  const panelId = request && request.configParams ? String(request.configParams.panelId || "").trim() : "";
+  if (!panelId) {
+    throwUserError_("Enter an existing Minds Panel ID.", "Missing panelId config parameter");
+  }
+  const requestedIds = request && request.fields ? request.fields.map((field) => field.name) : [];
+  const supportedIds = ["panel_id", "metric_name", "value_json"];
+  if (!requestedIds.length || requestedIds.some((id) => supportedIds.indexOf(id) === -1)) {
+    throwUserError_("Refresh the Minds data source fields and try again.", "Unsupported or empty field request");
+  }
+
+  let response;
+  try {
+    response = UrlFetchApp.fetch(
+      `${API_ROOT}/api/v1/panels/${encodeURIComponent(panelId)}/analytics`,
+      {
+        method: "get",
+        headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
+        muteHttpExceptions: true,
+      },
+    );
+  } catch (error) {
+    throwUserError_(
+      "Minds could not load this Panel right now. Try again, or contact support if the problem continues.",
+      `Network error while fetching Panel analytics: ${error}`,
+    );
+  }
+
+  const status = response.getResponseCode();
+  if (status === 401 || status === 403) {
+    throwUserError_(
+      "Your Minds API key is no longer valid. Reconnect the data source with a current key.",
+      `Minds returned HTTP ${status}`,
+    );
+  }
+  if (status === 404) {
+    throwUserError_("That Minds Panel was not found. Check the Panel ID and try again.", "Minds returned HTTP 404");
+  }
+  if (status >= 400) {
+    throwUserError_(
+      "Minds could not load this Panel right now. Try again, or contact support if the problem continues.",
+      `Minds returned HTTP ${status}`,
+    );
+  }
+
+  let payload;
+  try {
+    payload = JSON.parse(response.getContentText());
+  } catch (error) {
+    throwUserError_(
+      "Minds returned data that Looker Studio could not read. Try again, or contact support if the problem continues.",
+      `Invalid analytics JSON: ${error}`,
+    );
+  }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    throwUserError_(
+      "Minds returned data that Looker Studio could not read. Try again, or contact support if the problem continues.",
+      "Analytics response was not an object",
+    );
+  }
   const rows = Object.keys(payload).map((metric) => {
     const values = {
       panel_id: panelId,
