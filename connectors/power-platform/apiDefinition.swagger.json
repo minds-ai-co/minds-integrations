@@ -7,9 +7,15 @@
   },
   "host": "getminds.ai",
   "basePath": "/api/v1",
-  "schemes": ["https"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "securityDefinitions": {
     "apiKey": {
       "type": "apiKey",
@@ -18,54 +24,701 @@
       "description": "Enter the complete value: Bearer minds_..._key"
     }
   },
-  "security": [{ "apiKey": [] }],
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
   "paths": {
     "/panels": {
       "get": {
         "operationId": "ListPanels",
-        "summary": "List Panels",
-        "description": "List Panels available to the authenticated Minds account.",
-        "responses": { "200": { "description": "Panel list", "schema": { "type": "object" } } }
+        "summary": "List panels",
+        "description": "List panel-mode flows (multi-spark panel chats) owned by the authenticated user. Each panel embeds its attached groups and their member sparks.",
+        "tags": [
+          "Panels"
+        ],
+        "x-ms-visibility": "important",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Max panels per page.",
+            "type": "integer",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 100
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of panels to skip.",
+            "type": "integer",
+            "default": 0,
+            "minimum": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of panels.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data",
+                "pagination"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PanelSummary"
+                  }
+                },
+                "pagination": {
+                  "$ref": "#/definitions/Pagination"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
       },
       "post": {
         "operationId": "CreatePanel",
-        "summary": "Create a Panel",
-        "description": "Create a Panel around an explicit research goal.",
-        "parameters": [{
-          "name": "body",
-          "in": "body",
-          "required": true,
-          "schema": { "type": "object", "additionalProperties": true }
-        }],
-        "responses": { "200": { "description": "Created Panel", "schema": { "type": "object" } } }
+        "summary": "Create a panel",
+        "description": "Create a new panel-mode flow. Optionally attach one or more existing spark groups (the caller must have access to each — owner, member, team-shared, or public).",
+        "tags": [
+          "Panels"
+        ],
+        "x-ms-visibility": "important",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Panel name."
+                },
+                "groupIds": {
+                  "type": "array",
+                  "description": "IDs of spark groups to attach. De-duplicated server-side.",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "groupConfigs": {
+                  "type": "array",
+                  "description": "Groups to create atomically before attaching them to the Panel. Created Groups are rolled back if Panel creation fails.",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "sparkIds"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "sparkIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                },
+                "isLinkSharingEnabled": {
+                  "type": "boolean",
+                  "description": "Enable public link sharing for the panel and its attached groups/Minds."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Panel created.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/PanelCreated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing `name`."
+          },
+          "401": {
+            "description": "Missing or invalid API key."
+          },
+          "403": {
+            "description": "Plan limit reached (`code: PLAN_LIMIT`)."
+          },
+          "404": {
+            "description": "One or more `groupIds` not found or not accessible to the caller."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
       }
     },
     "/panels/{panelId}": {
       "get": {
         "operationId": "GetPanel",
-        "summary": "Get a Panel",
-        "parameters": [{ "name": "panelId", "in": "path", "required": true, "type": "string" }],
-        "responses": { "200": { "description": "Panel", "schema": { "type": "object" } } }
+        "summary": "Get a panel",
+        "description": "Return a panel-mode Flow with its attached groups, Minds, and messages.",
+        "tags": [
+          "Panels"
+        ],
+        "x-ms-visibility": "important",
+        "parameters": [
+          {
+            "name": "panelId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Panel details.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/PanelDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid panel ID or the Flow is not a panel."
+          },
+          "401": {
+            "description": "Missing or invalid authentication."
+          },
+          "403": {
+            "description": "The caller cannot access this panel."
+          },
+          "404": {
+            "description": "Panel not found."
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
       }
     },
     "/panels/{panelId}/research-plans/preview": {
       "post": {
         "operationId": "PreviewPanelResearchPlan",
-        "summary": "Preview a research plan",
-        "description": "Create a non-executing research plan for review.",
-        "parameters": [
-          { "name": "panelId", "in": "path", "required": true, "type": "string" },
-          { "name": "body", "in": "body", "required": true, "schema": { "type": "object", "additionalProperties": true } }
+        "summary": "Preview or revise a panel research plan",
+        "description": "Let the research-planning model capture intent, main source, questions, optional methods, semantic outputs, missing inputs, confirmation questions, and a proposed response contract for every question. Clients can deterministically edit response formats by question ID. The versioned draft is saved but never executed by this endpoint.",
+        "tags": [
+          "Panels",
+          "Research"
         ],
-        "responses": { "200": { "description": "Research plan preview", "schema": { "type": "object" } } }
+        "x-ms-visibility": "important",
+        "parameters": [
+          {
+            "name": "panelId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "request": {
+                  "type": "string"
+                },
+                "studyLocale": {
+                  "type": "string",
+                  "description": "Language used for the plan and its eventual study output."
+                },
+                "source": {
+                  "type": "object",
+                  "description": "The main source. Prompt content is exact respondent-visible material and is separate from planner-only request text.",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "prompt",
+                        "website",
+                        "image",
+                        "video",
+                        "document",
+                        "questionnaire",
+                        "other"
+                      ]
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "mimeType": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "draftPlanId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "refinement": {
+                  "type": "string"
+                },
+                "answers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "questionResponses": {
+                  "type": "object",
+                  "description": "Explicit response-format edits keyed by question ID from the current draft."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved plan draft, per-question response contracts, and confirmation questions.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Panel access denied."
+          },
+          "404": {
+            "description": "Panel or draft not found."
+          },
+          "409": {
+            "description": "Draft revision conflict."
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
       }
     },
     "/panels/{panelId}/summary": {
       "get": {
         "operationId": "GetPanelSummary",
-        "summary": "Get a Panel summary",
-        "parameters": [{ "name": "panelId", "in": "path", "required": true, "type": "string" }],
-        "responses": { "200": { "description": "Panel summary", "schema": { "type": "object" } } }
+        "summary": "Get a panel semantic summary",
+        "description": "Return the persisted whole-study summary, semantic output blocks, staleness, and message coverage. Renderers are hints; consumers may introduce new UI logic without changing evidence contracts.",
+        "tags": [
+          "Panels",
+          "Research"
+        ],
+        "x-ms-visibility": "important",
+        "parameters": [
+          {
+            "name": "panelId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted semantic summary.",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Flow is not a panel."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Panel access denied."
+          },
+          "404": {
+            "description": "Panel not found."
+          }
+        },
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PanelSummary": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "flowMode",
+        "createdAt",
+        "updatedAt",
+        "messageCount",
+        "groups"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "flowMode": {
+          "type": "string",
+          "description": "Always `panel` on this endpoint.",
+          "enum": [
+            "panel"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "messageCount": {
+          "type": "integer"
+        },
+        "isLinkSharingEnabled": {
+          "type": "boolean"
+        },
+        "publicShareId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "sparkCount",
+              "sparks"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "sparkCount": {
+                "type": "integer"
+              },
+              "sparks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "discipline": {
+                      "type": "string"
+                    },
+                    "profileImageUrl": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Pagination": {
+      "type": "object",
+      "required": [
+        "total",
+        "limit",
+        "offset"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Total matching rows."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Page size requested."
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Number of rows skipped."
+        }
+      }
+    },
+    "PanelCreated": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "flowMode",
+        "createdAt",
+        "isLinkSharingEnabled",
+        "publicShareId",
+        "groups"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "flowMode": {
+          "type": "string",
+          "enum": [
+            "panel"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isLinkSharingEnabled": {
+          "type": "boolean"
+        },
+        "publicShareId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PanelGroup"
+          }
+        }
+      }
+    },
+    "PanelDetail": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "flowMode",
+        "createdAt",
+        "updatedAt",
+        "isLinkSharingEnabled",
+        "publicShareId",
+        "groups",
+        "messages"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "flowMode": {
+          "type": "string",
+          "enum": [
+            "panel"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isLinkSharingEnabled": {
+          "type": "boolean"
+        },
+        "publicShareId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PanelGroup"
+          }
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PanelMessage"
+          }
+        }
+      }
+    },
+    "PanelGroup": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "sparks"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sparks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PanelMind"
+          }
+        }
+      }
+    },
+    "PanelMessage": {
+      "type": "object",
+      "required": [
+        "id",
+        "role",
+        "content",
+        "metadata",
+        "createdAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "metadata": {},
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PanelMind": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "discipline": {
+          "type": "string"
+        },
+        "profileImageUrl": {
+          "type": "string",
+          "format": "uri"
+        }
       }
     }
   }
