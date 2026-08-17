@@ -5,8 +5,14 @@
   "version": "0.1.0",
   "private": true,
   "publisher": "minds-ai",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "icon": "icon.png",
+  "preview": true,
+  "pricing": "Free",
+  "galleryBanner": {
+    "color": "#FFDD00",
+    "theme": "light"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/minds-ai-co/minds-integrations.git",
@@ -19,6 +25,9 @@
   "files": [
     "dist/extension.js",
     "README.md",
+    "CHANGELOG.md",
+    "SUPPORT.md",
+    "SECURITY.md",
     "LICENSE",
     "icon.png"
   ],
@@ -29,6 +38,7 @@
   "keywords": ["market research", "synthetic audience", "mcp", "product research"],
   "activationEvents": [
     "onCommand:minds.setApiKey",
+    "onCommand:minds.clearApiKey",
     "onCommand:minds.listGroups",
     "onCommand:minds.planSelectedText"
   ],
@@ -36,6 +46,7 @@
   "contributes": {
     "commands": [
       { "command": "minds.setApiKey", "title": "Minds: Set API Key" },
+      { "command": "minds.clearApiKey", "title": "Minds: Clear API Key" },
       { "command": "minds.listGroups", "title": "Minds: Browse Research Groups" },
       { "command": "minds.planSelectedText", "title": "Minds: Plan Research for Selected Text" }
     ],
@@ -52,6 +63,7 @@
   "scripts": {
     "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=dist/extension.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.mjs",
     "package:check": "npm run build && vsce package --no-dependencies --out dist/minds-research.vsix"
   },
   "dependencies": {
