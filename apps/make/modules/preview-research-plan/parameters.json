@@ -1,0 +1,23 @@
+[
+  {
+    "name": "panelId",
+    "type": "text",
+    "label": "Panel ID",
+    "required": true
+  },
+  {
+    "name": "request",
+    "type": "text",
+    "label": "Research request",
+    "multiline": true,
+    "required": true
+  },
+  {
+    "name": "studyLocale",
+    "type": "text",
+    "label": "Study locale",
+    "help": "BCP 47 language code for the plan and eventual study output.",
+    "default": "en",
+    "required": false
+  }
+]

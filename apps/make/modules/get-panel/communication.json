@@ -1,0 +1,7 @@
+{
+  "url": "/panels/{{parameters.panelId}}",
+  "method": "GET",
+  "response": {
+    "output": "{{body.data}}"
+  }
+}

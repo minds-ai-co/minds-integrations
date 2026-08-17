@@ -1,0 +1,27 @@
+{
+  "url": "https://getminds.ai/api/v1/panels",
+  "method": "GET",
+  "headers": {
+    "Authorization": "Bearer {{parameters.apiKey}}",
+    "Accept": "application/json"
+  },
+  "qs": {
+    "limit": 1,
+    "offset": 0
+  },
+  "response": {
+    "valid": "{{statusCode === 200}}",
+    "error": {
+      "message": "[{{statusCode}}] The Minds API key could not be verified."
+    },
+    "metadata": {
+      "type": "text",
+      "value": "Minds"
+    }
+  },
+  "log": {
+    "sanitize": [
+      "request.headers.authorization"
+    ]
+  }
+}

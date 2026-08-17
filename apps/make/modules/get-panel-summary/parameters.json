@@ -1,0 +1,8 @@
+[
+  {
+    "name": "panelId",
+    "type": "text",
+    "label": "Panel ID",
+    "required": true
+  }
+]

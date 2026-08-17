@@ -1,0 +1,12 @@
+{
+  "url": "/panels",
+  "method": "GET",
+  "qs": {
+    "limit": "{{ifempty(parameters.limit, 100)}}",
+    "offset": "{{ifempty(parameters.offset, 0)}}"
+  },
+  "response": {
+    "iterate": "{{body.data}}",
+    "output": "{{item}}"
+  }
+}
