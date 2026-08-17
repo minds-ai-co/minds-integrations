@@ -5,11 +5,12 @@
   "description": "Official product integrations for the Minds research platform.",
   "workspaces": [
     "packages/*",
-    "apps/vscode"
+    "apps/vscode",
+    "apps/zapier"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "check": "npm run typecheck --workspaces --if-present && npm run test && npm run package:check --workspace minds-research-vscode && npm run validate:power-platform && npm run validate:json",
+    "check": "npm run typecheck --workspaces --if-present && npm run test && npm run validate --workspace minds-zapier-integration && npm run package:check --workspace minds-research-vscode && npm run validate:power-platform && npm run validate:json",
     "test": "npm run test --workspaces --if-present && node --test apps/**/*.test.mjs connectors/**/*.test.mjs",
     "validate:power-platform": "node connectors/power-platform/scripts/validate.mjs",
     "validate:json": "find . -path ./node_modules -prune -o -name '*.json' -type f -print0 | xargs -0 -n1 node -e \"JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))\"",
@@ -17,6 +18,11 @@
   },
   "devDependencies": {
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "zapier-platform-core@19.1.0": {
+      "form-data": "4.0.6"
+    }
   },
   "engines": {
     "node": ">=22"
