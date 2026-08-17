@@ -1,0 +1,12 @@
+{
+  "url": "/panels/{{parameters.panelId}}/research-plans/preview",
+  "method": "POST",
+  "type": "json",
+  "body": {
+    "request": "{{parameters.request}}",
+    "studyLocale": "{{ifempty(parameters.studyLocale, 'en')}}"
+  },
+  "response": {
+    "output": "{{body.data}}"
+  }
+}

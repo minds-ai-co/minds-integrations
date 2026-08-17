@@ -17,6 +17,7 @@ workflow without creating a second research contract.
 | Looker Studio | Read Panel analytics into a report data source | Review package in progress |
 | Microsoft Power Platform | Curated REST connector for Panel workflows | Validated package, certification gates pending |
 | Zapier | Trigger on Panels, create Panels, preview plans, and retrieve results | Validated private package, developer registration pending |
+| Make | List, create, and read Panels, preview plans, and retrieve results | Source-controlled custom app prototype |
 | Canva | Creative-test workflow | Architecture gate |
 | Atlassian Forge | Review Jira or Confluence content | Architecture gate |
 | HubSpot | Research CRM segments and attach summaries | Pilot gate |

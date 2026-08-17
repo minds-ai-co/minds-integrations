@@ -1,0 +1,37 @@
+[
+  {
+    "name": "listPanels",
+    "label": "List Panels",
+    "description": "Lists Panels available to the connected Minds account.",
+    "type": "search",
+    "connection": "mindsApiKey"
+  },
+  {
+    "name": "createPanel",
+    "label": "Create a Panel",
+    "description": "Creates a Minds Panel without running a study.",
+    "type": "action",
+    "connection": "mindsApiKey"
+  },
+  {
+    "name": "getPanel",
+    "label": "Get a Panel",
+    "description": "Retrieves a Minds Panel by ID.",
+    "type": "action",
+    "connection": "mindsApiKey"
+  },
+  {
+    "name": "previewResearchPlan",
+    "label": "Preview a Research Plan",
+    "description": "Creates or revises a reviewable research plan without running the study.",
+    "type": "action",
+    "connection": "mindsApiKey"
+  },
+  {
+    "name": "getPanelSummary",
+    "label": "Get a Panel Summary",
+    "description": "Retrieves the persisted aggregate summary for a Minds Panel.",
+    "type": "action",
+    "connection": "mindsApiKey"
+  }
+]

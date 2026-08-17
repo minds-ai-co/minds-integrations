@@ -1,0 +1,33 @@
+{
+  "baseUrl": "https://getminds.ai/api/v1",
+  "headers": {
+    "Authorization": "Bearer {{connection.apiKey}}",
+    "Accept": "application/json"
+  },
+  "response": {
+    "error": {
+      "401": {
+        "type": "InvalidAccessTokenError",
+        "message": "Your Minds API key is missing or invalid."
+      },
+      "403": {
+        "type": "DataError",
+        "message": "Minds denied access to this resource."
+      },
+      "404": {
+        "type": "DataError",
+        "message": "The requested Minds resource was not found."
+      },
+      "429": {
+        "type": "RateLimitError",
+        "message": "Minds rate limit reached. Retry later."
+      },
+      "message": "[{{statusCode}}] {{ifempty(body.error.message, ifempty(body.message, 'Minds request failed.'))}}"
+    }
+  },
+  "log": {
+    "sanitize": [
+      "request.headers.authorization"
+    ]
+  }
+}
