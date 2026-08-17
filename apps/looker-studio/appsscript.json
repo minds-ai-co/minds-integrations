@@ -1,0 +1,18 @@
+{
+  "timeZone": "Europe/Berlin",
+  "dependencies": {},
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "dataStudio": {
+    "name": "Minds Panel Analytics",
+    "logoUrl": "https://getminds.ai/images/logo.png",
+    "company": "Minds",
+    "companyUrl": "https://getminds.ai",
+    "addonUrl": "https://getminds.ai/mcp/setup",
+    "supportUrl": "https://getminds.ai/contact",
+    "description": "Load analytics from a Minds Panel into Looker Studio."
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request"
+  ]
+}

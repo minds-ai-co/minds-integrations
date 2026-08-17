@@ -1,0 +1,24 @@
+{
+  "name": "minds-integrations",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Official product integrations for the Minds research platform.",
+  "workspaces": [
+    "packages/*",
+    "apps/vscode"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "check": "npm run typecheck --workspaces --if-present && npm run test --workspaces --if-present && npm run package:check --workspace minds-research-vscode",
+    "test": "npm run test --workspaces --if-present",
+    "validate:json": "find . -path ./node_modules -prune -o -name '*.json' -type f -print0 | xargs -0 -n1 node -e \"JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))\"",
+    "audit:dataset": "node scripts/audit-dataset-structured-data.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT"
+}

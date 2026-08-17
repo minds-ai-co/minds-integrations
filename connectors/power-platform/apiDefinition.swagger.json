@@ -1,0 +1,72 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Minds Market Research",
+    "description": "Create and review synthetic market research Panels with Minds.",
+    "version": "1.0"
+  },
+  "host": "getminds.ai",
+  "basePath": "/api/v1",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Enter the complete value: Bearer minds_..._key"
+    }
+  },
+  "security": [{ "apiKey": [] }],
+  "paths": {
+    "/panels": {
+      "get": {
+        "operationId": "ListPanels",
+        "summary": "List Panels",
+        "description": "List Panels available to the authenticated Minds account.",
+        "responses": { "200": { "description": "Panel list", "schema": { "type": "object" } } }
+      },
+      "post": {
+        "operationId": "CreatePanel",
+        "summary": "Create a Panel",
+        "description": "Create a Panel around an explicit research goal.",
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": { "type": "object", "additionalProperties": true }
+        }],
+        "responses": { "200": { "description": "Created Panel", "schema": { "type": "object" } } }
+      }
+    },
+    "/panels/{panelId}": {
+      "get": {
+        "operationId": "GetPanel",
+        "summary": "Get a Panel",
+        "parameters": [{ "name": "panelId", "in": "path", "required": true, "type": "string" }],
+        "responses": { "200": { "description": "Panel", "schema": { "type": "object" } } }
+      }
+    },
+    "/panels/{panelId}/research-plans/preview": {
+      "post": {
+        "operationId": "PreviewPanelResearchPlan",
+        "summary": "Preview a research plan",
+        "description": "Create a non-executing research plan for review.",
+        "parameters": [
+          { "name": "panelId", "in": "path", "required": true, "type": "string" },
+          { "name": "body", "in": "body", "required": true, "schema": { "type": "object", "additionalProperties": true } }
+        ],
+        "responses": { "200": { "description": "Research plan preview", "schema": { "type": "object" } } }
+      }
+    },
+    "/panels/{panelId}/summary": {
+      "get": {
+        "operationId": "GetPanelSummary",
+        "summary": "Get a Panel summary",
+        "parameters": [{ "name": "panelId", "in": "path", "required": true, "type": "string" }],
+        "responses": { "200": { "description": "Panel summary", "schema": { "type": "object" } } }
+      }
+    }
+  }
+}

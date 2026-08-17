@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "connectionParameters": {
+      "apiKey": {
+        "type": "securestring",
+        "uiDefinition": {
+          "displayName": "Authorization",
+          "description": "Enter Bearer followed by your Minds API key.",
+          "tooltip": "Create an API key at getminds.ai/settings/api-keys.",
+          "constraints": { "tabIndex": 2, "clearText": false, "required": "true" }
+        }
+      }
+    },
+    "iconBrandColor": "#FF8000",
+    "capabilities": [],
+    "publisher": "Minds",
+    "stackOwner": "Minds"
+  }
+}
