@@ -4,7 +4,7 @@
   "exceptionLogging": "STACKDRIVER",
   "runtimeVersion": "V8",
   "urlFetchWhitelist": [
-    "https://getminds.ai/mcp"
+    "https://getminds.ai/"
   ],
   "oauthScopes": [
     "https://www.googleapis.com/auth/script.container.ui",

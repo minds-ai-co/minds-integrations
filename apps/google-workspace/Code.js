@@ -1,6 +1,10 @@
 const MINDS_MCP_ENDPOINT = "https://getminds.ai/mcp";
 const MINDS_API_KEY_PROPERTY = "MINDS_API_KEY";
 const MINDS_MAX_BATCH_SIZE = 25;
+const MINDS_POLL_INTERVAL_MS = 5000;
+// Apps Script caps menu-driven executions at six minutes. Stop polling well
+// short of that so results still get written back to the sheet.
+const MINDS_POLL_DEADLINE_MS = 4.5 * 60 * 1000;
 
 function onInstall(event) {
   onOpen(event);
@@ -29,7 +33,7 @@ function showMindsHelp() {
       '<p><a href="https://getminds.ai" target="_blank">Create or open your Minds account</a></p>' +
       '<p><a href="https://getminds.ai/settings/api-keys" target="_blank">Create a Minds API key</a></p>' +
       '<p><a href="https://getminds.ai/pricing" target="_blank">Plans and pricing</a></p>' +
-      '<p><a href="https://getminds.ai/contact" target="_blank">Support</a></p>' +
+      '<p><a href="https://getminds.ai/faq/overview" target="_blank">Support</a></p>' +
       "</div>",
   )
     .setWidth(360)
@@ -138,6 +142,42 @@ function resultText_(result) {
   return text || JSON.stringify(result.structuredContent || result);
 }
 
+function panelIdFromResult_(result) {
+  const structured = result.structuredContent || {};
+  if (structured.panelId) return structured.panelId;
+  const match = resultText_(result).match(/[?&]flowId=([0-9a-fA-F-]{36})/);
+  return match ? match[1] : null;
+}
+
+function answerFromOutputData_(outputData) {
+  if (!outputData) return "";
+  const groups = outputData.groups;
+  if (Array.isArray(groups) && groups.length) {
+    const values = groups
+      .map((group) => (group && typeof group.value === "string" ? group.value.trim() : ""))
+      .filter(Boolean);
+    if (values.length) return values.join(" | ");
+  }
+  return typeof outputData.summary === "string" ? outputData.summary.trim() : "";
+}
+
+function resolveQuestion_(status, question) {
+  const structured = status.structuredContent || {};
+  const completed = (structured.recentResults || []).filter(Boolean);
+  for (const entry of completed) {
+    if (entry.question === question && entry.status === "completed") {
+      return { answer: answerFromOutputData_(entry.outputData), error: null };
+    }
+  }
+  const failed = (structured.failedQuestions || []).filter(Boolean);
+  for (const entry of failed) {
+    if (entry.question === question) {
+      return { answer: "", error: entry.error || "The panel could not answer this question." };
+    }
+  }
+  return null;
+}
+
 function askGroupFromSelection() {
   const ui = SpreadsheetApp.getUi();
   try {
@@ -173,13 +213,52 @@ function askGroupFromSelection() {
     if (confirmation !== ui.Button.YES) return;
 
     const session = createMcpSession_();
-    const output = questionsByRow.map((question) => {
-      if (!question) return [""];
+    const startedAt = Date.now();
+
+    // ask_group only starts the panel; answers arrive asynchronously. Submit
+    // every question first so the Minds work in parallel, then poll.
+    const jobs = questionsByRow.map((question) => {
+      if (!question) return null;
       const result = callToolInSession_(session, "ask_group", { groupId, question });
-      return [resultText_(result)];
+      const structured = result.structuredContent || {};
+      return {
+        question,
+        panelId: panelIdFromResult_(result),
+        workspaceUrl: structured.workspaceUrl || "",
+        answer: "",
+        error: null,
+        done: false,
+      };
+    });
+
+    const outstanding = () => jobs.filter((job) => job && job.panelId && !job.done);
+    while (outstanding().length && Date.now() - startedAt < MINDS_POLL_DEADLINE_MS) {
+      Utilities.sleep(MINDS_POLL_INTERVAL_MS);
+      for (const job of outstanding()) {
+        const status = callToolInSession_(session, "get_panel_status", { panelId: job.panelId });
+        const resolved = resolveQuestion_(status, job.question);
+        if (resolved) {
+          job.answer = resolved.answer;
+          job.error = resolved.error;
+          job.done = true;
+        }
+      }
+    }
+
+    const output = jobs.map((job) => {
+      if (!job) return [""];
+      if (job.error) return [`Error: ${job.error}`];
+      if (job.done) return [job.answer || "The panel returned no answer."];
+      return [`Still running. Open in Minds: ${job.workspaceUrl}`];
     });
     outputRange.setValues(output);
-    ui.alert(`Completed ${questions.length} Minds question(s). Results are in the next column.`);
+
+    const answered = jobs.filter((job) => job && job.done && !job.error).length;
+    const stillRunning = jobs.filter((job) => job && !job.done).length;
+    const runningNote = stillRunning
+      ? ` ${stillRunning} still running - run this again later to collect them.`
+      : "";
+    ui.alert(`Completed ${answered} of ${questions.length} Minds question(s).${runningNote}`);
   } catch (error) {
     showMindsError_(error && error.message ? error.message : "The Minds request could not be completed.");
   }
