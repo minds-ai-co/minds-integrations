@@ -38,8 +38,14 @@ test("onInstall builds the same menu as onOpen", () => {
   sandbox.onInstall({});
 
   assert.deepEqual(items[0], ["Set Minds API key", "setMindsApiKey"]);
-  assert.ok(items.some(([label]) => label === "Ask a Group from selected rows"));
+  assert.ok(items.some(([label, handler]) =>
+    label === "Ask an Audience from selected rows" && handler === "askAudienceFromSelection"));
   assert.deepEqual(items.at(-1), ["addToUi"]);
+});
+
+test("uses the canonical Audience MCP contract", () => {
+  assert.match(source, /"ask_audience", \{ audienceId, question \}/);
+  assert.doesNotMatch(source, /\bask_group\b|\bgroupId\b|Minds Group|Group ID/);
 });
 
 test("decodeMcpResponse accepts JSON and event-stream payloads", () => {

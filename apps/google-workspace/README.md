@@ -1,7 +1,7 @@
 # Minds for Google Sheets
 
 The Apps Script add-on reads questions from the first column of the selected
-range, asks an existing Minds Group, and writes results into the adjacent
+range, asks an existing Minds Audience, and writes results into the adjacent
 column. Blank rows retain their positions. It shows a specific confirmation
 with the number of questions before any paid or consequential call, and warns
 before overwriting existing output cells.
