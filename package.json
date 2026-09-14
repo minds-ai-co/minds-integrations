@@ -7,7 +7,8 @@
     "packages/*",
     "apps/vscode",
     "apps/zapier",
-    "apps/slack"
+    "apps/slack",
+    "apps/shopify"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

@@ -1,0 +1,11 @@
+api_version = "2026-07"
+
+[[extensions]]
+name = "t:name"
+handle = "minds-purchase-barriers"
+uid = "b0c96ec8-e844-460e-bb7d-d76507f15d0d"
+type = "ui_extension"
+
+[[extensions.targeting]]
+module = "./src/ProductAction.tsx"
+target = "admin.product-details.action.render"
