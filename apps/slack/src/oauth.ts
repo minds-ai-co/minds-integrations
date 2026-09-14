@@ -100,7 +100,8 @@ export class MindsAuthorization {
       } else res.writeHead(404).end();
     } catch (error) {
       if (error instanceof ConnectionSetupUnavailable) {
-        res.writeHead(503, {'Content-Type': 'text/plain; charset=utf-8'}).end('Minds connection is temporarily unavailable. Please try again later.');
+        // App Platform replaces upstream 503 bodies; retain the connection-route error status.
+        res.writeHead(400, {'Content-Type': 'text/plain; charset=utf-8'}).end('Minds connection is temporarily unavailable. Please try again later.');
         return;
       }
       res.writeHead(400, {'Content-Type': 'text/plain; charset=utf-8'}).end('Connection could not be completed. Return to Slack and request a fresh Connect Minds link.');

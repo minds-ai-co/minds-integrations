@@ -77,7 +77,7 @@ test('registration failures report service unavailability without leaking detail
    unavailable=outage;
    const link=(await auth.link(requester)).replace(origin,local);
    const response=await fetch(link,{redirect:'manual'});
-   assert.equal(response.status,503);
+   assert.equal(response.status,400);
    const text=await response.text();
    assert.match(text,/temporarily unavailable/);
    assert.doesNotMatch(text,/fresh|private-provider-detail|invalid_redirect_uri/);
