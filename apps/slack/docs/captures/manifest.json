@@ -1,0 +1,20 @@
+{
+  "captured_at": "2026-09-14",
+  "runtime_revision": "8ccf14124627133c7d0344cc43add9380e3680a3",
+  "artifact": "connect-minds.png",
+  "surface": "Native Slack Connect Minds modal opened from a live app mention",
+  "redaction": "Modal-only crop: fixed app copy, no messages, account identifiers, OAuth URLs or secrets",
+  "verified": [
+    "Slack workspace installation",
+    "Verified Events request URL",
+    "Live mention controls",
+    "Native account connection prompt"
+  ],
+  "pending": [
+    "Production Minds OAuth callback allowlist release",
+    "Per-user Minds consent and token refresh in the deployed app",
+    "Audience selection, research completion and private Study link in Slack",
+    "External workspace and second-user acceptance"
+  ],
+  "e2e_complete": false
+}
