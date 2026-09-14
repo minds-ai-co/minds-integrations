@@ -1,0 +1,62 @@
+{
+  "launch_pack": {
+    "issue_workflow": {
+      "category": "enhancement",
+      "state": "ready-for-human",
+      "availability": "parked",
+      "active_owner": null,
+      "github_assignee": null
+    },
+    "feature": {
+      "name": "Minds for Slack",
+      "summary": "Guided Audience research and Study retrieval through Slack and Minds MCP",
+      "changed_surfaces": [
+        "Slack app",
+        "Minds OAuth connection"
+      ],
+      "audience": "Minds customers using Slack",
+      "internal_only": false,
+      "risk": "Private research access and paid execution",
+      "size": "multi-slice"
+    },
+    "docs": {
+      "required": true,
+      "same_pr": true,
+      "target_paths": [
+        "apps/slack/docs/setup.md",
+        "apps/slack/docs/operations.md"
+      ],
+      "status": "prepared",
+      "quality_bar": "Document verified behavior and open launch dependencies",
+      "reason": "New customer integration"
+    },
+    "visuals": {
+      "required": true,
+      "capture_skill": null,
+      "gif_path": null,
+      "status": "awaiting_live_slack_install",
+      "reason": "Capture install, connect, selection, submission, threaded findings and private Study link with synthetic test data"
+    },
+    "channels": {
+      "docs": "prepared",
+      "resend_weekly_slot": "draft_only",
+      "zernio_linkedin": "draft_only",
+      "x_twitter": "draft_only"
+    },
+    "artifacts": {
+      "pr_comment": "https://github.com/minds-ai-co/minds-integrations/pull/10",
+      "generated_docs": null,
+      "product_update_draft": null,
+      "social_draft": null,
+      "capture_manifest": null,
+      "model": null,
+      "draft_generation_status": "skipped: dedicated live Slack install and Vertex launch-copy credentials unavailable"
+    },
+    "approvals": {
+      "docs_owner": null,
+      "product_growth_owner": null,
+      "send_allowed": false,
+      "publish_allowed": false
+    }
+  }
+}

@@ -23,7 +23,7 @@ interface JsonRpcResponse<T> {
   error?: { code: number; message: string; data?: unknown };
 }
 
-export function decodeMcpResponse(raw: string): JsonRpcResponse<unknown> | null {
+export function decodeMcpResponse(raw: string, expectedId?: number): JsonRpcResponse<unknown> | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
   if (trimmed.startsWith("{")) return JSON.parse(trimmed) as JsonRpcResponse<unknown>;
@@ -40,7 +40,7 @@ export function decodeMcpResponse(raw: string): JsonRpcResponse<unknown> | null 
   }
   if (data.length) payloads.push(JSON.parse(data.join("\n")) as JsonRpcResponse<unknown>);
   if (!payloads.length) throw new Error("MCP response was neither JSON nor a JSON SSE event");
-  return payloads.at(-1) ?? null;
+  return (expectedId === undefined ? payloads.at(-1) : payloads.find(payload => payload.id === expectedId)) ?? null;
 }
 
 export class MindsMcpClient {
@@ -69,6 +69,7 @@ export class MindsMcpClient {
       Accept: "application/json, text/event-stream",
       Authorization: `Bearer ${this.options.apiKey}`,
       "Content-Type": "application/json",
+      "MCP-Protocol-Version": MINDS_PROTOCOL_VERSION,
     };
     if (this.sessionId) headers["Mcp-Session-Id"] = this.sessionId;
 
@@ -76,16 +77,19 @@ export class MindsMcpClient {
       method: "POST",
       headers,
       body: JSON.stringify(body),
+      redirect: "error",
+      signal: AbortSignal.timeout(60000),
     });
     const raw = await response.text();
     if (!response.ok) {
-      throw new Error(`Minds MCP request failed with HTTP ${response.status}: ${raw.slice(0, 300)}`);
+      throw new Error(`Minds MCP request failed with HTTP ${response.status}`);
     }
     const returnedSession = response.headers.get("mcp-session-id");
     if (returnedSession) this.sessionId = returnedSession;
     if (notification && !raw.trim()) return null;
 
-    const payload = decodeMcpResponse(raw) as JsonRpcResponse<T> | null;
+    const payload = decodeMcpResponse(raw, id) as JsonRpcResponse<T> | null;
+    if (!notification && payload?.id !== id) throw new Error("MCP response did not match the request ID");
     if (payload?.error) throw new Error(`Minds MCP ${method} failed: ${payload.error.message}`);
     return payload?.result ?? null;
   }
@@ -101,6 +105,19 @@ export class MindsMcpClient {
     });
     if (!this.sessionId) throw new Error("Minds MCP did not return Mcp-Session-Id");
     await this.request("notifications/initialized", undefined, true);
+  }
+
+  async listTools(): Promise<JsonObject[]> {
+    if (!this.sessionId) await this.initialize();
+    const tools: JsonObject[] = [];
+    let cursor: string | undefined;
+    do {
+      const page = await this.request<{tools: JsonObject[]; nextCursor?: string}>("tools/list", cursor ? {cursor} : {});
+      tools.push(...(page?.tools ?? []));
+      cursor = page?.nextCursor;
+      if (tools.length > 1000) throw new Error("MCP tool discovery exceeded the limit");
+    } while (cursor);
+    return tools;
   }
 
   async callTool(name: string, args: JsonObject): Promise<McpToolResult> {

@@ -6,7 +6,8 @@
   "workspaces": [
     "packages/*",
     "apps/vscode",
-    "apps/zapier"
+    "apps/zapier",
+    "apps/slack"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

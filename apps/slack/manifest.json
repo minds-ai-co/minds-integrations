@@ -1,0 +1,52 @@
+{
+  "display_information": {
+    "name": "Minds",
+    "description": "Ask your Audiences and share Study findings in Slack.",
+    "background_color": "#171717"
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "minds",
+      "always_online": false
+    },
+    "shortcuts": [
+      {
+        "name": "Ask Minds",
+        "type": "message",
+        "callback_id": "ask_minds",
+        "description": "Test this message with a Minds Audience"
+      }
+    ]
+  },
+  "oauth_config": {
+    "redirect_urls": [
+      "https://slack.getminds.ai/slack/oauth_redirect"
+    ],
+    "scopes": {
+      "bot": [
+        "app_mentions:read",
+        "chat:write",
+        "commands",
+        "channels:read",
+        "groups:read"
+      ]
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "request_url": "https://slack.getminds.ai/slack/events",
+      "bot_events": [
+        "app_mention",
+        "app_uninstalled",
+        "tokens_revoked"
+      ]
+    },
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://slack.getminds.ai/slack/events"
+    },
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
