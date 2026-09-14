@@ -1,0 +1,34 @@
+# Preparation template only. The client ID is synthetic and the host is reserved.
+# The webapp currently implements /shopify/session only, behind a disabled flag.
+# App Home and the webhook routes below must exist before this becomes active config.
+# Copy the reviewed settings into a separately registered DEVELOPMENT app first.
+client_id = "00000000000000000000000000000000"
+name = "Minds Product Research"
+application_url = "https://shopify-development.example.invalid/shopify"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = false
+
+[access_scopes]
+scopes = "read_products"
+use_legacy_install_flow = false
+
+[access.admin]
+direct_api_mode = "online"
+embedded_app_direct_api_access = false
+
+[auth]
+# Shopify managed installation and token exchange; no fabricated OAuth callback.
+redirect_urls = []
+
+[webhooks]
+api_version = "2026-07"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled", "app/scopes_update"]
+uri = "/shopify/webhooks/lifecycle"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+uri = "/shopify/webhooks/compliance"
