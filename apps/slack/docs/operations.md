@@ -1,0 +1,15 @@
+# Operations and data handling
+
+The integration retains encrypted Slack installation tokens, per-user Minds tokens, pending form contents, request/result state and thread-to-Study context in its own PostgreSQL schema. AES-256-GCM binds each encrypted value to its record key. The application never emits tokens, raw HTTP bodies or research payloads to its logs.
+
+Connection tickets and OAuth states expire after ten minutes; research forms expire after thirty minutes; thread context and completed request records expire after seven days. Cleanup runs hourly. Workspace uninstall or bot-token revocation deletes that workspace's retained records and jobs. **Disconnect** deletes the user's connection, forms, retained results and thread context, and attempts to revoke the remote Minds token. This removes access from the integration; it does not delete Studies already created in Minds, Slack messages already posted, or backups managed by the hosting platform.
+
+Each person authorizes their own Minds account. Result posting requires explicit consent in the form and rechecks both Minds access and the requesting user's Slack conversation membership before delivery. People who can read a Slack conversation can read a card posted there, even if they cannot open its private Study link. Treat channel selection accordingly.
+
+The request lifecycle is `queued → executing → polling → delivering → done`. Read-only requests skip `executing`. A durable `executing` marker is written before a paid MCP mutation. An expired mutation lease is treated as ambiguous; the app does not repeat the mutation. A known Study is polled until results, a failed run, or a one-hour pending notice. Failed delivery can be retried for up to two hours by updating the already recorded message. Exhausted retries end the job; the existing placeholder may remain in Slack. Inspect job phases/counts without decrypting user payloads for routine monitoring.
+
+An initial Slack status-message timeout can leave an untracked placeholder; it cannot trigger duplicate research. Stopping this integration does not cancel a Minds research run. Never promise cancellation until the backend supports and confirms it.
+
+The app accepts one active request per Slack user/workspace and relies on Minds' own authorization and account budgets for spend enforcement. It does not create Audiences, enable public sharing, read channel history, process private Slack files or train a model on Slack messages. Unbounded agent conversations, DM support, multi-question plan review inside Slack, native Slackbot MCP widgets and Marketplace distribution remain separate work.
+
+Before public release, supply customer-facing privacy/support pages describing the chosen hosting location, retention/backups, subprocessors and deletion contact. Complete external-workspace install/reconnect/revoke/uninstall tests and recheck Slack's current Marketplace requirements. Code availability and passing CI do not establish Marketplace eligibility or acceptance.
