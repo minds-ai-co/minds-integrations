@@ -48,8 +48,8 @@ and category choices in the submission form before exporting final media.
 
 | Gate | Evidence needed | Current state |
 | --- | --- | --- |
-| Partner organization | Selected legal entity registered and visible to the CLI | Pending browser registration |
-| Development app/store | Verified identifiers and successful test installation | Pending organization |
+| Partner organization | Selected legal entity registered and visible to the CLI | Verified: Minds AI Labs, Inc. |
+| Development app/store | Verified identifiers and successful test installation | App and demo store created; installation pending |
 | Listing app | Separate production credentials and public distribution selected | Not created |
 | Workflow | Fresh merchant completes install, account link, product selection, confirmed Study and results | Not implemented |
 | Privacy/lifecycle | Signed requests processed, invalid signatures rejected, deletion verified after uninstall | Not implemented |

@@ -1,8 +1,8 @@
 # Shopify development setup
 
-Prepared against Shopify CLI 4.8.0 on 14 September 2026. Commands below are for
-an operator after the Partner organization exists. They have not created an
-app or store during this preparation.
+Verified against Shopify CLI 4.8.0 on 14 September 2026. The Partner organization,
+development app and demo store now exist. Reuse them; the creation commands below
+are reference instructions, not steps to repeat.
 
 ## Resume from the current account state
 
@@ -11,12 +11,29 @@ Inc., United States / Delaware. CLI authorization is verified. Browser sessions
 and CLI sessions are separate. Do not copy cookies or OAuth token files between
 them. Credentials stay in the encrypted vault or their native credential owner.
 
-In the signed-in browser, finish [Partner registration](https://partners.shopify.com/signup):
-create an organization, choose **Build apps**, and use the selected company.
-Use verified company records for any further business fields. Do not invent an
-address or replace the selected US entity with the German entity.
+### Verified development resources
 
-Then run:
+| Resource | Value |
+| --- | --- |
+| Organization | Minds AI Labs, Inc. (`235606776`) |
+| Development app | Minds Research Dev |
+| Client ID (public identifier) | `b8499982b1a038cc211e4c195c376c1d` |
+| Test store | `minds-research-development.myshopify.com` |
+| Test configuration | Basic, United States, demo data enabled |
+| Client ID vault reference | `agents/shopify/development/client-id` |
+| Client secret vault reference | `agents/shopify/development/client-secret` |
+
+[Dev Dashboard](https://dev.shopify.com/dashboard/235606776) ·
+[Test store admin](https://admin.shopify.com/store/minds-research-development)
+
+The tower's local scaffold is under
+`~/.local/share/agent-integrations/shopify-onboarding/development/minds-research-dev`.
+Its proposed scopes were narrowed from the generated `write_products` default
+to `read_products`, and its API version was aligned to `2026-07`. These local
+changes have not been deployed. The registered app still uses Shopify's default
+App Home; no merchant research experience is installed or operational.
+
+Recheck access before subsequent writes:
 
 ```bash
 shopify organization list --json
@@ -109,10 +126,11 @@ Once the active development configuration is complete:
 shopify app config validate --path "$SHOPIFY_WORKDIR" --json
 ```
 
-The CLI also resolves the registered app/organization: against the preparation
-template it currently stops with "Cannot find a valid organization". TOML syntax
-and the intended settings can be checked locally, but full CLI validation remains
-pending real registration. Validation does not prove endpoint reachability,
+The CLI also resolves the registered app/organization. Validation passed with
+`valid: true` and no issues for the development scaffold after its local scope/API
+changes. It also passed for an isolated copy of `shopify.app.toml.example` with
+the real development client ID substituted. The checked-in example remains
+synthetic and inactive. Validation does not prove endpoint reachability,
 installation success, authorization boundaries or App Store eligibility. Review
 the diff before any configuration deployment. This preparation does not run `app dev`, `app deploy`,
 `app release`, a webapp build, or a production deployment.

@@ -7,9 +7,11 @@ and [draft PR #6303](https://github.com/minds-ai-co/webapp/pull/6303).
 ## Current state
 
 - Alexander selected **Minds AI Labs, Inc.**, United States / Delaware, as owner.
-- The company developer account exists. Alexander successfully signed in and
-  approved Shopify CLI access. The last CLI organization query returned no
-  organizations. Registration and all live app/store identifiers remain pending.
+- The company developer account and Partner organization are registered, and
+  Shopify CLI access is verified. The Minds Research Dev app and Minds Research
+  Development demo store have been created; identifiers and encrypted-vault
+  references are recorded in [setup instructions](setup.md). Native configuration
+  validation passed. Installation and the merchant workflow remain pending.
 - The backend draft verifies Shopify identity and online product-read permission
   through `POST /shopify/session`. It is disabled by default and does not grant
   Minds workspace access, store credentials, import products, or create Studies.
