@@ -87,7 +87,7 @@ export function createSlackApp(config: Config, store: Store, auth: MindsAuthoriz
         text: escapeSlack(text), blocks: resultBlocks(text, job.studyUrl)});
     },
   });
-  async function menu(input: RequestInput): Promise<void> {
+  async function menu(input: RequestInput, replyInThread: boolean): Promise<void> {
     let reply = 'Bring your Minds research into this thread. Select an Audience and review your question, or share existing Study findings.';
     if (config.agent && input.question) {
       try {
@@ -99,7 +99,7 @@ export function createSlackApp(config: Config, store: Store, auth: MindsAuthoriz
     const id = nonce();
     await store.put('selection', id, input, {input, choices: []}, 1800);
     const client = await slack(input.team);
-    await client.chat.postEphemeral({channel: input.channel, user: input.user, thread_ts: input.thread,
+    await client.chat.postEphemeral({channel: input.channel, user: input.user, ...(replyInThread ? {thread_ts: input.thread} : {}),
       text: 'Ask an Audience or read existing Study findings.', blocks: [
         {type: 'section', text: plain(reply)},
         {type: 'actions', elements: [
@@ -117,7 +117,7 @@ export function createSlackApp(config: Config, store: Store, auth: MindsAuthoriz
     // Atomically deduplicate the signed event before preparing its menu.
     const receipt = `mention:${body.team_id}:${body.event_id}`;
     if (!await store.once('receipt', receipt, input, 86400)) return;
-    await menu(input);
+    await menu(input, Boolean(event.thread_ts));
   });
   async function open(input: RequestInput, trigger: string): Promise<void> {
     const client = await slack(input.team);
@@ -185,7 +185,7 @@ export function createSlackApp(config: Config, store: Store, auth: MindsAuthoriz
     const message = object(body.message), thread = string(message.thread_ts) || string(message.ts);
     if (!team || !channel || !thread) return;
     const context = await store.get<{studyId: string}>('thread', `${team}:${body.user.id}:${channel}:${thread}`);
-    if (!context) { await menu({team, user: body.user.id, channel, thread, question: '', intent: 'ask'}); return; }
+    if (!context) { await menu({team, user: body.user.id, channel, thread, question: '', intent: 'ask'}, true); return; }
     await open({team, user: body.user.id, channel, thread, question: '', intent: 'followup', studyId: context.studyId}, body.trigger_id);
   });
   app.action<BlockAction>('disconnect', async ({ack, body}) => {

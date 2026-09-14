@@ -159,6 +159,14 @@ integration('signed HTTP lifecycle: duplicate modal submit, durable research, th
     assert.match(await challenge.text(),/test-challenge/);
     assert.equal((await send({type:'url_verification',challenge:'test-challenge'},false)).status,401);
     assert.equal((await send({type:'url_verification',challenge:'test-challenge'},true,'1')).status,401);
+    for (const [index, thread] of [undefined, '100.1'].entries()) {
+      await send({type:'event_callback',team_id:actor.team,event_id:`mention-${index}`,api_app_id:'A_TEST',
+        event:{type:'app_mention',user:actor.user,channel:input.channel,ts:`101.${index}`,text:'<@B_TEST> Test this offer',...(thread ? {thread_ts:thread} : {})}});
+      for(let i=0;i<50 && slackCalls.filter(c=>c.method==='/chat.postEphemeral').length<=index;i++)await new Promise(r=>setTimeout(r,10));
+      const menu=slackCalls.filter(c=>c.method==='/chat.postEphemeral')[index];
+      assert.ok(menu, 'Mention should produce visible requester controls');
+      assert.equal(menu.args.thread_ts, thread);
+    }
     await store.put('selection','selected-a',actor,{input,choices:[{id:'audience-a',name:'Test Audience'}]},1800);
     const submission={type:'view_submission',team:{id:actor.team},user:{id:actor.user},api_app_id:'A_TEST',view:{id:'V_TEST',type:'modal',callback_id:'research_submit',private_metadata:'selected-a',state:{values:{
       target:{target:{type:'external_select',selected_option:{value:'audience-a'}}},
