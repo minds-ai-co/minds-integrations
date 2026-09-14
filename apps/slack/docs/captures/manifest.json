@@ -32,10 +32,17 @@
     ],
     "provider_configuration": "Guided controls active; optional Vertex request preparation disabled; no consumer Gemini API key deployed",
     "automated_checks": {
-      "repository_tests_passed": 44,
-      "slack_tests_passed": 20,
+      "repository_tests_passed": 42,
+      "slack_tests_passed": 18,
       "command": "npm run check",
-      "provider_calls": "simulated in automated tests"
+      "provider_calls": "simulated in automated tests",
+      "followup_test_runner_fix": {
+        "pull_request": "https://github.com/minds-ai-co/minds-integrations/pull/20",
+        "slack_tests_passed_locally": 20,
+        "skipped": 0,
+        "status": "pending merge and CI package access",
+        "reason": "The deployed runner omitted two Vertex configuration tests; the corrected runner executes them."
+      }
     },
     "still_required": [
       "Production OAuth release and successful per-user Minds consent",
