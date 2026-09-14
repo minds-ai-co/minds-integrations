@@ -24,9 +24,10 @@
       "same_pr": true,
       "target_paths": [
         "apps/slack/docs/setup.md",
-        "apps/slack/docs/operations.md"
+        "apps/slack/docs/operations.md",
+        "https://github.com/minds-ai-co/minds-content/pull/98"
       ],
-      "status": "prepared",
+      "status": "customer_docs_merged_deployment_pending",
       "quality_bar": "Document verified behavior and open launch dependencies",
       "reason": "New customer integration"
     },
@@ -44,8 +45,8 @@
       "x_twitter": "draft_only"
     },
     "artifacts": {
-      "pr_comment": "https://github.com/minds-ai-co/minds-integrations/pull/10",
-      "generated_docs": null,
+      "pr_comment": "https://github.com/minds-ai-co/minds-integrations/issues/9",
+      "generated_docs": "https://getminds.ai/guide/integration-slack",
       "product_update_draft": null,
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",

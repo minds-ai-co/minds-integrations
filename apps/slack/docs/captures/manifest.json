@@ -16,5 +16,34 @@
     "Audience selection, research completion and private Study link in Slack",
     "External workspace and second-user acceptance"
   ],
-  "e2e_complete": false
+  "e2e_complete": false,
+  "deployment_acceptance": {
+    "checked_at": "2026-09-14",
+    "runtime_revision": "8ce81c8b94079d1bdc7cd72cc283e1088a6ec462",
+    "deployment_run": "https://github.com/minds-ai-co/minds-integrations/actions/runs/34906595973",
+    "live_passed": [
+      "Same-workspace Slack OAuth installation",
+      "Signed mention opens native controls with the Minds display name",
+      "Message shortcut opens native Connect Minds modal",
+      "Fresh Minds connection failure preserves an actionable fixed message through the public ingress",
+      "Actual Slack uninstall automatically removes all retained workspace records and jobs",
+      "Actual Slack bot-token revocation automatically removes all retained workspace records and jobs",
+      "Reinstallation and fresh mention controls work after both removal paths"
+    ],
+    "provider_configuration": "Guided controls active; optional Vertex request preparation disabled; no consumer Gemini API key deployed",
+    "automated_checks": {
+      "repository_tests_passed": 44,
+      "slack_tests_passed": 20,
+      "command": "npm run check",
+      "provider_calls": "simulated in automated tests"
+    },
+    "still_required": [
+      "Production OAuth release and successful per-user Minds consent",
+      "Audience research, read-only retrieval and follow-up with threaded findings and private Study access",
+      "Deployed Minds disconnect, reconnect and refresh rotation",
+      "Second-user and external-workspace acceptance",
+      "Dedicated Vertex service account and real request-preparation verification before enabling optional AI",
+      "Public pilot distribution and genuine customer adoption before Marketplace submission"
+    ]
+  }
 }
