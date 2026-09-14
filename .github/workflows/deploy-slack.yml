@@ -33,7 +33,9 @@ jobs:
       SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
       SLACK_STORAGE_KEY: ${{ secrets.SLACK_STORAGE_KEY }}
       SLACK_DATABASE_URL: ${{ secrets.SLACK_DATABASE_URL }}
-      SLACK_AGENT_API_KEY: ${{ secrets.SLACK_AGENT_API_KEY }}
+      SLACK_VERTEX_CREDENTIALS: ${{ secrets.SLACK_VERTEX_CREDENTIALS }}
+      SLACK_VERTEX_PROJECT: ${{ vars.SLACK_VERTEX_PROJECT }}
+      SLACK_VERTEX_LOCATION: ${{ vars.SLACK_VERTEX_LOCATION }}
       TARGET_APP_ID: ${{ inputs.app_id }}
       ALLOW_BOOTSTRAP: ${{ inputs.bootstrap }}
     steps:
@@ -46,10 +48,14 @@ jobs:
         run: |
           python3 - <<'PY'
           import os,base64,urllib.parse
-          required = ['SLACK_PUBLIC_URL','SLACK_CLIENT_ID','SLACK_CLIENT_SECRET','SLACK_SIGNING_SECRET','SLACK_STATE_SECRET','SLACK_STORAGE_KEY','SLACK_DATABASE_URL','SLACK_AGENT_API_KEY','SLACK_AGENT_MODEL']
+          required = ['SLACK_PUBLIC_URL','SLACK_CLIENT_ID','SLACK_CLIENT_SECRET','SLACK_SIGNING_SECRET','SLACK_STATE_SECRET','SLACK_STORAGE_KEY','SLACK_DATABASE_URL']
           missing = [name for name in required if not os.environ.get(name)]
           if missing:
               raise SystemExit('Missing deployment configuration: ' + ', '.join(missing))
+          vertex = ['SLACK_VERTEX_CREDENTIALS','SLACK_VERTEX_PROJECT','SLACK_VERTEX_LOCATION']
+          if any(os.environ.get(name) for name in vertex):
+              if not all(os.environ.get(name) for name in vertex + ['SLACK_AGENT_MODEL']):
+                  raise SystemExit('Complete all Slack Vertex service-account and model settings')
           origin = urllib.parse.urlparse(os.environ['SLACK_PUBLIC_URL'])
           if origin.scheme != 'https' or not origin.hostname or origin.path not in ('','/') or origin.query or origin.fragment or origin.username:
               raise SystemExit('SLACK_PUBLIC_URL must be an HTTPS origin')
@@ -92,8 +98,8 @@ jobs:
               current = json.loads(subprocess.check_output(['doctl','apps','get',app_id,'--output','json']))[0]
               if current.get('spec',{}).get('name') != 'minds-slack':
                   raise SystemExit('Refusing to deploy over an app that is not minds-slack')
-          plain = {'SLACK_PUBLIC_URL','SLACK_AGENT_MODEL'}
-          names = sorted(name for name in os.environ if name.startswith('SLACK_') and name not in {'SLACK_SPEC_FILE','SLACK_REGISTRY'})
+          plain = {'SLACK_PUBLIC_URL','SLACK_AGENT_MODEL','SLACK_VERTEX_PROJECT','SLACK_VERTEX_LOCATION'}
+          names = sorted(name for name in os.environ if name.startswith('SLACK_') and os.environ[name] and name not in {'SLACK_SPEC_FILE','SLACK_REGISTRY'})
           envs = [{'key':name,'value':os.environ[name],'scope':'RUN_TIME','type':'GENERAL' if name in plain else 'SECRET'} for name in names]
           spec = {'name':'minds-slack','region':'fra','domains':[{'domain':urllib.parse.urlparse(os.environ['SLACK_PUBLIC_URL']).hostname,'type':'PRIMARY'}],
               'services':[{'name':'slack','instance_count':1,'instance_size_slug':'apps-s-1vcpu-1gb','http_port':3000,

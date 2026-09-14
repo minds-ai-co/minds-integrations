@@ -13,7 +13,7 @@ Minds for Slack runs at https://slack.getminds.ai as a dedicated HTTP service. A
 
 One question is supported per submission. If Minds requires a multi-question plan, the app links to the Study for plan review; it does not execute a question set without review. Include the actual text to test. Private Slack files are not forwarded, and a URL alone is not a promise that its contents reached respondents. The app does not monitor channel history or respond in DMs.
 
-When `SLACK_AGENT_API_KEY` and `SLACK_AGENT_MODEL` are configured, a Gemini agent interprets the deliberate mention, discovers accessible Audiences/Studies through read-only MCP tools, and prepares a question and exact resource selection for review. It cannot execute research or change the destination. Ambiguous matches remain in the picker. Without the agent configuration, the same native controls work as a guided workflow. Only the deliberate request and bounded resource names/IDs are sent to the configured model; channel history and research results are not sent to that model.
+When the `SLACK_VERTEX_*` service-account settings and `SLACK_AGENT_MODEL` are configured, a Gemini agent on Google Cloud Vertex AI interprets the deliberate mention, discovers accessible Audiences/Studies through read-only MCP tools, and prepares a question and exact resource selection for review. It cannot execute research or change the destination. Ambiguous matches remain in the picker. Without the agent configuration, the same native controls work as a guided workflow. Only the deliberate request and bounded resource names/IDs are sent to the configured model; channel history and research results are not sent to that model.
 
 ## Register and configure the Slack app
 
@@ -42,8 +42,10 @@ Store the Slack signing secret and client secret in the deployment's secret mana
 | `SLACK_STATE_SECRET` | Random installation state secret |
 | `SLACK_STORAGE_KEY` | Base64-encoded 32-byte AES-GCM key; retain for restoring encrypted data |
 | `SLACK_DATABASE_URL` | TLS PostgreSQL connection for a role scoped to the `minds_slack` schema |
-| `SLACK_AGENT_API_KEY` | Optional Gemini API credential for natural-language request preparation |
-| `SLACK_AGENT_MODEL` | Explicit Gemini model ID; required when the agent key is set |
+| `SLACK_VERTEX_CREDENTIALS` | Optional dedicated Vertex service-account JSON, injected as a secret |
+| `SLACK_VERTEX_PROJECT` | Google Cloud project matching that service account |
+| `SLACK_VERTEX_LOCATION` | Explicit supported Vertex region, or `global`; global does not promise EU-only inference |
+| `SLACK_AGENT_MODEL` | Explicit Gemini model ID; required when Vertex is configured |
 | `PORT` | Listener port; defaults to 3000 |
 
 The service uses the production Minds endpoint `https://getminds.ai/mcp`. Each user connects through Minds OAuth/PKCE; do not install a shared personal Minds API key into the service. Dynamic client registration stores the public client identifier in the encrypted store.
@@ -62,7 +64,7 @@ Run the image with the listed environment variables injected by the deployment p
 
 The manual **Deploy Minds for Slack** workflow is the deployment path. It runs checks, builds an immutable image in the existing DigitalOcean registry, and deploys a dedicated `minds-slack` App Platform service. It refuses to update an app with a different name and runs only from `main`. The dedicated production service was provisioned through this workflow. Its App Platform ID is `8a145111-94d0-434d-b2b3-89086442d527`; use that ID for subsequent deployments. The latest verified runtime revision is `8ccf14124627133c7d0344cc43add9380e3680a3` ([successful deployment](https://github.com/minds-ai-co/minds-integrations/actions/runs/34898855554)).
 
-Configure the `slack-production` GitHub Environment with `DIGITALOCEAN_ACCESS_TOKEN` and the secret runtime variables above. Set `SLACK_PUBLIC_URL` and `SLACK_AGENT_MODEL` as environment variables. Provision a database credential restricted to this schema, with TLS enabled, and route the chosen hostname to the App Platform ingress. For the first deployment explicitly select `bootstrap`; afterward supply the returned app ID. The workflow reports the deployed revision and verifies public HTTP health. The same-workspace installation, signed event delivery and native controls have been verified live. Complete Minds connection and research acceptance separately; public health is not evidence of those flows. Do not make ad-hoc DigitalOcean app or environment changes.
+Configure the `slack-production` GitHub Environment with `DIGITALOCEAN_ACCESS_TOKEN` and the secret runtime variables above. Set `SLACK_PUBLIC_URL` as an environment variable. To enable request preparation, supply all four Vertex/model settings: the service-account JSON as a secret, and project, location and model as environment variables. Use a dedicated account limited to Vertex inference permissions. With no Vertex configuration, guided controls remain available and no request-preparation model is called; there is no consumer Gemini API fallback. Provision a database credential restricted to this schema, with TLS enabled, and route the chosen hostname to the App Platform ingress. For the first deployment explicitly select `bootstrap`; afterward supply the returned app ID. The workflow reports the deployed revision and verifies public HTTP health. The same-workspace installation, signed event delivery and native controls have been verified live. Complete Minds connection and research acceptance separately; public health is not evidence of those flows. Do not make ad-hoc DigitalOcean app or environment changes.
 
 ## Test and verify
 
