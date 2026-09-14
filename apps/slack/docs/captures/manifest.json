@@ -52,5 +52,28 @@
       "Dedicated Vertex service account and real request-preparation verification before enabling optional AI",
       "Public pilot distribution and genuine customer adoption before Marketplace submission"
     ]
+  },
+  "publication_materials": {
+    "verified_at": "2026-09-14",
+    "guide_url": "https://getminds.ai/guide/integration-slack",
+    "locales_verified": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "ja",
+      "ko",
+      "tr",
+      "ar",
+      "zh"
+    ],
+    "image_url": "https://getminds.ai/images/videos/integrations/slack/connect-minds.png",
+    "image_content_type": "image/png",
+    "image_matches_reviewed_capture": true,
+    "content_revision": "c159b0193aa8bf969b38186f913d996399dfa17c",
+    "deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34909177172",
+    "slack_app_details": "Minds logo, pilot notice and setup/privacy/support links verified in the installed app Description tab",
+    "public_distribution_enabled": false,
+    "marketplace_submitted": false
   }
 }

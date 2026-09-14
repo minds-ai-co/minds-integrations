@@ -3,8 +3,8 @@
     "issue_workflow": {
       "category": "enhancement",
       "state": "ready-for-human",
-      "availability": "active",
-      "active_owner": "lexdoudkin",
+      "availability": "parked",
+      "active_owner": null,
       "github_assignee": "lexdoudkin"
     },
     "feature": {
@@ -25,9 +25,10 @@
       "target_paths": [
         "apps/slack/docs/setup.md",
         "apps/slack/docs/operations.md",
-        "https://github.com/minds-ai-co/minds-content/pull/98"
+        "https://github.com/minds-ai-co/minds-content/pull/98",
+        "https://github.com/minds-ai-co/minds-content/pull/99"
       ],
-      "status": "customer_docs_merged_deployment_pending",
+      "status": "live_pilot_guide",
       "quality_bar": "Document verified behavior and open launch dependencies",
       "reason": "New customer integration"
     },
@@ -39,7 +40,7 @@
       "reason": "Live native connection modal captured. Complete the research workflow capture after production OAuth release and acceptance."
     },
     "channels": {
-      "docs": "prepared",
+      "docs": "live_pilot_guide",
       "resend_weekly_slot": "draft_only",
       "zernio_linkedin": "draft_only",
       "x_twitter": "draft_only"
