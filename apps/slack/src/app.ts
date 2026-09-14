@@ -14,7 +14,7 @@ export interface Config { publicUrl: string; signingSecret: string; clientId: st
 interface Selection { input: RequestInput; choices: Choice[] }
 const nonce = (): string => randomBytes(24).toString('base64url');
 const key = (s: string): string => createHash('sha256').update(s).digest('hex');
-const scopes = ['app_mentions.read', 'chat:write', 'commands', 'channels:read', 'groups:read'];
+const scopes = ['app_mentions:read', 'chat:write', 'commands', 'channels:read', 'groups:read'];
 
 export function createSlackApp(config: Config, store: Store, auth: MindsAuthorization,
   getClient: (actor: Actor) => Promise<ToolClient> = async actor => mindsClient(await auth.token(actor)),

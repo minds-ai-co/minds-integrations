@@ -24,7 +24,7 @@
     ],
     "scopes": {
       "bot": [
-        "app_mentions.read",
+        "app_mentions:read",
         "chat:write",
         "commands",
         "channels:read",

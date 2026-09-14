@@ -34,8 +34,9 @@ export class Store {
     return JSON.parse(Buffer.concat([cipher.update(raw.subarray(28)), cipher.final()]).toString()) as T;
   }
   async migrate(): Promise<void> {
-    await this.pool.query(`CREATE SCHEMA IF NOT EXISTS minds_slack;
-      REVOKE ALL ON SCHEMA minds_slack FROM PUBLIC;
+    const schema = await this.pool.query("SELECT 1 FROM pg_namespace WHERE nspname='minds_slack'");
+    if (!schema.rowCount) await this.pool.query('CREATE SCHEMA IF NOT EXISTS minds_slack');
+    await this.pool.query(`REVOKE ALL ON SCHEMA minds_slack FROM PUBLIC;
       CREATE TABLE IF NOT EXISTS minds_slack.records (
         kind text NOT NULL, key text NOT NULL, team text NOT NULL, actor text NOT NULL,
         value text NOT NULL, expires_at timestamptz, PRIMARY KEY(kind,key));
@@ -47,7 +48,9 @@ export class Store {
       CREATE INDEX IF NOT EXISTS jobs_ready ON minds_slack.jobs(available_at)
         WHERE phase NOT IN ('done','failed');
       CREATE UNIQUE INDEX IF NOT EXISTS jobs_one_active_actor ON minds_slack.jobs(team,actor)
-        WHERE phase NOT IN ('done','failed');`);
+        WHERE phase NOT IN ('done','failed');
+      ALTER TABLE minds_slack.records ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE minds_slack.jobs ENABLE ROW LEVEL SECURITY;`);
   }
   async put(kind: string, key: string, actor: Actor, value: unknown, ttlSeconds?: number): Promise<void> {
     await this.pool.query(`INSERT INTO minds_slack.records VALUES($1,$2,$3,$4,$5,$6)

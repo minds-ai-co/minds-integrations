@@ -180,3 +180,24 @@ integration('signed HTTP lifecycle: duplicate modal submit, durable research, th
     assert.equal(await store.get('installation',actor.team),null);
   }finally{await app.stop();await new Promise(resolve=>slackServer.close(resolve))}
 });
+
+
+integration('startup supports a pre-provisioned schema owner without database CREATE privilege', async admin => {
+  await admin.pool.query('CREATE ROLE slack_restricted_test LOGIN NOINHERIT');
+  await admin.pool.query('ALTER SCHEMA minds_slack OWNER TO slack_restricted_test');
+  await admin.pool.query('ALTER TABLE minds_slack.records OWNER TO slack_restricted_test');
+  await admin.pool.query('ALTER TABLE minds_slack.jobs OWNER TO slack_restricted_test');
+  const url = new URL(database); url.username = 'slack_restricted_test';
+  const restricted = new Store(url.toString(), randomBytes(32).toString('base64'));
+  try {
+    assert.equal((await restricted.pool.query("SELECT has_database_privilege(current_user,current_database(),'CREATE') AS allowed")).rows[0].allowed, false);
+    await restricted.migrate();
+    await restricted.put('probe','role',actor,{ok:true});
+    assert.deepEqual(await restricted.get('probe','role'),{ok:true});
+    assert.ok((await restricted.pool.query("SELECT rowsecurity FROM pg_tables WHERE schemaname='minds_slack'")).rows.every(row=>row.rowsecurity));
+  } finally {
+    await restricted.pool.end();
+    await admin.pool.query('REASSIGN OWNED BY slack_restricted_test TO postgres');
+    await admin.pool.query('DROP ROLE slack_restricted_test');
+  }
+});

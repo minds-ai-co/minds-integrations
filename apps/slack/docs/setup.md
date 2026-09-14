@@ -27,7 +27,7 @@ The runtime must be reachable before Slack can verify the Events request URL:
 - Minds connection callback: `/minds/callback`
 - Health check: `/health`
 
-Scopes: `app_mentions.read` receives deliberate mentions; `chat:write` posts results; `commands` enables the message shortcut; `channels:read` and `groups:read` check that the requesting user still belongs to the destination conversation before results are delivered. There are no message-history or file-read scopes. Workspace-level installations are supported; enterprise-wide installations are rejected. Slack bot token rotation is disabled in the manifest; Minds OAuth refresh-token rotation is implemented.
+Scopes: `app_mentions:read` receives deliberate mentions; `chat:write` posts results; `commands` enables the message shortcut; `channels:read` and `groups:read` check that the requesting user still belongs to the destination conversation before results are delivered. There are no message-history or file-read scopes. Workspace-level installations are supported; enterprise-wide installations are rejected. Slack bot token rotation is disabled in the manifest; Minds OAuth refresh-token rotation is implemented.
 
 Store the Slack signing secret and client secret in the deployment's secret manager. Do not reuse the internal Sarah/Sunbot app. App configuration access, installation consent and Marketplace review are separate from possessing a bot token.
 
@@ -48,7 +48,7 @@ Store the Slack signing secret and client secret in the deployment's secret mana
 
 The service uses the production Minds endpoint `https://getminds.ai/mcp`. Each user connects through Minds OAuth/PKCE; do not install a shared personal Minds API key into the service. Dynamic client registration stores the public client identifier in the encrypted store.
 
-Use a dedicated PostgreSQL role and grant it only ownership/access to this application's schema. Do not use the webapp's database-owner connection as the deployment credential. Schema creation runs at startup; an operator can pre-create the schema and assign its ownership to the service role. Transport must use TLS outside the isolated local test database.
+Use a dedicated PostgreSQL role and grant it only ownership/access to this application's schema. Do not use the webapp's database-owner connection as the deployment credential. Schema creation runs at startup; an operator can pre-create the schema and assign its ownership to the service role. Transport must use TLS outside the isolated local test database. The production Supabase connection uses `sslmode=verify-full&sslrootcert=/app/apps/slack/certs/supabase-ca.crt`. The bundled public root certificate comes from <https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt> and expires on 26 April 2031. Tables enable RLS as defense in depth; the dedicated owner performs service operations and no Data API roles receive access.
 
 Build from the repository root:
 
