@@ -60,7 +60,9 @@ docker build -f apps/slack/Dockerfile -t minds-slack .
 
 Run the image with the listed environment variables injected by the deployment platform. It runs as an unprivileged user. The same process serves HTTP and polls durable jobs. Only one request per Slack workspace/user may be active; PostgreSQL leases coordinate workers. The Minds API remains responsible for research execution and account limits.
 
-This repository currently has no deployment workflow or provisioned Slack service. Before launch, add a reviewed deployment through the organization's canonical GitHub workflow, configure its environment secrets, provision the dedicated database role, route HTTPS, and verify the actual deployed revision. Do not make ad-hoc DigitalOcean app or environment changes.
+The manual **Deploy Minds for Slack** workflow is the deployment path. It runs checks, builds an immutable image in the existing DigitalOcean registry, and deploys a dedicated `minds-slack` App Platform service. It refuses to update an app with a different name and runs only from `main`. No Slack service has been provisioned by adding this workflow.
+
+Configure the `slack-production` GitHub Environment with `DIGITALOCEAN_ACCESS_TOKEN` and the secret runtime variables above. Set `SLACK_PUBLIC_URL` and `SLACK_AGENT_MODEL` as environment variables. Provision a database credential restricted to this schema, with TLS enabled, and route the chosen hostname to the App Platform ingress. For the first deployment explicitly select `bootstrap`; afterward supply the returned app ID. The workflow reports the deployed revision and verifies public HTTP health. Complete actual Slack installation/research tests separately. Do not make ad-hoc DigitalOcean app or environment changes.
 
 ## Test and verify
 

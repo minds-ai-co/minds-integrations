@@ -1,0 +1,116 @@
+name: Deploy Minds for Slack
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_id:
+        description: Existing Minds Slack App Platform ID (leave empty only for first deployment)
+        type: string
+        required: false
+      bootstrap:
+        description: Create the dedicated Minds Slack service if app_id is empty
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: minds-slack-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: slack-production
+    env:
+      SLACK_PUBLIC_URL: ${{ vars.SLACK_PUBLIC_URL }}
+      SLACK_AGENT_MODEL: ${{ vars.SLACK_AGENT_MODEL }}
+      SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
+      SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
+      SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+      SLACK_STATE_SECRET: ${{ secrets.SLACK_STATE_SECRET }}
+      SLACK_STORAGE_KEY: ${{ secrets.SLACK_STORAGE_KEY }}
+      SLACK_DATABASE_URL: ${{ secrets.SLACK_DATABASE_URL }}
+      SLACK_AGENT_API_KEY: ${{ secrets.SLACK_AGENT_API_KEY }}
+      TARGET_APP_ID: ${{ inputs.app_id }}
+      ALLOW_BOOTSTRAP: ${{ inputs.bootstrap }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Validate release configuration
+        run: |
+          python3 - <<'PY'
+          import os,base64,urllib.parse
+          required = ['SLACK_PUBLIC_URL','SLACK_CLIENT_ID','SLACK_CLIENT_SECRET','SLACK_SIGNING_SECRET','SLACK_STATE_SECRET','SLACK_STORAGE_KEY','SLACK_DATABASE_URL','SLACK_AGENT_API_KEY','SLACK_AGENT_MODEL']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing:
+              raise SystemExit('Missing deployment configuration: ' + ', '.join(missing))
+          origin = urllib.parse.urlparse(os.environ['SLACK_PUBLIC_URL'])
+          if origin.scheme != 'https' or not origin.hostname or origin.path not in ('','/') or origin.query or origin.fragment or origin.username:
+              raise SystemExit('SLACK_PUBLIC_URL must be an HTTPS origin')
+          if len(base64.b64decode(os.environ['SLACK_STORAGE_KEY'], validate=True)) != 32:
+              raise SystemExit('SLACK_STORAGE_KEY must encode 32 random bytes')
+          db = urllib.parse.urlparse(os.environ['SLACK_DATABASE_URL'])
+          if db.scheme not in ('postgres','postgresql') or not db.hostname or urllib.parse.parse_qs(db.query).get('sslmode', [''])[0] not in ('require','verify-ca','verify-full'):
+              raise SystemExit('Use a dedicated PostgreSQL credential with explicit TLS configuration')
+          if not os.environ.get('TARGET_APP_ID') and os.environ.get('ALLOW_BOOTSTRAP') != 'true':
+              raise SystemExit('Set the existing app ID, or explicitly select first deployment')
+          PY
+      - run: npm ci
+      - run: npm run check
+      - name: Audit Slack runtime dependencies
+        run: npm audit --workspace @minds/slack --omit=dev --audit-level=moderate
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Build and publish immutable deployment image
+        run: |
+          set -euo pipefail
+          registry_name=$(doctl registry get --format Name --no-header)
+          test -n "$registry_name"
+          doctl registry login --expiry-seconds 1200
+          image="registry.digitalocean.com/${registry_name}/minds-slack:${GITHUB_SHA}"
+          docker build -f apps/slack/Dockerfile -t "$image" .
+          docker push "$image"
+          echo "SLACK_REGISTRY=$registry_name" >> "$GITHUB_ENV"
+      - name: Deploy dedicated Slack service
+        run: |
+          set -euo pipefail
+          umask 077
+          spec_file=$(mktemp)
+          trap 'rm -f "$spec_file"' EXIT
+          export SLACK_SPEC_FILE="$spec_file"
+          python3 - <<'PY'
+          import json,os,subprocess,urllib.parse
+          app_id = os.environ.get('TARGET_APP_ID')
+          if app_id:
+              current = json.loads(subprocess.check_output(['doctl','apps','get',app_id,'--output','json']))[0]
+              if current.get('spec',{}).get('name') != 'minds-slack':
+                  raise SystemExit('Refusing to deploy over an app that is not minds-slack')
+          plain = {'SLACK_PUBLIC_URL','SLACK_AGENT_MODEL'}
+          names = sorted(name for name in os.environ if name.startswith('SLACK_') and name not in {'SLACK_SPEC_FILE','SLACK_REGISTRY'})
+          envs = [{'key':name,'value':os.environ[name],'scope':'RUN_TIME','type':'GENERAL' if name in plain else 'SECRET'} for name in names]
+          spec = {'name':'minds-slack','region':'fra','domains':[{'domain':urllib.parse.urlparse(os.environ['SLACK_PUBLIC_URL']).hostname,'type':'PRIMARY'}],
+              'services':[{'name':'slack','instance_count':1,'instance_size_slug':'apps-s-1vcpu-1gb','http_port':3000,
+                  'image':{'registry_type':'DOCR','registry':os.environ['SLACK_REGISTRY'],'repository':'minds-slack','tag':os.environ['GITHUB_SHA'],'deploy_on_push':{'enabled':False}},
+                  'health_check':{'http_path':'/health','initial_delay_seconds':30},'routes':[{'path':'/'}],'envs':envs}]}
+          with open(os.environ['SLACK_SPEC_FILE'],'w') as output: json.dump(spec,output)
+          PY
+          if [ -n "$TARGET_APP_ID" ]; then
+            deployed_id=$(doctl apps update "$TARGET_APP_ID" --spec "$spec_file" --wait --format ID --no-header)
+          else
+            deployed_id=$(doctl apps create --spec "$spec_file" --wait --format ID --no-header)
+          fi
+          echo "SLACK_DEPLOYED_ID=$deployed_id" >> "$GITHUB_ENV"
+      - name: Verify public health
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 12 --retry-delay 10 --retry-all-errors "${SLACK_PUBLIC_URL%/}/health"
+          echo "Deployed revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "App Platform ID: $SLACK_DEPLOYED_ID" >> "$GITHUB_STEP_SUMMARY"
+          echo 'HTTP health does not establish Slack installation, Minds consent, live research delivery or Marketplace approval.' >> "$GITHUB_STEP_SUMMARY"
