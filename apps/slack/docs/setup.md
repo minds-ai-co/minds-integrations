@@ -1,6 +1,6 @@
 # Minds for Slack setup
 
-This package implements an HTTP Slack app. It is not a published Slack Marketplace listing. A deployment and a dedicated Slack app registration are required before customers can install it.
+Minds for Slack runs at https://slack.getminds.ai as a dedicated HTTP service. As of 14 September 2026, its dedicated Slack app is installed in the Getminds workspace, Events verification passes, and live mentions open the native connection controls. Minds account connection and the live research acceptance test remain pending the production OAuth callback allowlist release: [webapp PR #6329](https://github.com/minds-ai-co/webapp/pull/6329). Public distribution is disabled, and there is no published Slack Marketplace listing.
 
 ## Use Minds in a conversation
 
@@ -17,7 +17,7 @@ When `SLACK_AGENT_API_KEY` and `SLACK_AGENT_MODEL` are configured, a Gemini agen
 
 ## Register and configure the Slack app
 
-Create a dedicated app from `apps/slack/manifest.json` at <https://api.slack.com/apps>. Replace `https://slack.getminds.ai` with the verified HTTPS deployment origin if a different host is chosen. That hostname is a proposed deployment address, not evidence that a service exists there.
+Create a dedicated app from `apps/slack/manifest.json` at <https://api.slack.com/apps>. Replace `https://slack.getminds.ai` with the verified HTTPS deployment origin if a different host is chosen. The production installation entry is https://slack.getminds.ai/slack/install; installation in other workspaces requires enabling Slack public distribution after acceptance checks.
 
 The runtime must be reachable before Slack can verify the Events request URL:
 
@@ -60,9 +60,9 @@ docker build -f apps/slack/Dockerfile -t minds-slack .
 
 Run the image with the listed environment variables injected by the deployment platform. It runs as an unprivileged user. The same process serves HTTP and polls durable jobs. Only one request per Slack workspace/user may be active; PostgreSQL leases coordinate workers. The Minds API remains responsible for research execution and account limits.
 
-The manual **Deploy Minds for Slack** workflow is the deployment path. It runs checks, builds an immutable image in the existing DigitalOcean registry, and deploys a dedicated `minds-slack` App Platform service. It refuses to update an app with a different name and runs only from `main`. No Slack service has been provisioned by adding this workflow.
+The manual **Deploy Minds for Slack** workflow is the deployment path. It runs checks, builds an immutable image in the existing DigitalOcean registry, and deploys a dedicated `minds-slack` App Platform service. It refuses to update an app with a different name and runs only from `main`. The dedicated production service was provisioned through this workflow. Its App Platform ID is `8a145111-94d0-434d-b2b3-89086442d527`; use that ID for subsequent deployments. The latest verified runtime revision is `8ccf14124627133c7d0344cc43add9380e3680a3` ([successful deployment](https://github.com/minds-ai-co/minds-integrations/actions/runs/34898855554)).
 
-Configure the `slack-production` GitHub Environment with `DIGITALOCEAN_ACCESS_TOKEN` and the secret runtime variables above. Set `SLACK_PUBLIC_URL` and `SLACK_AGENT_MODEL` as environment variables. Provision a database credential restricted to this schema, with TLS enabled, and route the chosen hostname to the App Platform ingress. For the first deployment explicitly select `bootstrap`; afterward supply the returned app ID. The workflow reports the deployed revision and verifies public HTTP health. Complete actual Slack installation/research tests separately. Do not make ad-hoc DigitalOcean app or environment changes.
+Configure the `slack-production` GitHub Environment with `DIGITALOCEAN_ACCESS_TOKEN` and the secret runtime variables above. Set `SLACK_PUBLIC_URL` and `SLACK_AGENT_MODEL` as environment variables. Provision a database credential restricted to this schema, with TLS enabled, and route the chosen hostname to the App Platform ingress. For the first deployment explicitly select `bootstrap`; afterward supply the returned app ID. The workflow reports the deployed revision and verifies public HTTP health. The same-workspace installation, signed event delivery and native controls have been verified live. Complete Minds connection and research acceptance separately; public health is not evidence of those flows. Do not make ad-hoc DigitalOcean app or environment changes.
 
 ## Test and verify
 

@@ -3,9 +3,9 @@
     "issue_workflow": {
       "category": "enhancement",
       "state": "ready-for-human",
-      "availability": "parked",
-      "active_owner": null,
-      "github_assignee": null
+      "availability": "active",
+      "active_owner": "lexdoudkin",
+      "github_assignee": "lexdoudkin"
     },
     "feature": {
       "name": "Minds for Slack",
@@ -34,8 +34,8 @@
       "required": true,
       "capture_skill": null,
       "gif_path": null,
-      "status": "awaiting_live_slack_install",
-      "reason": "Capture install, connect, selection, submission, threaded findings and private Study link with synthetic test data"
+      "status": "partial_live_capture",
+      "reason": "Live native connection modal captured. Complete the research workflow capture after production OAuth release and acceptance."
     },
     "channels": {
       "docs": "prepared",
@@ -48,9 +48,9 @@
       "generated_docs": null,
       "product_update_draft": null,
       "social_draft": null,
-      "capture_manifest": null,
+      "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "skipped: dedicated live Slack install and Vertex launch-copy credentials unavailable"
+      "draft_generation_status": "skipped: required Vertex launch-copy credentials unavailable; live research acceptance still pending"
     },
     "approvals": {
       "docs_owner": null,
