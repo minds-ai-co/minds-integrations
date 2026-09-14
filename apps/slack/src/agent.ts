@@ -1,12 +1,15 @@
 import { data, object, rows, string, type ToolClient } from './minds.js';
 
 export interface ResearchDraft { intent: 'ask' | 'read'; question: string; targetId?: string; reply: string }
-interface AgentConfig { apiKey: string; model: string; request?: typeof fetch }
+export interface AgentConfig { project: string; location: string; model: string; accessToken: () => Promise<string>; request?: typeof fetch }
 const tools = ['list_audiences', 'list_studies'] as const;
 
 /** The model can discover resources. Only the signed, confirmed form can launch research. */
 export async function draftResearch(text: string, mcp: ToolClient, config: AgentConfig): Promise<ResearchDraft> {
   if (!/^[a-zA-Z0-9._-]+$/.test(config.model)) throw new Error('Invalid agent model name');
+  if (!/^[a-z][a-z0-9-]{4,61}[a-z0-9]$/.test(config.project) || !/^[a-z][a-z0-9-]*$/.test(config.location)) throw new Error('Invalid Vertex project or location');
+  const host = config.location === 'global' ? 'aiplatform.googleapis.com' : `${config.location}-aiplatform.googleapis.com`;
+  const endpoint = `https://${host}/v1/projects/${config.project}/locations/${config.location}/publishers/google/models/${config.model}:generateContent`;
   const contents: Record<string, unknown>[] = [{role: 'user', parts: [{text: text.slice(0, 6000)}]}];
   const discovered = new Set<string>();
   const request = config.request ?? fetch;
@@ -21,8 +24,8 @@ Known multi-question sets must be reviewed in Minds; do not split them into stan
 Finish with ONLY JSON: {"intent":"ask" or "read","question":"respondent question and stimulus, or empty for reading","targetId":"optional exact discovered ID","reply":"brief useful explanation of the prepared action; no results or claims of execution"}.
 The form always lets the user review your draft and explicitly approve any research and channel sharing.`;
   for (let step = 0; step < 4; step++) {
-    const response = await request(`https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent`, {
-      method: 'POST', redirect: 'error', headers: {'Content-Type': 'application/json', 'x-goog-api-key': config.apiKey},
+    const response = await request(endpoint, {
+      method: 'POST', redirect: 'error', headers: {'Content-Type': 'application/json', Authorization: `Bearer ${await config.accessToken()}`},
       signal: AbortSignal.timeout(15000), body: JSON.stringify({systemInstruction: {parts: [{text: instructions}]}, contents,
         generationConfig: {temperature: 0, maxOutputTokens: 1600},
         tools: [{functionDeclarations: tools.map(name => ({name, description: name === 'list_audiences' ? 'List the connected user’s accessible Audiences for a new research question.' : 'List the connected user’s accessible Studies for reading existing findings.', parameters: {type: 'OBJECT', properties: {}}}))}]}),

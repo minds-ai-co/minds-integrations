@@ -7,10 +7,10 @@ import { MindsAuthorization } from './oauth.js';
 import { audiences, studies, mindsClient, object, string, type Choice, type ToolClient } from './minds.js';
 import { plain, escapeSlack, researchModal, resultBlocks } from './views.js';
 import { safeLogger } from './logging.js';
-import { draftResearch } from './agent.js';
+import { draftResearch, type AgentConfig } from './agent.js';
 import { ResearchWorker } from './worker.js';
 
-export interface Config { publicUrl: string; signingSecret: string; clientId: string; clientSecret: string; stateSecret: string; agent?: {apiKey: string; model: string} }
+export interface Config { publicUrl: string; signingSecret: string; clientId: string; clientSecret: string; stateSecret: string; agent?: AgentConfig }
 interface Selection { input: RequestInput; choices: Choice[] }
 const nonce = (): string => randomBytes(24).toString('base64url');
 const key = (s: string): string => createHash('sha256').update(s).digest('hex');

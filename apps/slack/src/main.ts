@@ -1,6 +1,7 @@
 import { createSlackApp } from './app.js';
 import { Store } from './store.js';
 import { MindsAuthorization } from './oauth.js';
+import { vertexAgent } from './vertex.js';
 
 function required(name: string): string {
   const value = process.env[name];
@@ -20,7 +21,7 @@ await store.migrate();
 const auth = new MindsAuthorization(store, publicUrl);
 const {app, worker} = createSlackApp({publicUrl, signingSecret: slackSecret('SLACK_SIGNING_SECRET'),
   clientId: required('SLACK_CLIENT_ID'), clientSecret: slackSecret('SLACK_CLIENT_SECRET'), stateSecret: required('SLACK_STATE_SECRET'),
-  ...(process.env.SLACK_AGENT_API_KEY ? {agent: {apiKey: process.env.SLACK_AGENT_API_KEY, model: required('SLACK_AGENT_MODEL')}} : {})}, store, auth);
+  agent: vertexAgent(process.env)}, store, auth);
 await app.start(Number(process.env.PORT ?? 3000));
 console.log('Minds for Slack started');
 let stopping = false;
