@@ -4,8 +4,8 @@ Minds for Slack runs at https://slack.getminds.ai as a dedicated HTTP service. A
 
 ## Use Minds in a conversation
 
-1. Install the app into your workspace and invite `@minds` to the channel.
-2. Mention `@minds` with the question and proposal text, or select a message and choose **Ask Minds**.
+1. Install the app into your workspace and invite `@Minds` to the channel.
+2. Mention `@Minds` with the question and proposal text, or select a message and choose **Ask Minds**.
 3. Choose **Connect Minds** and authorize your own Minds account. Workspace installation never gives other Slack users access to the installer's account.
 4. Choose **Ask an Audience**, select an exact Audience, and review the question and stimulus. Approve sharing findings in the originating conversation, then choose **Run question**. This consumes your account's research allowance.
 5. The app posts the completed synthetic responses and an **Open Study** link in the thread. The Study retains its existing Minds permissions; posting the card does not enable public link sharing.

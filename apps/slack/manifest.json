@@ -6,7 +6,7 @@
   },
   "features": {
     "bot_user": {
-      "display_name": "minds",
+      "display_name": "Minds",
       "always_online": false
     },
     "shortcuts": [

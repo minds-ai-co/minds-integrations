@@ -58,3 +58,34 @@ test('Minds PKCE binds browser, Slack actor, one-use state and rotated refresh t
   await assert.rejects(()=>auth.token(actor));
  }finally{await new Promise(resolve=>server.close(resolve));await store.erase(actor.team);await store.pool.end()}
 });
+
+test('registration failures report service unavailability without leaking details or blaming the link',{skip:!database},async()=>{
+ const store=new Store(database,randomBytes(32).toString('base64'));
+ const requester={team:'T_SETUP',user:'U_SETUP'};
+ const origin='https://slack-setup.test';
+ await store.migrate();await store.erase(requester.team);await store.remove('oauth-client',origin);
+ let unavailable=false;
+ const auth=new MindsAuthorization(store,origin,async()=>{
+  if(unavailable)throw new Error('private-provider-detail');
+  return Response.json({error:'invalid_redirect_uri',detail:'private-provider-detail'},{status:400});
+ });
+ const server=createServer(auth.handle.bind(auth));
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const local=`http://127.0.0.1:${server.address().port}`;
+ try{
+  for(const outage of [false,true]){
+   unavailable=outage;
+   const link=(await auth.link(requester)).replace(origin,local);
+   const response=await fetch(link,{redirect:'manual'});
+   assert.equal(response.status,503);
+   const text=await response.text();
+   assert.match(text,/temporarily unavailable/);
+   assert.doesNotMatch(text,/fresh|private-provider-detail|invalid_redirect_uri/);
+   assert.equal(response.headers.get('location'),null);
+   assert.equal(response.headers.get('set-cookie'),null);
+  }
+  const expired=await fetch(`${local}/minds/connect?ticket=expired-fixture`);
+  assert.equal(expired.status,400);
+  assert.match(await expired.text(),/fresh Connect Minds link/);
+ }finally{await new Promise(resolve=>server.close(resolve));await store.erase(requester.team);await store.pool.end()}
+});

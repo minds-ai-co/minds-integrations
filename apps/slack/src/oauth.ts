@@ -4,6 +4,7 @@ import { Store, actorKey, type Actor } from './store.js';
 import { object, string } from './minds.js';
 
 const origin = 'https://getminds.ai';
+class ConnectionSetupUnavailable extends Error {}
 interface Connection { accessToken: string; refreshToken?: string; expiresAt: number; clientId: string }
 interface Authorization extends Actor { verifier: string; cookie: string; clientId: string }
 const random = (): string => randomBytes(32).toString('base64url');
@@ -77,7 +78,7 @@ export class MindsAuthorization {
         const ticket = url.searchParams.get('ticket') ?? '';
         const actor = await this.store.take<Actor>('connect', digest(ticket));
         if (!actor) throw new Error('Connection link expired; request a new link in Slack');
-        const clientId = await this.registration();
+        const clientId = await this.registration().catch(() => { throw new ConnectionSetupUnavailable(); });
         const state = random(), verifier = random(), cookie = random();
         await this.store.put('authorization', digest(state), actor, {...actor, clientId, verifier, cookie: digest(cookie)}, 600);
         res.setHeader('Set-Cookie', `minds_slack_oauth=${cookie}; Secure; HttpOnly; SameSite=Lax; Path=/minds; Max-Age=600`);
@@ -95,9 +96,13 @@ export class MindsAuthorization {
           redirect_uri: `${this.publicUrl}/minds/callback`, code_verifier: record.verifier, resource: `${origin}/mcp`}, record.clientId);
         if (!await this.store.bindConnection(digest(state), record, connection)) throw new Error('Connection was disconnected or authorization already used');
         res.setHeader('Set-Cookie', 'minds_slack_oauth=; Secure; HttpOnly; SameSite=Lax; Path=/minds; Max-Age=0');
-        res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'}).end('Minds connected. Return to Slack and ask @minds to start research.');
+        res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'}).end('Minds connected. Return to Slack and ask @Minds to start research.');
       } else res.writeHead(404).end();
-    } catch {
+    } catch (error) {
+      if (error instanceof ConnectionSetupUnavailable) {
+        res.writeHead(503, {'Content-Type': 'text/plain; charset=utf-8'}).end('Minds connection is temporarily unavailable. Please try again later.');
+        return;
+      }
       res.writeHead(400, {'Content-Type': 'text/plain; charset=utf-8'}).end('Connection could not be completed. Return to Slack and request a fresh Connect Minds link.');
     }
   }
