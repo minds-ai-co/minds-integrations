@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 concurrency:
   group: minds-slack-production
@@ -68,6 +69,8 @@ jobs:
               raise SystemExit('Set the existing app ID, or explicitly select first deployment')
           PY
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run check
       - name: Audit Slack runtime dependencies
         run: npm audit --workspace @minds/slack --omit=dev --audit-level=moderate
