@@ -1,0 +1,20 @@
+{
+  "name": "minds-shopify-integration",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@shopify/ui-extensions": "2026.7.0",
+    "preact": "10.29.8",
+    "@preact/signals": "2.11.2"
+  },
+  "devDependencies": {
+    "@minds-ai-co/locales": "1.0.0-staging.41",
+    "esbuild": "0.25.12"
+  }
+}

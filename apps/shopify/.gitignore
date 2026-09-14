@@ -1,0 +1,5 @@
+extensions/*/dist/
+extensions/*/locales/
+.shopify/
+shopify.app.toml
+extensions/*/manifest.json
