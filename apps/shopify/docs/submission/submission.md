@@ -8,6 +8,7 @@ Prepared 2026-09-15. Refs minds-ai-co/webapp#6326. **Preparation complete for th
 - [Reviewer walkthrough](reviewer-guide.md): setup, core workflow and expected results.
 - [Release gates](release-readiness.md): engineering and dashboard acceptance checklist.
 - [Public launch plan](public-launch-plan.md): billing model, installation boundaries and the remaining acceptance matrix.
+- [Billing exception request](billing-exception-request.md): Partner Support case text for the off-platform billing exception.
 - [Retention review](retention-review.md): tracked data copies, the confirmed template-copy gap and remaining provider-retention evidence.
 - [Capture plan](capture-plan.md): real screenshots, reviewer video and integration-page clip.
 - [1200×1200 app icon](assets/minds-research-icon-1200.png): inspected PNG exported from the canonical Minds mark; [source provenance](assets/icon-provenance.json).
