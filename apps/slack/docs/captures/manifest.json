@@ -40,8 +40,10 @@
         "pull_request": "https://github.com/minds-ai-co/minds-integrations/pull/20",
         "slack_tests_passed_locally": 20,
         "skipped": 0,
-        "status": "pending merge and CI package access",
-        "reason": "The deployed runner omitted two Vertex configuration tests; the corrected runner executes them."
+        "status": "merged; dedicated Slack CI passed",
+        "reason": "The deployed runner omitted two Vertex configuration tests; the corrected runner executes them.",
+        "ci_run": "https://github.com/minds-ai-co/minds-integrations/actions/runs/34949444457",
+        "shared_client_tests_passed": 4
       }
     },
     "still_required": [
@@ -113,7 +115,34 @@
       }
     ],
     "minds_resource_data": "Synthetic local MCP fixture; real Vertex model and application draftResearch implementation",
-    "deployed": false,
-    "remaining": "Merge release-check workflow fix after package Actions access is repaired, then run canonical deployment. This does not establish connected-user Minds or Slack research E2E."
+    "deployed": true,
+    "remaining": "Connected-user Minds and Slack research E2E awaits the production OAuth allowlist release."
+  },
+  "release_check_scope": {
+    "checked_at": "2026-09-15",
+    "pull_request": "https://github.com/minds-ai-co/minds-integrations/pull/20",
+    "merged_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "slack_ci": "passed all Slack/MCP-client tests, type checks, JSON validation, runtime audit and Docker build",
+    "full_repository_ci": "unchanged; fails at private Shopify locales dependency installation",
+    "private_package_access_required_for_slack_release": false
+  },
+  "current_deployment": {
+    "verified_at": "2026-09-15",
+    "runtime_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "deployment_run": "https://github.com/minds-ai-co/minds-integrations/actions/runs/34949575497",
+    "app_platform_phase": "ACTIVE",
+    "public_health": "passed",
+    "vertex_configuration": "dedicated inference service account; gemini-3.6-flash; global location",
+    "automated_checks": {
+      "slack_tests_passed": 20,
+      "shared_client_tests_passed": 4,
+      "skipped": 0,
+      "type_checks": "passed",
+      "runtime_dependency_audit": "zero vulnerabilities",
+      "docker_build": "passed"
+    },
+    "post_deployment_live_check": "Fresh private-QA mention received Minds research controls",
+    "production_oauth_registration": "HTTP 400 invalid_redirect_uri; webapp PR #6329 still requires independent review",
+    "full_research_e2e": false
   }
 }
