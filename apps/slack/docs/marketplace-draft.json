@@ -1,6 +1,7 @@
 {
   "prepared_at": "2026-09-15",
-  "status": "Listing and scope reasons saved in native Slack; security answers prepared but incomplete and not submitted for review",
+  "status": "Listing, scope reasons and security/compliance answers saved in native Slack (security step saved 2026-09-15 and verified after reload); Testing Information not started; not submitted for review",
+  "submission_decision": "Hold: owner decided on 2026-09-15 not to submit to the Marketplace until at least 10 genuine active workspace installations exist. Pilot distribution continues through the direct install URL.",
   "listing": {
     "name": "Minds",
     "category": "Analytics",
@@ -13,6 +14,10 @@
     "screenshot": "captures/marketplace-review-form.png"
   },
   "security_draft": {
+    "companyDeveloperName": "Minds AI Labs Inc.",
+    "companyLocation": "United States",
+    "securityWhatSso": "Enterprise SAML SSO through configured identity providers, backed by Supabase Auth. Available for configured Minds enterprise organizations.",
+    "securityPenTestDate": "Left blank: no verifiable penetration-test record found in repositories, issues or Company Knowledge (2026-09-15). Add only with a documented test date.",
     "tosUrl": "https://getminds.ai/legal/terms",
     "dataRetentionPolicy": "Connection links and OAuth state expire after 10 minutes; pending research forms after 30 minutes; retained request/result records and thread context after seven days. Hourly cleanup removes expired records. Connection credentials remain until disconnection, revocation or workspace uninstall. Existing Minds Studies and Slack messages retain their own service policies.",
     "dataArchivalRemovalPolicy": "Disconnect removes the requesting user’s retained integration records and jobs and attempts remote token revocation. Slack workspace uninstall or bot-token revocation removes that workspace’s retained integration records and jobs. These actions do not delete existing Minds Studies, posted Slack messages or provider-managed backups, or cancel research already running. Data access and deletion requests: privacy@getminds.ai.",
@@ -35,20 +40,26 @@
     "supports_sso": true,
     "supports_saml": true
   },
+  "owner_confirmed_answers": {
+    "confirmed_at": "2026-09-15",
+    "confirmed_by": "Alexander Doudkin",
+    "legal_owner": "Minds AI Labs Inc. (United States)",
+    "hipaa_compliant": false,
+    "dedicated_security_team": false,
+    "vulnerability_disclosure_program": false,
+    "bug_bounty_program": false
+  },
   "unanswered": [
-    "Confirm company/developer legal entity and headquarters for this listing",
-    "HIPAA compliance and any applicable certification evidence",
-    "Dedicated security team, vulnerability disclosure and bug-bounty program status",
     "Dedicated non-staff reviewer account and sample-data provisioning"
   ],
   "provider_retention_reference": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/vertex-ai-zero-data-retention",
   "publication_blockers": [
     "At least 10 active workspace installations and required user activity; current dashboard reports zero on its daily counter",
-    "Complete security/testing information and automated checks before submitting to Slack review"
+    "Complete testing information (reviewer account, demo video, owner agreement to Marketplace terms) and automated checks before submitting to Slack review"
   ],
   "marketplace_submitted": false,
   "reviewer_testing": {
-    "status": "Instructions prepared; distinct Minds-user research isolation passed. Native Testing Information remains unavailable until required organization/security answers are complete; non-staff reviewer access is still pending.",
+    "status": "Instructions prepared; distinct Minds-user research isolation passed. Native Testing Information is now unlocked but intentionally not filled while submission is on hold; it needs contact details, reviewer account details, test instructions, a demo video/screenshots and owner agreement to Slack Marketplace terms. Non-staff reviewer access (planned as a dedicated getminds.ai alias) is still pending.",
     "slack_reference": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/#help-us-review",
     "account_access": "Pending external reviewer access. A dedicated non-staff identity passed the research privacy checks, but uses a reserved non-deliverable test address. Complete suitable reviewer login/recovery access, synthetic sample data and research allowance before sharing credentials through Slack’s private Test account details field. Internal QA credentials have not been supplied to third parties.",
     "fixture_requirements": [
