@@ -2,6 +2,7 @@
   "status": "draft_pending_public_release_gates",
   "locale": "en",
   "app_name": "Minds Research",
+  "app_card_subtitle": "Find product improvements to test with synthetic feedback",
   "introduction": "Explore product appeal and purchase barriers with AI-powered research respondents.",
   "details": "Open a product, choose a saved Audience of AI-powered Minds, and review four research questions before starting a Study. Explore product appeal, price hesitation, missing information and presentation ideas. Read respondent excerpts and continue research in Minds. Results are synthetic feedback, not observed customer behavior or guaranteed sales outcomes. A linked Minds account and available response allowance are required. The research questions are currently in English.",
   "features": [
@@ -12,6 +13,8 @@
     "Read respondent excerpts and continue your Study in Minds."
   ],
   "search_term_candidates": ["product research", "purchase barriers", "synthetic research"],
+  "seo_title_candidate": "Minds Research: AI Product Research for Shopify",
+  "seo_description_candidate": "Explore product appeal, price hesitation and missing information with AI-powered Minds. Review four questions and response usage before starting a Study.",
   "pricing": null,
   "privacy_policy_url": null,
   "support_email_candidate": "developers@getminds.ai",
