@@ -3,8 +3,8 @@
     "issue_workflow": {
       "category": "enhancement",
       "state": "ready-for-human",
-      "availability": "active",
-      "active_owner": "Codex (owner-authorized session)",
+      "availability": "parked",
+      "active_owner": null,
       "github_assignee": "lexdoudkin"
     },
     "feature": {

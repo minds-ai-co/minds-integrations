@@ -15,7 +15,7 @@
   "security_draft": {
     "tosUrl": "https://getminds.ai/legal/terms",
     "dataRetentionPolicy": "Connection links and OAuth state expire after 10 minutes; pending research forms after 30 minutes; retained request/result records and thread context after seven days. Hourly cleanup removes expired records. Connection credentials remain until disconnection, revocation or workspace uninstall. Existing Minds Studies and Slack messages retain their own service policies.",
-    "dataArchivalRemovalPolicy": "Disconnect removes the requesting user\u2019s retained integration records and jobs and attempts remote token revocation. Slack workspace uninstall or bot-token revocation removes that workspace\u2019s retained integration records and jobs. These actions do not delete existing Minds Studies, posted Slack messages or provider-managed backups, or cancel research already running. Data access and deletion requests: privacy@getminds.ai.",
+    "dataArchivalRemovalPolicy": "Disconnect removes the requesting user’s retained integration records and jobs and attempts remote token revocation. Slack workspace uninstall or bot-token revocation removes that workspace’s retained integration records and jobs. These actions do not delete existing Minds Studies, posted Slack messages or provider-managed backups, or cancel research already running. Data access and deletion requests: privacy@getminds.ai.",
     "dataStoragePolicy": "Integration credentials and retained application records are encrypted with AES-256-GCM in a dedicated PostgreSQL schema, accessed through a scoped service role with verified TLS. Tokens and raw research payloads are omitted from application logs. Each Slack user connects their own Minds account; delivery rechecks research access and conversation membership. See https://getminds.ai/guide/integration-slack and https://getminds.ai/legal/subprocessors.",
     "dataHowHost": "A dedicated DigitalOcean application hosts the Slack HTTP service and durable worker. Supabase PostgreSQL stores encrypted integration records. Google Cloud Vertex AI prepares user-reviewed requests from deliberate messages and bounded accessible resource names/identifiers; it does not receive channel history or research results for this preparation. Research itself runs in the Minds service.",
     "dataHostCompany": "DigitalOcean; Supabase; Google Cloud",
@@ -45,5 +45,66 @@
     "Complete distinct Minds-user acceptance",
     "Complete security/testing information and automated checks before submitting to Slack review"
   ],
-  "marketplace_submitted": false
+  "marketplace_submitted": false,
+  "reviewer_testing": {
+    "status": "Instructions prepared from verified production behavior; not entered in native Testing Information because required security fields and dedicated reviewer access remain pending",
+    "slack_reference": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/#help-us-review",
+    "account_access": "Pending. Provision a dedicated Minds reviewer account with synthetic data and research allowance. Supply its credentials only through Slack’s private Test account details field; never use the owner’s account or provide Slack workspace credentials.",
+    "fixture_requirements": [
+      "A dedicated reviewer-owned Audience of ten ready Minds, with a distinctive name supplied alongside the private reviewer account details.",
+      "Allowance for an initial single-question run and one follow-up; keep access available for the review period.",
+      "A completed private sample Study for read-only testing before new research completes.",
+      "A second dedicated Minds test account without membership or sharing access to the first account’s fixtures, for isolation testing."
+    ],
+    "install_url": "https://slack.getminds.ai/slack/install",
+    "setup_url": "https://getminds.ai/guide/integration-slack",
+    "steps": [
+      {
+        "action": "Open the install URL, choose Add to Slack, select your own test workspace and approve the listed scopes. Invite @Minds to a test channel.",
+        "expected": "Installation completes. No Minds account access is granted by the Slack installation alone."
+      },
+      {
+        "action": "Mention @Minds with the synthetic question below. Choose Connect Minds and sign in with the dedicated Minds reviewer account; approve the consent. Return to Slack.",
+        "expected": "The callback confirms Minds connected. The connection belongs to the requesting Slack user in this workspace."
+      },
+      {
+        "action": "Choose Ask an Audience, search for the supplied reviewer Audience and select its actual menu option. Review Question and stimulus. Try Run question without selecting the Result visibility checkbox.",
+        "expected": "Slack blocks submission and no research starts."
+      },
+      {
+        "action": "Select the sharing-consent checkbox, then choose Run question once.",
+        "expected": "A status message appears in the originating thread, followed by completed synthetic findings and Open Study. For the ten-Mind fixture, verify ten completed responses or inspect any reported failure in Minds."
+      },
+      {
+        "action": "Open Study while signed in as the reviewer account. Also open the same link in a separate signed-out browser.",
+        "expected": "The owner can view the Study. The signed-out browser requires authentication and does not reveal the private question. Posting the Slack card does not enable public Study sharing."
+      },
+      {
+        "action": "Choose Ask a follow-up on your result, use the follow-up below, approve sharing and submit once.",
+        "expected": "A second question completes in the same Study and a result appears in the thread."
+      },
+      {
+        "action": "Send a fresh @Minds mention, choose Read a Study, select the private sample Study or your completed Study, approve sharing and choose Share findings.",
+        "expected": "Existing findings are posted. Reading does not create another research question."
+      },
+      {
+        "action": "Use a different Slack user connected to the second dedicated Minds account, with no access to the first account’s fixtures. Search the Audience and Study pickers and open the first account’s private Study link while signed into the second account.",
+        "expected": "Private resources are absent from discovery and the private Study remains inaccessible. A result already posted into a shared Slack channel is visible to channel members by design; that does not grant Minds access."
+      },
+      {
+        "action": "From fresh @Minds controls choose Disconnect. Send a new mention and choose Ask an Audience. Reconnect normally.",
+        "expected": "The app requests Connect Minds after disconnect and works again after fresh consent. Existing Minds Studies and posted Slack messages are retained."
+      },
+      {
+        "action": "In your workspace’s Minds app Configuration choose Remove App and confirm. Reinstall through the public install URL and invite the app to the test channel again.",
+        "expected": "The workspace installation is removed. After reinstall, connect the Minds account afresh. Another workspace’s installation and connection remain unaffected."
+      }
+    ],
+    "synthetic_question": "Imagine a reusable water bottle described as: \"A lightweight bottle that keeps water cool and is easy to clean.\" In one short sentence, what would you want to know before deciding whether to buy it?",
+    "synthetic_followup": "Thinking about the same reusable water bottle, which single product detail would matter most in your purchase decision? Please answer in one short sentence.",
+    "product_limits": "One question per submission; existing Audiences and Studies only. Requests requiring a multi-question plan continue in Minds for review. Channel mentions and the Ask Minds message shortcut are supported; DMs, private files and automatic channel-history monitoring are not.",
+    "troubleshooting": "Select an actual Audience/Study menu option, rather than only entering search text. After an expired connection link, return to Slack and request a fresh Connect Minds link. Research uses the connected account’s allowance; inspect its Study before retrying a request whose execution is uncertain.",
+    "support": "hello@getminds.ai",
+    "submission_readiness": "Do not submit until the dedicated accounts/fixtures and distinct-user checks are verified, required security answers and Slack automated checks are complete, and active installation eligibility is met."
+  }
 }
