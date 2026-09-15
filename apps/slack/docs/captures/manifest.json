@@ -11,9 +11,6 @@
     "Native account connection prompt"
   ],
   "pending": [
-    "Production Minds OAuth callback allowlist release",
-    "Per-user Minds consent and token refresh in the deployed app",
-    "Audience selection, research completion and private Study link in Slack",
     "External workspace and second-user acceptance"
   ],
   "e2e_complete": false,
@@ -47,11 +44,8 @@
       }
     },
     "still_required": [
-      "Production OAuth release and successful per-user Minds consent",
-      "Audience research, read-only retrieval and follow-up with threaded findings and private Study access",
-      "Deployed Minds disconnect, reconnect and refresh rotation",
+      "Reconnect acceptance",
       "Second-user and external-workspace acceptance",
-      "Canonical deployment of verified dedicated Vertex configuration, followed by connected-user Slack acceptance",
       "Public pilot distribution and genuine customer adoption before Marketplace submission"
     ]
   },
@@ -116,7 +110,7 @@
     ],
     "minds_resource_data": "Synthetic local MCP fixture; real Vertex model and application draftResearch implementation",
     "deployed": true,
-    "remaining": "Connected-user Minds and Slack research E2E awaits the production OAuth allowlist release."
+    "remaining": "Connected-user mention interpretation and full Slack acceptance remain in progress."
   },
   "release_check_scope": {
     "checked_at": "2026-09-15",
@@ -142,7 +136,38 @@
       "docker_build": "passed"
     },
     "post_deployment_live_check": "Fresh private-QA mention received Minds research controls",
-    "production_oauth_registration": "HTTP 400 invalid_redirect_uri; webapp PR #6329 still requires independent review",
+    "production_oauth_registration": "Passed native Minds consent and callback after webapp production release 7ed104ba9c29e7fa7e375fc2bc4c976bf80d89e2.",
     "full_research_e2e": false
+  },
+  "connected_user_acceptance": {
+    "verified_at": "2026-09-15",
+    "webapp_revision": "7ed104ba9c29e7fa7e375fc2bc4c976bf80d89e2",
+    "webapp_deployment_run": "https://github.com/minds-ai-co/webapp/actions/runs/34953543166",
+    "slack_runtime_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "live_passed": [
+      "Native Slack Connect Minds link, authenticated Minds consent and successful callback",
+      "Audience external-select search after setting the separate Options Load URL",
+      "Submitting without result-sharing consent is blocked and creates no job",
+      "Explicitly approved synthetic question submitted to a dedicated 10-Mind QA Audience",
+      "One completed research job with ten completed synthetic responses delivered in the originating Slack thread",
+      "Open Study opens the completed question for the authenticated owner",
+      "Anonymous browser cannot see the question and is offered login",
+      "Study status confirms public link sharing remains disabled",
+      "Follow-up creates a second question in the same Study and delivers ten completed responses",
+      "Read a Study delivers existing findings; completed question count remains two and no new question is created",
+      "Deployed runtime exchanges and persists rotated access/refresh tokens after controlled early local expiry",
+      "Native Disconnect erases all retained user records/jobs and the previous access token is rejected",
+      "Research after disconnect opens Connect Minds instead of accessing the previous account"
+    ],
+    "configuration_fix": "settings.interactivity.message_menu_options_url points to /slack/events; native setting saved and reloaded successfully",
+    "question_content": "Synthetic water-bottle concept; no customer stimulus",
+    "research_e2e_complete": true,
+    "full_publication_acceptance_complete": false,
+    "refresh_test_method": "Moved only the QA connection local expiry marker earlier; the deployed app performed the real OAuth refresh while loading Study choices. Compared rotated tokens in memory without logging or copying them.",
+    "capture": {
+      "artifact": "research-result.png",
+      "surface": "Completed synthetic QA result card in native Slack",
+      "redaction": "Result-card-only crop; no sender/account identifiers, message/thread IDs, URLs, credentials or customer content. Respondent names are synthetic Minds."
+    }
   }
 }
