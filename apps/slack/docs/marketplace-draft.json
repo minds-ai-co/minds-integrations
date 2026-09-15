@@ -37,12 +37,12 @@
     "Confirm company/developer legal entity and headquarters for this listing",
     "HIPAA compliance and any applicable certification evidence",
     "Organization-level SSO/SAML support, dedicated security team, vulnerability disclosure and bug-bounty program status",
-    "Reviewer test-account provisioning and external-user/workspace acceptance"
+    "Reviewer test-account provisioning and distinct Minds-user acceptance"
   ],
   "provider_retention_reference": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/vertex-ai-zero-data-retention",
   "publication_blockers": [
     "At least 10 active workspace installations and required user activity; current dashboard reports zero on its daily counter",
-    "Complete second-user and external-workspace acceptance",
+    "Complete distinct Minds-user acceptance",
     "Complete security/testing information and automated checks before submitting to Slack review"
   ],
   "marketplace_submitted": false

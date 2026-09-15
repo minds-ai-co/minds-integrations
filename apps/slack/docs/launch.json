@@ -30,7 +30,7 @@
         "https://github.com/minds-ai-co/minds-content/pull/100",
         "https://github.com/minds-ai-co/minds-content/pull/103"
       ],
-      "status": "unlisted_pilot_update_pending_deploy",
+      "status": "live_unlisted_pilot_all_nine_locales",
       "quality_bar": "Document verified behavior and open launch dependencies",
       "reason": "New customer integration"
     },
@@ -39,7 +39,7 @@
       "capture_skill": null,
       "gif_path": null,
       "status": "live_connection_and_result_captures",
-      "reason": "Native connection modal and completed synthetic QA result card captured; external-workspace acceptance remains pending."
+      "reason": "Native connection, research form and completed synthetic QA result captures; distinct Minds-user acceptance remains pending."
     },
     "channels": {
       "docs": "live_pilot_guide",
@@ -54,7 +54,7 @@
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "Deferred until cross-user/workspace acceptance; unlisted installation is enabled for pilot validation."
+      "draft_generation_status": "Deferred until distinct Minds-user acceptance; separate-workspace installation, read, disconnect/uninstall isolation and reinstall passed."
     },
     "approvals": {
       "docs_owner": null,

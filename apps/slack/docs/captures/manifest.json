@@ -11,7 +11,7 @@
     "Native account connection prompt"
   ],
   "pending": [
-    "External workspace and second-user acceptance"
+    "Distinct Minds-user acceptance"
   ],
   "e2e_complete": false,
   "deployment_acceptance": {
@@ -44,7 +44,7 @@
       }
     },
     "still_required": [
-      "Second-user and external-workspace acceptance",
+      "Distinct Minds-user acceptance",
       "Genuine active workspace adoption before Marketplace submission"
     ]
   },
@@ -81,18 +81,18 @@
     "browser_image_alt_present": true,
     "distribution_verified_at": "2026-09-15",
     "install_url": "https://slack.getminds.ai/slack/install",
-    "install_entry_verified": "Add to Slack opens native Slack permission consent; no new installation submitted in this check",
+    "install_entry_verified": "Fresh unlisted installation completed through native Slack consent in a separate QA workspace",
     "marketplace_install_requirement": {
       "active_workspaces_required": 10,
       "source": "https://docs.slack.dev/changelog/2026/09/01/slack-marketplace-install-requirement/",
       "dashboard_reported_active_workspaces": 0,
       "dashboard_reported_active_users": 0,
-      "dashboard_note": "Counts update every 24 hours; one QA workspace installation independently verified"
+      "dashboard_note": "Daily dashboard counters are not adoption evidence; original and separate QA workspace installations independently exercised. QA activity is not customer adoption."
     },
     "pilot_guide_update_pr": "https://github.com/minds-ai-co/minds-content/pull/103",
     "pilot_guide_update_revision": "668605dfaef53e19d5500d8b60c3788d0f579f2c",
     "pilot_guide_update_deploy_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34958653182",
-    "pilot_guide_update_status": "Merged after Quality Checks and Build passed; canonical production rollout in progress"
+    "pilot_guide_update_status": "Canonical production rollout succeeded; anonymous requests to all nine public guides returned HTTP 200 with the pilot install link and active Vertex disclosure"
   },
   "vertex_predeployment_acceptance": {
     "checked_at": "2026-09-15",
@@ -123,7 +123,7 @@
     ],
     "minds_resource_data": "Synthetic local MCP fixture; real Vertex model and application draftResearch implementation",
     "deployed": true,
-    "remaining": "Connected-user mention interpretation and full Slack acceptance remain in progress."
+    "remaining": "Deployed connected-user mention interpretation passed; see connected_user_acceptance."
   },
   "release_check_scope": {
     "checked_at": "2026-09-15",
@@ -150,7 +150,7 @@
     },
     "post_deployment_live_check": "Fresh private-QA mention received Minds research controls",
     "production_oauth_registration": "Passed native Minds consent and callback after webapp production release 7ed104ba9c29e7fa7e375fc2bc4c976bf80d89e2.",
-    "full_research_e2e": false
+    "full_research_e2e": true
   },
   "connected_user_acceptance": {
     "verified_at": "2026-09-15",
@@ -213,6 +213,25 @@
       "redaction": "Native form only; browser capture hides surrounding workspace content. Synthetic QA stimulus; no submission performed for this capture."
     },
     "security_draft": "apps/slack/docs/marketplace-draft.json",
-    "remaining": "Verified organization/security answers, reviewer access, actual second-user/external-workspace tests, genuine active installation requirement and Slack review"
+    "remaining": "Verified organization/security answers, reviewer access, distinct Minds-user tests, genuine active installation requirement and Slack review"
+  },
+  "workspace_isolation_acceptance": {
+    "verified_at": "2026-09-15",
+    "slack_runtime_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "identity_scope": "Same owner, two distinct Slack workspaces and independent Minds OAuth connections; not a second Minds identity or customer adoption",
+    "live_passed": [
+      "Fresh installation through public entry and native workspace chooser",
+      "New workspace initially requires Connect Minds; original workspace connection is not inherited",
+      "Independent Minds OAuth connection succeeds",
+      "Read a Study completes and delivers findings in the second workspace",
+      "Native Disconnect removes the second workspace user records and jobs",
+      "Original workspace connection remains present and can still list Studies after the second workspace disconnects",
+      "Native Slack uninstall removes every retained record and job for the QA workspace",
+      "Original Slack bot authentication, Minds Study access and completed job survive QA workspace uninstall",
+      "Fresh public installation succeeds after uninstall; QA bot authenticates and no previous Minds connection reappears"
+    ],
+    "still_required": [
+      "Distinct Minds-user resource isolation"
+    ]
   }
 }
