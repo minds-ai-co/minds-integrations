@@ -26,6 +26,8 @@ Record the real installed app at desktop and mobile widths: product action → s
 
 ## Release boundary
 
+The [App Store submission pack](submission/submission.md) contains draft listing fields, reviewer instructions, media shot lists and the explicit public-release gates. It is preparation material, not a submitted or approved listing.
+
 This is restricted to the server-configured development store and labelled as a development preview. It has no public App Store listing or Shopify billing approval. Uninstall verifies the signed raw body and removes Shopify links/challenges and connection-scoped snapshot references; canonical Studies remain in the consenting Minds account. Full privacy topic handling, retention review, billing approval, public distribution/onboarding configuration, and App Store submission are separate public-release work. Do not publish marketing claiming availability until those gates and installed-store QA are complete.
 
 API references: https://shopify.dev/docs/api/admin-extensions/latest and https://shopify.dev/docs/apps/build/webhooks/verify-deliveries.

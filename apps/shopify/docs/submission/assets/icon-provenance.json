@@ -1,0 +1,14 @@
+{
+  "kind": "generated_app_icon",
+  "source_repository": "minds-ai-co/minds-ui",
+  "source_revision": "daccf8460e01b73a4f6aeb5a96c30aa45478efab",
+  "source_path": "packages/ui/assets/public/favicon-light.svg",
+  "source_sha256": "53aa78b9f05eb9ac04f97efaa2c41b964c5642d662676ca4c28a3521fc92bdad",
+  "viewport": {
+    "width": 1200,
+    "height": 1200
+  },
+  "background": "#ffffff",
+  "mark_width": 900,
+  "notes": "Canonical SVG geometry preserved; generated distribution asset, not a new brand source."
+}
