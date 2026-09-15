@@ -39,7 +39,7 @@
       "capture_skill": null,
       "gif_path": null,
       "status": "live_connection_and_result_captures",
-      "reason": "Native connection, research form and completed synthetic QA result captures; distinct Minds-user acceptance remains pending."
+      "reason": "Native connection, research-form and completed synthetic-result captures; separate-workspace lifecycle and distinct Minds-user research isolation passed."
     },
     "channels": {
       "docs": "live_pilot_guide",
@@ -54,7 +54,7 @@
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "Deferred until distinct Minds-user acceptance; separate-workspace installation, read, disconnect/uninstall isolation and reinstall passed."
+      "draft_generation_status": "Pilot guides and Marketplace reviewer instructions prepared; broader launch waits for complete publication readiness, verified company/security answers and reviewer access."
     },
     "approvals": {
       "docs_owner": null,

@@ -11,9 +11,10 @@
     "Native account connection prompt"
   ],
   "pending": [
-    "Distinct Minds-user acceptance"
+    "Dedicated non-staff reviewer access and complete organization/security answers",
+    "Marketplace eligibility and review"
   ],
-  "e2e_complete": false,
+  "e2e_complete": true,
   "deployment_acceptance": {
     "checked_at": "2026-09-14",
     "runtime_revision": "8ce81c8b94079d1bdc7cd72cc283e1088a6ec462",
@@ -44,8 +45,8 @@
       }
     },
     "still_required": [
-      "Distinct Minds-user acceptance",
-      "Genuine active workspace adoption before Marketplace submission"
+      "Dedicated reviewer access and complete organization/security answers",
+      "Genuine active workspace adoption and Marketplace review"
     ]
   },
   "publication_materials": {
@@ -213,7 +214,7 @@
       "redaction": "Native form only; browser capture hides surrounding workspace content. Synthetic QA stimulus; no submission performed for this capture."
     },
     "security_draft": "apps/slack/docs/marketplace-draft.json",
-    "remaining": "Verified organization/security answers, reviewer access, distinct Minds-user tests, genuine active installation requirement and Slack review"
+    "remaining": "Verified remaining organization/security answers, dedicated non-staff reviewer access, genuine active installation requirement and Slack review"
   },
   "workspace_isolation_acceptance": {
     "verified_at": "2026-09-15",
@@ -230,8 +231,38 @@
       "Original Slack bot authentication, Minds Study access and completed job survive QA workspace uninstall",
       "Fresh public installation succeeds after uninstall; QA bot authenticates and no previous Minds connection reappears"
     ],
-    "still_required": [
-      "Distinct Minds-user resource isolation"
+    "still_required": []
+  },
+  "distinct_minds_user_acceptance": {
+    "verified_at": "2026-09-15",
+    "slack_runtime_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "identity_setup": "Dedicated admin-provisioned, non-staff Minds QA identity using a reserved non-deliverable test address; separate browser profile and a verified profile ID different from the owner; password retained only in the encrypted vault.",
+    "authentication_method": "Server-side administrative account provisioning and a one-use login link completed through the application auth client; subsequent Slack connection used actual Minds OAuth consent and callback.",
+    "scope": "Normal research discovery, resource reads and private Study UI for a distinct non-staff Minds identity, using the already separate Slack QA workspace. This is not an external-customer signup or a comprehensive security audit.",
+    "positive_controls": [
+      "QA OAuth can discover 73 accessible Audiences and read a public Audience",
+      "Owner can read the private QA Audience and Study through MCP",
+      "Owner browser returns HTTP 200 for the same private Audience and Study URLs that deny the QA account"
+    ],
+    "live_passed": [
+      "QA profile differs from the owner profile",
+      "Authenticated non-staff QA request to a staff-only endpoint returns HTTP 403",
+      "Native Minds OAuth consent connects the QA identity to its Slack actor",
+      "Private owner Audience absent from QA MCP discovery",
+      "Private owner Study absent from QA MCP discovery; QA Study list empty",
+      "Direct QA get_audience returns not found",
+      "Direct QA get_study_status and get_study_summary return Not authorized",
+      "Native Slack Audience and Study searches find neither private fixture",
+      "Authenticated QA GET /api/v1/audiences/:id returns HTTP 404 while owner returns HTTP 200",
+      "Authenticated QA GET /api/studies/:id returns HTTP 404 while owner returns HTTP 200",
+      "QA browser opens private Study link; its Study request returns HTTP 404 and no private question is displayed while the session remains authenticated",
+      "Native Disconnect removes QA personal records/jobs while the owner connection still lists Studies"
+    ],
+    "cleanup": "QA Slack connection disconnected after testing; no new research was run. Dedicated QA auth account retained for repeat checks, not supplied to third parties.",
+    "limitations": [
+      "Public email signup and password login failed human verification in the automated browser. Test identities were provisioned administratively; ordinary email signup/login is not claimed as passed.",
+      "An initial company-alias test was repeated with a non-staff identity to avoid relying on a staff-domain account. Both are internal QA accounts, not customer adoption or external reviewer access.",
+      "The non-staff QA address is reserved and non-deliverable; external reviewer account setup still needs suitable login/recovery access, sample data and research allowance."
     ]
   }
 }

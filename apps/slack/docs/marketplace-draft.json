@@ -31,25 +31,26 @@
   "verified_boolean_answers": {
     "uses_subprocessors": true,
     "exposes_llm": true,
-    "requires_minds_oauth": true
+    "requires_minds_oauth": true,
+    "supports_sso": true,
+    "supports_saml": true
   },
   "unanswered": [
     "Confirm company/developer legal entity and headquarters for this listing",
     "HIPAA compliance and any applicable certification evidence",
-    "Organization-level SSO/SAML support, dedicated security team, vulnerability disclosure and bug-bounty program status",
-    "Reviewer test-account provisioning and distinct Minds-user acceptance"
+    "Dedicated security team, vulnerability disclosure and bug-bounty program status",
+    "Dedicated non-staff reviewer account and sample-data provisioning"
   ],
   "provider_retention_reference": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/vertex-ai-zero-data-retention",
   "publication_blockers": [
     "At least 10 active workspace installations and required user activity; current dashboard reports zero on its daily counter",
-    "Complete distinct Minds-user acceptance",
     "Complete security/testing information and automated checks before submitting to Slack review"
   ],
   "marketplace_submitted": false,
   "reviewer_testing": {
-    "status": "Instructions prepared from verified production behavior; not entered in native Testing Information because required security fields and dedicated reviewer access remain pending",
+    "status": "Instructions prepared; distinct Minds-user research isolation passed. Native Testing Information remains unavailable until required organization/security answers are complete; non-staff reviewer access is still pending.",
     "slack_reference": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/#help-us-review",
-    "account_access": "Pending. Provision a dedicated Minds reviewer account with synthetic data and research allowance. Supply its credentials only through Slack’s private Test account details field; never use the owner’s account or provide Slack workspace credentials.",
+    "account_access": "Pending external reviewer access. A dedicated non-staff identity passed the research privacy checks, but uses a reserved non-deliverable test address. Complete suitable reviewer login/recovery access, synthetic sample data and research allowance before sharing credentials through Slack’s private Test account details field. Internal QA credentials have not been supplied to third parties.",
     "fixture_requirements": [
       "A dedicated reviewer-owned Audience of ten ready Minds, with a distinctive name supplied alongside the private reviewer account details.",
       "Allowance for an initial single-question run and one follow-up; keep access available for the review period.",
@@ -106,5 +107,10 @@
     "troubleshooting": "Select an actual Audience/Study menu option, rather than only entering search text. After an expired connection link, return to Slack and request a fresh Connect Minds link. Research uses the connected account’s allowance; inspect its Study before retrying a request whose execution is uncertain.",
     "support": "hello@getminds.ai",
     "submission_readiness": "Do not submit until the dedicated accounts/fixtures and distinct-user checks are verified, required security answers and Slack automated checks are complete, and active installation eligibility is met."
+  },
+  "security_verification": {
+    "verified_at": "2026-09-15",
+    "evidence": "Production Supabase SSO provider metadata returned HTTP 200 with two enabled SAML providers, alongside the existing Minds SSO discovery/login implementation. Provider identifiers and domains are omitted.",
+    "native_draft": "securitySupportSso and securitySupportSaml set to yes and checked in the native security form. Other required unanswered fields still prevent completion."
   }
 }
