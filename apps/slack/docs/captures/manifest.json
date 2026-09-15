@@ -16,5 +16,133 @@
     "Audience selection, research completion and private Study link in Slack",
     "External workspace and second-user acceptance"
   ],
-  "e2e_complete": false
+  "e2e_complete": false,
+  "deployment_acceptance": {
+    "checked_at": "2026-09-14",
+    "runtime_revision": "8ce81c8b94079d1bdc7cd72cc283e1088a6ec462",
+    "deployment_run": "https://github.com/minds-ai-co/minds-integrations/actions/runs/34906595973",
+    "live_passed": [
+      "Same-workspace Slack OAuth installation",
+      "Signed mention opens native controls with the Minds display name",
+      "Message shortcut opens native Connect Minds modal",
+      "Fresh Minds connection failure preserves an actionable fixed message through the public ingress",
+      "Actual Slack uninstall automatically removes all retained workspace records and jobs",
+      "Actual Slack bot-token revocation automatically removes all retained workspace records and jobs",
+      "Reinstallation and fresh mention controls work after both removal paths"
+    ],
+    "provider_configuration": "Guided controls active; optional Vertex request preparation disabled; no consumer Gemini API key deployed",
+    "automated_checks": {
+      "repository_tests_passed": 42,
+      "slack_tests_passed": 18,
+      "command": "npm run check",
+      "provider_calls": "simulated in automated tests",
+      "followup_test_runner_fix": {
+        "pull_request": "https://github.com/minds-ai-co/minds-integrations/pull/20",
+        "slack_tests_passed_locally": 20,
+        "skipped": 0,
+        "status": "merged; dedicated Slack CI passed",
+        "reason": "The deployed runner omitted two Vertex configuration tests; the corrected runner executes them.",
+        "ci_run": "https://github.com/minds-ai-co/minds-integrations/actions/runs/34949444457",
+        "shared_client_tests_passed": 4
+      }
+    },
+    "still_required": [
+      "Production OAuth release and successful per-user Minds consent",
+      "Audience research, read-only retrieval and follow-up with threaded findings and private Study access",
+      "Deployed Minds disconnect, reconnect and refresh rotation",
+      "Second-user and external-workspace acceptance",
+      "Canonical deployment of verified dedicated Vertex configuration, followed by connected-user Slack acceptance",
+      "Public pilot distribution and genuine customer adoption before Marketplace submission"
+    ]
+  },
+  "publication_materials": {
+    "verified_at": "2026-09-15",
+    "guide_url": "https://getminds.ai/guide/integration-slack",
+    "locales_verified": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "ja",
+      "ko",
+      "tr",
+      "ar",
+      "zh"
+    ],
+    "image_url": "https://getminds.ai/images/videos/integrations/slack/connect-minds.png",
+    "image_content_type": "image/png",
+    "image_matches_reviewed_capture": true,
+    "content_revision": "c159b0193aa8bf969b38186f913d996399dfa17c",
+    "deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34909177172",
+    "slack_app_details": "Minds logo, pilot notice and setup/privacy/support links verified in the installed app Description tab",
+    "public_distribution_enabled": false,
+    "marketplace_submitted": false,
+    "router_revision": "fa345cd56c06304bfa3be6d5a89d6d7bb39be0ca",
+    "router_deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34911256919",
+    "optimized_image_content_type": "image/png",
+    "browser_render_verified": true,
+    "browser_image_dimensions": [
+      520,
+      248
+    ],
+    "browser_image_alt_present": true
+  },
+  "vertex_predeployment_acceptance": {
+    "checked_at": "2026-09-15",
+    "provider": "Google Cloud Vertex AI",
+    "model": "gemini-3.6-flash",
+    "dedicated_service_account": true,
+    "verified_project_permissions": [
+      "aiplatform.endpoints.predict"
+    ],
+    "administrative_permissions_tested_and_absent": [
+      "resourcemanager.projects.setIamPolicy",
+      "iam.serviceAccounts.create",
+      "iam.serviceAccountKeys.create"
+    ],
+    "credential_storage": "Encrypted vault and GitHub slack-production environment secret",
+    "live_provider_http_status": 200,
+    "actual_application_draft_checks": [
+      {
+        "intent": "ask",
+        "discovery_tool": "list_audiences",
+        "exact_synthetic_resource_selected": true
+      },
+      {
+        "intent": "read",
+        "discovery_tool": "list_studies",
+        "exact_synthetic_resource_selected": true
+      }
+    ],
+    "minds_resource_data": "Synthetic local MCP fixture; real Vertex model and application draftResearch implementation",
+    "deployed": true,
+    "remaining": "Connected-user Minds and Slack research E2E awaits the production OAuth allowlist release."
+  },
+  "release_check_scope": {
+    "checked_at": "2026-09-15",
+    "pull_request": "https://github.com/minds-ai-co/minds-integrations/pull/20",
+    "merged_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "slack_ci": "passed all Slack/MCP-client tests, type checks, JSON validation, runtime audit and Docker build",
+    "full_repository_ci": "unchanged; fails at private Shopify locales dependency installation",
+    "private_package_access_required_for_slack_release": false
+  },
+  "current_deployment": {
+    "verified_at": "2026-09-15",
+    "runtime_revision": "bab3cd7918b303d7123941efb66294f125748c9b",
+    "deployment_run": "https://github.com/minds-ai-co/minds-integrations/actions/runs/34949575497",
+    "app_platform_phase": "ACTIVE",
+    "public_health": "passed",
+    "vertex_configuration": "dedicated inference service account; gemini-3.6-flash; global location",
+    "automated_checks": {
+      "slack_tests_passed": 20,
+      "shared_client_tests_passed": 4,
+      "skipped": 0,
+      "type_checks": "passed",
+      "runtime_dependency_audit": "zero vulnerabilities",
+      "docker_build": "passed"
+    },
+    "post_deployment_live_check": "Fresh private-QA mention received Minds research controls",
+    "production_oauth_registration": "HTTP 400 invalid_redirect_uri; webapp PR #6329 still requires independent review",
+    "full_research_e2e": false
+  }
 }

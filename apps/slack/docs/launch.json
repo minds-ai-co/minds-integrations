@@ -3,8 +3,8 @@
     "issue_workflow": {
       "category": "enhancement",
       "state": "ready-for-human",
-      "availability": "active",
-      "active_owner": "lexdoudkin",
+      "availability": "parked",
+      "active_owner": null,
       "github_assignee": "lexdoudkin"
     },
     "feature": {
@@ -24,9 +24,12 @@
       "same_pr": true,
       "target_paths": [
         "apps/slack/docs/setup.md",
-        "apps/slack/docs/operations.md"
+        "apps/slack/docs/operations.md",
+        "https://github.com/minds-ai-co/minds-content/pull/98",
+        "https://github.com/minds-ai-co/minds-content/pull/99",
+        "https://github.com/minds-ai-co/minds-content/pull/100"
       ],
-      "status": "prepared",
+      "status": "live_pilot_guide",
       "quality_bar": "Document verified behavior and open launch dependencies",
       "reason": "New customer integration"
     },
@@ -38,19 +41,19 @@
       "reason": "Live native connection modal captured. Complete the research workflow capture after production OAuth release and acceptance."
     },
     "channels": {
-      "docs": "prepared",
+      "docs": "live_pilot_guide",
       "resend_weekly_slot": "draft_only",
       "zernio_linkedin": "draft_only",
       "x_twitter": "draft_only"
     },
     "artifacts": {
-      "pr_comment": "https://github.com/minds-ai-co/minds-integrations/pull/10",
-      "generated_docs": null,
+      "pr_comment": "https://github.com/minds-ai-co/minds-integrations/issues/9",
+      "generated_docs": "https://getminds.ai/guide/integration-slack",
       "product_update_draft": null,
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "skipped: required Vertex launch-copy credentials unavailable; live research acceptance still pending"
+      "draft_generation_status": "Deferred until live research acceptance; dedicated Slack Vertex inference is verified and deployed."
     },
     "approvals": {
       "docs_owner": null,
