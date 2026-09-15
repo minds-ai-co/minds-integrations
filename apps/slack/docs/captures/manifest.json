@@ -49,7 +49,7 @@
       "Audience research, read-only retrieval and follow-up with threaded findings and private Study access",
       "Deployed Minds disconnect, reconnect and refresh rotation",
       "Second-user and external-workspace acceptance",
-      "Dedicated Vertex service account and real request-preparation verification before enabling optional AI",
+      "Canonical deployment of verified dedicated Vertex configuration, followed by connected-user Slack acceptance",
       "Public pilot distribution and genuine customer adoption before Marketplace submission"
     ]
   },
@@ -84,5 +84,36 @@
       248
     ],
     "browser_image_alt_present": true
+  },
+  "vertex_predeployment_acceptance": {
+    "checked_at": "2026-09-15",
+    "provider": "Google Cloud Vertex AI",
+    "model": "gemini-3.6-flash",
+    "dedicated_service_account": true,
+    "verified_project_permissions": [
+      "aiplatform.endpoints.predict"
+    ],
+    "administrative_permissions_tested_and_absent": [
+      "resourcemanager.projects.setIamPolicy",
+      "iam.serviceAccounts.create",
+      "iam.serviceAccountKeys.create"
+    ],
+    "credential_storage": "Encrypted vault and GitHub slack-production environment secret",
+    "live_provider_http_status": 200,
+    "actual_application_draft_checks": [
+      {
+        "intent": "ask",
+        "discovery_tool": "list_audiences",
+        "exact_synthetic_resource_selected": true
+      },
+      {
+        "intent": "read",
+        "discovery_tool": "list_studies",
+        "exact_synthetic_resource_selected": true
+      }
+    ],
+    "minds_resource_data": "Synthetic local MCP fixture; real Vertex model and application draftResearch implementation",
+    "deployed": false,
+    "remaining": "Merge release-check workflow fix after package Actions access is repaired, then run canonical deployment. This does not establish connected-user Minds or Slack research E2E."
   }
 }

@@ -53,7 +53,7 @@
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "skipped: required Vertex launch-copy credentials unavailable; live research acceptance still pending"
+      "draft_generation_status": "Deferred until live research acceptance; dedicated Slack Vertex inference is verified but not yet deployed."
     },
     "approvals": {
       "docs_owner": null,
