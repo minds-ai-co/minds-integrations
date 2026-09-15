@@ -28,6 +28,13 @@ Record the real installed app at desktop and mobile widths: product action → s
 
 The [App Store submission pack](submission/submission.md) contains draft listing fields, reviewer instructions, media shot lists and the explicit public-release gates. It is preparation material, not a submitted or approved listing.
 
-This is restricted to the server-configured development store and labelled as a development preview. It has no public App Store listing or Shopify billing approval. Uninstall verifies the signed raw body and removes Shopify links/challenges and connection-scoped snapshot references; canonical Studies remain in the consenting Minds account. Full privacy topic handling, retention review, billing approval, public distribution/onboarding configuration, and App Store submission are separate public-release work. Do not publish marketing claiming availability until those gates and installed-store QA are complete.
+This is restricted to the server-configured development store and labelled as a development preview. It has no public App Store listing or Shopify billing approval. Uninstall verifies the signed raw body and removes Shopify links/challenges while retaining detached research provenance. Studies are not removed immediately on uninstall. The companion webapp privacy implementation receives the three mandatory topics, persists minimal event receipts, and retries deletion of Shopify-origin Studies and their tracked copies. It remains pending on storage/queue failures and legacy shared assets. See the webapp operator documentation for exact scope and retention-review gaps. Public onboarding, billing, real installed-browser acceptance, retention review and App Store submission remain release gates. Do not publish marketing claiming availability until those gates and installed-store QA are complete.
 
 API references: https://shopify.dev/docs/api/admin-extensions/latest and https://shopify.dev/docs/apps/build/webhooks/verify-deliveries.
+
+
+## Privacy subscription rollout
+
+The example manifest registers all three `compliance_topics` against distinct backend routes. Ship the webapp privacy migrations and runtime first; validate the native configuration and build before releasing a new Shopify app version. Do not activate these subscriptions against the preceding backend, which lacks these routes.
+
+Verify provider deliveries on an isolated test shop: invalid raw-body HMAC is rejected, valid requests receive a durable receipt, duplicate event IDs do not duplicate work, and later events with the same body are accepted. An HTTP acknowledgment is not proof of completed erasure. Observe the cleanup worker and retained manifests separately. Never trigger a shop-deletion webhook against an actual merchant for smoke testing.
