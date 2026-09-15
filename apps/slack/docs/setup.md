@@ -1,6 +1,6 @@
 # Minds for Slack setup
 
-Minds for Slack runs at https://slack.getminds.ai as a dedicated HTTP service. As of 15 September 2026, its dedicated Slack app is installed in the Getminds workspace, Events verification passes, and live mentions open the native connection controls. Native Minds consent and the callback succeeded after [webapp PR #6329](https://github.com/minds-ai-co/webapp/pull/6329) deployed to production. Audience selection works after configuring Slack's separate Options Load URL. Live research, read-only retrieval, follow-up, private Study access, refresh rotation and disconnect have passed in the QA workspace. Cross-user and external-workspace acceptance remain pending. Public distribution is disabled, and there is no published Slack Marketplace listing.
+Minds for Slack runs at https://slack.getminds.ai as a dedicated HTTP service. As of 15 September 2026, its dedicated Slack app is installed in the Getminds workspace, Events verification passes, and live mentions open the native connection controls. Native Minds consent and the callback succeeded after [webapp PR #6329](https://github.com/minds-ai-co/webapp/pull/6329) deployed to production. Audience selection works after configuring Slack's separate Options Load URL. Live research, read-only retrieval, follow-up, private Study access, refresh rotation and disconnect have passed in the QA workspace. Cross-user and external-workspace acceptance remain pending. Unlisted pilot distribution is enabled, and there is no published Slack Marketplace listing.
 
 ## Use Minds in a conversation
 
@@ -17,7 +17,7 @@ When the `SLACK_VERTEX_*` service-account settings and `SLACK_AGENT_MODEL` are c
 
 ## Register and configure the Slack app
 
-Create a dedicated app from `apps/slack/manifest.json` at <https://api.slack.com/apps>. Replace `https://slack.getminds.ai` with the verified HTTPS deployment origin if a different host is chosen. The production installation entry is https://slack.getminds.ai/slack/install; installation in other workspaces requires enabling Slack public distribution after acceptance checks.
+Create a dedicated app from `apps/slack/manifest.json` at <https://api.slack.com/apps>. Replace `https://slack.getminds.ai` with the verified HTTPS deployment origin if a different host is chosen. The production installation entry is https://slack.getminds.ai/slack/install; unlisted pilot distribution is enabled so other workspaces can install for acceptance testing.
 
 The runtime must be reachable before Slack can verify the Events request URL:
 
