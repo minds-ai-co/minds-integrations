@@ -14,7 +14,7 @@ Status recorded 2026-09-15. A deployed pilot is not a public-distribution accept
 | Public distribution | Existing app is a restricted development pilot | Confirm appropriate app identity and public distribution configuration in Shopify; preserve pilot credentials and restrictions until the public release is ready |
 | Listing and support | English draft and nine published guides; support contact support@getminds.ai (owner decision) | Monitored support mailbox confirmed, privacy link and private emergency contacts; accurately declared supported languages |
 | Media | Storyboard prepared; real authenticated recording unavailable | Three distinct real screenshots, reviewer video and guide clip/poster; inspect every final file |
-| Repository CI | Root `validate` fails during dependency installation; scoped Slack CI is separate | Grant this repository Actions Read access to the pinned locales package, then rerun Shopify typecheck/test/build successfully |
+| Repository CI | Extension locales are committed, so root `validate` no longer downloads the private locales package; scoped Slack CI is separate | Shopify typecheck/test/build pass in `validate` on the release commit |
 | Shopify review | Not submitted or approved | All current automated checks pass and Shopify accepts the submitted app |
 
 ## Implementation handoff
@@ -23,7 +23,7 @@ Status recorded 2026-09-15. A deployed pilot is not a public-distribution accept
 - **Webapp + native config:** add `customers/data_request`, `customers/redact`, and `shop/redact` subscriptions and handlers. Authenticate the raw body, enqueue idempotent work where needed, and retain safe completion evidence. These topics are required even when an app does not collect personal data; invalid HMAC receives 401, successful receipt 2xx. Shopify specifies fulfillment within 30 days, subject to legal retention exceptions. [Privacy compliance](https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance).
 - **Billing:** the owner chose free install with research billed by Minds through the linked account. App Store requirement 1.2 prohibits off-platform billing unless Shopify grants an exception, so open a Partner Support case before submission and record the written answer. If Shopify refuses, fall back to Shopify App Pricing as described in the [public launch plan](public-launch-plan.md#fallback-shopify-app-pricing). [Billing documentation](https://shopify.dev/docs/apps/launch/billing), [App Store requirements](https://shopify.dev/docs/apps/launch/shopify-app-store/app-store-requirements).
 - **Privacy/content:** review final processor/data flows, AI-provider disclosures, retention, deletion and support handling against the approved policy. Publish changes in `minds-content`; maintain accurate limitations across all nine guides.
-- **CI owner:** in the locales package's Manage Actions access, grant `minds-integrations` Read, then rerun CI. [Package settings](https://github.com/orgs/minds-ai-co/packages/npm/locales/settings). The known 403 is infrastructure evidence, not a passing Shopify check.
+- **Locales:** extension strings are committed under `extensions/purchase-barriers/locales/`. After a `@minds-ai-co/locales` release, a maintainer with package access runs `npm run sync:locales --workspace minds-shopify-integration` and commits the result. CI never downloads the private package.
 
 ## Acceptance record to fill after testing
 

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "sync:locales": "node scripts/sync-locales.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --test test/*.test.mjs"
   },
@@ -14,7 +15,6 @@
     "@preact/signals": "2.11.2"
   },
   "devDependencies": {
-    "@minds-ai-co/locales": "1.0.0-staging.41",
     "esbuild": "0.25.12"
   }
 }
