@@ -6,7 +6,7 @@ The native product-details action opens the app using Shopify's `app:` protocol 
 
 ## Build and configuration
 
-Install root dependencies, then run `npm run build --workspace minds-shopify-integration`. Generated extension locales come from the pinned `@minds-ai-co/locales` package and are not separately maintained source. Type checking and product-link tests are included in root checks.
+Install root dependencies, then run `npm run build --workspace minds-shopify-integration`. Extension locales in `extensions/purchase-barriers/locales/` are generated from `@minds-ai-co/locales` and committed, so installs and CI need no GitHub Packages access; `SOURCE` records the package version. Do not edit them by hand: after a locales release, run `npm run sync:locales --workspace minds-shopify-integration` with the package available (or `LOCALES_PACKAGE_DIR` pointing at it) and commit the result. Type checking, locale completeness and product-link tests are included in root checks.
 
 Copy `shopify.app.development.toml.example` to ignored `shopify.app.toml`; set its application URL to the reachable backend URL. The development app is Minds Research Dev; only `read_products` is requested. Configure backend `NUXT_SHOPIFY_FOUNDATION_ENABLED`, `NUXT_SHOPIFY_DEVELOPMENT_SHOP`, `NUXT_SHOPIFY_CLIENT_ID`, and `NUXT_SHOPIFY_CLIENT_SECRET` through the canonical environment workflow. Secrets belong in the vault/deployment environment, never this manifest. Apply the companion Prisma migrations before enabling the backend.
 
@@ -18,7 +18,7 @@ On 2026-09-14, native version `purchase-barriers-ae36f88` was released from this
 
 On 2026-09-15, the webapp documentation/directory release reached production as `e46e57420dab976090ea85ab9eb6070ebec3f97c`. [Production deployment](https://github.com/minds-ai-co/webapp/actions/runs/34950259935) passed all gates; [staging deployment](https://github.com/minds-ai-co/webapp/actions/runs/34948146190) also passed the Audience reference E2E. The latter does not test Shopify account linking or a Shopify-originated Study. All nine public guides were deployed and verified. Recheck live state before each subsequent release.
 
-The repository-wide `validate` job still needs GitHub Packages Actions access to the pinned locales package. The existing infrastructure bypass did not fix that permission. The separately scoped Slack checks do not validate the Shopify extension.
+The repository-wide `validate` job previously failed with a GitHub Packages 403 on the locales package. Committed extension locales removed that dependency, so `validate` runs the Shopify typecheck, tests and build without package access. The separately scoped Slack checks do not validate the Shopify extension.
 
 ## Acceptance capture
 
