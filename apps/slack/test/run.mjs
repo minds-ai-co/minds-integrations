@@ -1,6 +1,6 @@
 import {spawn,execFileSync} from 'node:child_process';
 import {randomBytes} from 'node:crypto';
-const files=['test/agent.test.mjs','test/lifecycle.test.mjs','test/oauth.test.mjs'];
+const files=['test/agent.test.mjs','test/lifecycle.test.mjs','test/oauth.test.mjs','test/vertex.test.mjs'];
 const supplied=process.env.SLACK_TEST_DATABASE_URL;
 let name;
 try{
