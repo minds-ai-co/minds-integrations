@@ -3,8 +3,8 @@
     "issue_workflow": {
       "category": "enhancement",
       "state": "ready-for-human",
-      "availability": "parked",
-      "active_owner": null,
+      "availability": "active",
+      "active_owner": "Codex (owner-authorized session)",
       "github_assignee": "lexdoudkin"
     },
     "feature": {
@@ -37,8 +37,8 @@
       "required": true,
       "capture_skill": null,
       "gif_path": null,
-      "status": "partial_live_capture",
-      "reason": "Live native connection modal captured. Complete the research workflow capture after production OAuth release and acceptance."
+      "status": "live_connection_and_result_captures",
+      "reason": "Native connection modal and completed synthetic QA result card captured; external-workspace acceptance remains pending."
     },
     "channels": {
       "docs": "live_pilot_guide",
@@ -53,7 +53,7 @@
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "Deferred until live research acceptance; dedicated Slack Vertex inference is verified and deployed."
+      "draft_generation_status": "Deferred until cross-user/workspace acceptance and pilot distribution."
     },
     "approvals": {
       "docs_owner": null,

@@ -44,7 +44,8 @@
     },
     "interactivity": {
       "is_enabled": true,
-      "request_url": "https://slack.getminds.ai/slack/events"
+      "request_url": "https://slack.getminds.ai/slack/events",
+      "message_menu_options_url": "https://slack.getminds.ai/slack/events"
     },
     "org_deploy_enabled": false,
     "socket_mode_enabled": false,
