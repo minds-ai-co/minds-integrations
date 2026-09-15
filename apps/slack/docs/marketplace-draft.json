@@ -50,7 +50,7 @@
   "reviewer_testing": {
     "status": "Instructions prepared; distinct Minds-user research isolation passed. Native Testing Information remains unavailable until required organization/security answers are complete; non-staff reviewer access is still pending.",
     "slack_reference": "https://docs.slack.dev/slack-marketplace/slack-marketplace-review-guide/#help-us-review",
-    "account_access": "Pending external reviewer access. The internal QA identity passed normal research isolation checks, but uses the staff domain and must not be shared with external reviewers. Provision a dedicated non-staff reviewer account with synthetic data and research allowance; supply credentials only through Slack’s private Test account details field.",
+    "account_access": "Pending external reviewer access. A dedicated non-staff identity passed the research privacy checks, but uses a reserved non-deliverable test address. Complete suitable reviewer login/recovery access, synthetic sample data and research allowance before sharing credentials through Slack’s private Test account details field. Internal QA credentials have not been supplied to third parties.",
     "fixture_requirements": [
       "A dedicated reviewer-owned Audience of ten ready Minds, with a distinctive name supplied alongside the private reviewer account details.",
       "Allowance for an initial single-question run and one follow-up; keep access available for the review period.",
