@@ -15,8 +15,8 @@
   "search_term_candidates": ["product research", "purchase barriers", "synthetic research"],
   "seo_title_candidate": "Minds Research: AI Product Research for Shopify",
   "seo_description_candidate": "Explore product appeal, price hesitation and missing information with AI-powered Minds. Review four questions and response usage before starting a Study.",
-  "pricing": null,
+  "pricing": "Free to install. Research uses the response allowance of the merchant's linked Minds account, billed by Minds. Listing this model requires Shopify's written off-platform billing exception (App Store requirement 1.2).",
   "privacy_policy_url": null,
-  "support_email_candidate": "developers@getminds.ai",
+  "support_email_candidate": "support@getminds.ai",
   "setup_guide_url": "https://getminds.ai/guide/integration-shopify"
 }

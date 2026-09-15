@@ -4,29 +4,32 @@ Prepared 2026-09-15 for [webapp issue #6326](https://github.com/minds-ai-co/weba
 
 ## Merchant workflow
 
-Install Minds from Shopify, connect a Minds account with explicit consent, and choose a Shopify plan. Open a product and select **Test purchase barriers**. Choose an Audience, review the imported product and four questions, see the response allowance required, and explicitly start the Study. Return to completed answers and supporting respondent excerpts. Product copy is never changed automatically.
+Install Minds from Shopify for free and connect a Minds account with explicit consent. Open a product and select **Test purchase barriers**. Choose an Audience, review the imported product and four questions, see the response allowance required, and explicitly start the Study. Return to completed answers and supporting respondent excerpts. Product copy is never changed automatically.
 
-Keep the connection per Shopify staff member. A store subscription funds research for that store; linking another Minds account must not transfer a store's research history or silently grant access to another person's Audiences.
+Keep the connection per Shopify staff member. Research is funded by the linked person's Minds account or Team; linking another Minds account must not transfer a store's research history or silently grant access to another person's Audiences.
 
-## Billing design to implement
+## Billing model
 
-Use Shopify App Pricing as the proposed public billing path. Plans live in the Partner Dashboard, and the app verifies the merchant's current contract through the Partner API. Do not infer entitlement from the welcome URL or create a second subscription through the legacy Billing API. [Shopify App Pricing](https://shopify.dev/docs/apps/launch/billing/shopify-app-pricing).
+Owner decision, 2026-09-15: the Shopify app is free to install. Studies consume the response allowance of the linked Minds account or Team, billed by Minds. This matches the deployed pilot, which creates each Study as the linked Minds user and applies the existing canonical metering. No Shopify plans, Partner API subscription checks or store-level allowance are needed for this model.
 
-The launch price, currency, included responses, trial and overage policy remain unset. Do not create paid plans from this document. A limited free launch remains an alternative if selected by the owner.
+App Store requirement 1.2 prohibits off-platform billing "unless you've been notified otherwise by Shopify". Before submission:
 
-Persist a Shopify billing account keyed by verified app and shop identity, with the provider contract reference, validated plan mapping, current billing cycle and last verification time. Query `activeSubscription` using the organization-owned Partner API client, and bind the returned shop to the independently verified installation. The existing app client secret and merchant session token are not Partner API credentials. [Active subscription API](https://shopify.dev/docs/api/partner/latest/active-subscription).
+1. Open a Partner Support case requesting the off-platform billing exception. Describe Minds as a standalone research platform with its own customers, where the Shopify app is a free connector and merchants pay only for their existing Minds account.
+2. Record Shopify's written answer with the case reference in private release records; do not submit on an assumed exception.
+3. Configure the public app as free in the Partner Dashboard, and reference the approved exception in the review instructions.
+4. Keep the listing and guides accurate: free to install, a Minds account with available allowance is required, and research is billed by Minds.
 
-The current webapp resolves response allowance against a Minds user or Team. Shopify funding therefore needs a durable integration with canonical metering, rather than an HTTP-only plan override:
+In the app, insufficient allowance must block before execution with a clear link to manage the Minds plan; the Shopify app never takes payment itself.
 
-1. Persist the Study's funding account and billing period when its execution is accepted. Carry that identity through the canonical creation, reservation, worker, retry and refund paths.
-2. Reserve the four-question cost atomically against the store allowance. Repeated confirmation, two concurrent staff requests and retrying workers must not charge twice or overspend the shared allowance.
-3. Keep existing Minds subscriptions and usage intact. Shopify-funded Studies must not consume a second allowance or write Shopify identifiers into Stripe-specific columns.
-4. Refresh provider state before new paid execution and reconcile periodically. Unavailable or ambiguous provider state must not grant new paid access. Preserve the contract's cancellation and pending-change semantics instead of treating every update as an immediate reset.
-5. Authorize findings separately from billing. Subscription ownership alone must never grant access to a linked person's independent Minds Studies or Audiences.
+### Fallback: Shopify App Pricing
+
+If Shopify refuses the exception, use Shopify App Pricing. Plans live in the Partner Dashboard, and the app verifies the merchant's current contract through the Partner API (`activeSubscription`, using the organization-owned Partner API client, bound to the independently verified installation). Do not infer entitlement from the welcome URL or create a second subscription through the legacy Billing API. [Shopify App Pricing](https://shopify.dev/docs/apps/launch/billing/shopify-app-pricing), [Active subscription API](https://shopify.dev/docs/api/partner/latest/active-subscription).
+
+That path requires a store funding account integrated with canonical metering: persist each Study's funding account and billing period through creation, reservation, worker, retry and refund paths; reserve cost atomically against the store allowance; keep Shopify identifiers out of Stripe-specific columns; refresh and reconcile provider state; and authorize findings separately from billing. The price, currency, included responses, trial and overage policy would need an owner decision.
 
 ## Public installation boundary
 
-Keep the development-shop restriction enabled until the following implementation and tests pass. Model the verified installation separately from per-staff Minds links, retain uninstall/reinstall generations, and reject expired or revoked Shopify sessions. Use verified shop identity for catalog reads, connections, billing and Study provenance; never trust a query-string shop or product reference alone.
+Keep the development-shop restriction enabled until the following implementation and tests pass. Model the verified installation separately from per-staff Minds links, retain uninstall/reinstall generations, and reject expired or revoked Shopify sessions. Use verified shop identity for catalog reads, connections and Study provenance; never trust a query-string shop or product reference alone.
 
 On uninstall, revoke access and detach retained research provenance. Privacy cleanup must remain independently callable after access is disabled. An old uninstall/redaction event must not delete a newly installed generation's unrelated research. Review the existing pending-redaction reinstall block before allowing general public installations.
 
@@ -34,12 +37,10 @@ On uninstall, revoke access and detach retained research provenance. Privacy cle
 
 | Scenario | Passing evidence |
 | --- | --- |
-| Two stores and two staff members per store | Cross-store product, connection, allowance and findings requests rejected; each staff member explicitly links their own authorized Minds account |
+| Two stores and two staff members per store | Cross-store product, connection and findings requests rejected; each staff member explicitly links their own authorized Minds account |
 | Fresh install and reinstall | App opens from Shopify; expired/revoked sessions fail; uninstall revokes access; delayed old events do not erase a new generation |
-| Plan approval and return | Provider-confirmed contract controls access; a forged welcome URL grants nothing |
-| Cancellation, freeze and plan changes | No new paid access beyond the valid contract; cycle and pending-change handling verified against provider state |
-| Allowance exhaustion and concurrency | Insufficient allowance blocks before execution; two simultaneous confirmations cannot overspend or double charge |
-| Existing Minds subscriber | Shopify-funded execution does not charge or consume the user's separate Minds allowance |
+| Billing exception | Shopify's written off-platform billing exception recorded; app configured free; no Shopify charge created |
+| Allowance exhaustion and concurrency | Insufficient Minds allowance blocks before execution with a link to manage the plan; two simultaneous confirmations cannot overspend or double charge |
 | Product or Audience changes | Deleted products and lost Audience access fail clearly; confirmation uses the reviewed snapshot and authorized ready respondents |
 | Real privacy delivery | Shopify-originated requests accepted and minimized; duplicates deduplicated; populated-shop deletion completed with retry evidence |
 | Retained copies | Copied Studies/templates, historical queue events, logs, backups and legal retention reconciled with the published privacy policy |
@@ -47,7 +48,7 @@ On uninstall, revoke access and detach retained research provenance. Privacy cle
 
 ## Repository and release sequence
 
-- **webapp:** installation and billing models, canonical metering integration, privacy lifecycle and authorization tests. Ship additive schema changes through staging and verified production workflows.
+- **webapp:** installation model, privacy lifecycle and authorization tests. Ship additive schema changes through staging and verified production workflows.
 - **minds-ui:** any new UI messages in all nine locales (`ar de en es fr ja ko tr zh`), package release, then exact consumer version bumps.
 - **minds-integrations:** native extension/configuration, reviewer instructions, listing drafts and sanitized acceptance records. Release native configuration only after its backend routes are live.
 - **minds-content:** update the nine integration guides from actual released behavior; add the real walkthrough clip and poster only after capture and inspection.
