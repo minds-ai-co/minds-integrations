@@ -7,6 +7,8 @@ Prepared 2026-09-15. Refs minds-ai-co/webapp#6326. **Preparation complete for th
 - [Listing copy](listing.en.json): structured, paste-ready English draft.
 - [Reviewer walkthrough](reviewer-guide.md): setup, core workflow and expected results.
 - [Release gates](release-readiness.md): engineering and dashboard acceptance checklist.
+- [Public launch plan](public-launch-plan.md): store billing, installation boundaries and the remaining acceptance matrix.
+- [Retention review](retention-review.md): tracked data copies, the confirmed template-copy gap and remaining provider-retention evidence.
 - [Capture plan](capture-plan.md): real screenshots, reviewer video and integration-page clip.
 - [1200×1200 app icon](assets/minds-research-icon-1200.png): inspected PNG exported from the canonical Minds mark; [source provenance](assets/icon-provenance.json).
 
