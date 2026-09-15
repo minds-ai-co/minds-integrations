@@ -12,6 +12,7 @@ workflow without creating a second research contract.
 
 | Surface | Workflow | State |
 | --- | --- | --- |
+| Shopify | Product purchase-barrier Studies | Restricted development pilot deployed; installed-browser acceptance pending |
 | VS Code | Plan research from selected text, inspect Groups | Buildable alpha |
 | Google Workspace | Ask a Group from Sheets rows and write results back | Review package in progress |
 | Looker Studio | Read Panel analytics into a report data source | Review package in progress |

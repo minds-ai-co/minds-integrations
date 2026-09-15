@@ -1,7 +1,7 @@
 # Copy to shopify.app.toml after the backend is deployed to a reachable development URL.
 client_id = "b8499982b1a038cc211e4c195c376c1d"
 name = "Minds Research Dev"
-application_url = "https://staging.getminds.ai/shopify"
+application_url = "https://getminds.ai/shopify"
 embedded = true
 
 [access_scopes]
