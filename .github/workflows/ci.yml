@@ -10,6 +10,27 @@ permissions:
   packages: read
 
 jobs:
+  slack:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install Slack and shared client dependencies
+        run: npm ci --ignore-scripts --workspace @minds/mcp-client --workspace @minds/slack --include-workspace-root
+      - name: Check Slack and shared client
+        run: |
+          npm run typecheck --workspace @minds/mcp-client --workspace @minds/slack
+          npm test --workspace @minds/mcp-client --workspace @minds/slack
+          npm run validate:json
+      - name: Audit Slack runtime dependencies
+        run: npm audit --workspace @minds/slack --omit=dev --audit-level=moderate
+      - name: Build Slack deployment image
+        run: docker build -f apps/slack/Dockerfile -t minds-slack:ci .
   validate:
     runs-on: ubuntu-latest
     steps:
