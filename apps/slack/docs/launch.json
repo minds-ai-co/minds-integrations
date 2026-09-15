@@ -27,9 +27,10 @@
         "apps/slack/docs/operations.md",
         "https://github.com/minds-ai-co/minds-content/pull/98",
         "https://github.com/minds-ai-co/minds-content/pull/99",
-        "https://github.com/minds-ai-co/minds-content/pull/100"
+        "https://github.com/minds-ai-co/minds-content/pull/100",
+        "https://github.com/minds-ai-co/minds-content/pull/103"
       ],
-      "status": "live_pilot_guide",
+      "status": "unlisted_pilot_update_pending_deploy",
       "quality_bar": "Document verified behavior and open launch dependencies",
       "reason": "New customer integration"
     },
@@ -53,7 +54,7 @@
       "social_draft": null,
       "capture_manifest": "apps/slack/docs/captures/manifest.json",
       "model": null,
-      "draft_generation_status": "Deferred until cross-user/workspace acceptance and pilot distribution."
+      "draft_generation_status": "Deferred until cross-user/workspace acceptance; unlisted installation is enabled for pilot validation."
     },
     "approvals": {
       "docs_owner": null,

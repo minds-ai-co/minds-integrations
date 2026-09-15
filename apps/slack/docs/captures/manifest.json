@@ -44,9 +44,8 @@
       }
     },
     "still_required": [
-      "Reconnect acceptance",
       "Second-user and external-workspace acceptance",
-      "Public pilot distribution and genuine customer adoption before Marketplace submission"
+      "Genuine active workspace adoption before Marketplace submission"
     ]
   },
   "publication_materials": {
@@ -69,7 +68,7 @@
     "content_revision": "c159b0193aa8bf969b38186f913d996399dfa17c",
     "deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34909177172",
     "slack_app_details": "Minds logo, pilot notice and setup/privacy/support links verified in the installed app Description tab",
-    "public_distribution_enabled": false,
+    "public_distribution_enabled": true,
     "marketplace_submitted": false,
     "router_revision": "fa345cd56c06304bfa3be6d5a89d6d7bb39be0ca",
     "router_deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34911256919",
@@ -79,7 +78,18 @@
       520,
       248
     ],
-    "browser_image_alt_present": true
+    "browser_image_alt_present": true,
+    "distribution_verified_at": "2026-09-15",
+    "install_url": "https://slack.getminds.ai/slack/install",
+    "install_entry_verified": "Add to Slack opens native Slack permission consent; no new installation submitted in this check",
+    "marketplace_install_requirement": {
+      "active_workspaces_required": 10,
+      "source": "https://docs.slack.dev/changelog/2026/09/01/slack-marketplace-install-requirement/",
+      "dashboard_reported_active_workspaces": 0,
+      "dashboard_reported_active_users": 0,
+      "dashboard_note": "Counts update every 24 hours; one QA workspace installation independently verified"
+    },
+    "pilot_guide_update_pr": "https://github.com/minds-ai-co/minds-content/pull/103"
   },
   "vertex_predeployment_acceptance": {
     "checked_at": "2026-09-15",
@@ -157,7 +167,9 @@
       "Read a Study delivers existing findings; completed question count remains two and no new question is created",
       "Deployed runtime exchanges and persists rotated access/refresh tokens after controlled early local expiry",
       "Native Disconnect erases all retained user records/jobs and the previous access token is rejected",
-      "Research after disconnect opens Connect Minds instead of accessing the previous account"
+      "Research after disconnect opens Connect Minds instead of accessing the previous account",
+      "Native reconnect succeeds after Disconnect",
+      "Connected mention uses deployed Vertex request preparation and resolves the exact accessible QA Audience"
     ],
     "configuration_fix": "settings.interactivity.message_menu_options_url points to /slack/events; native setting saved and reloaded successfully",
     "question_content": "Synthetic water-bottle concept; no customer stimulus",
