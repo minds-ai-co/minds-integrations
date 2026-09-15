@@ -89,7 +89,10 @@
       "dashboard_reported_active_users": 0,
       "dashboard_note": "Counts update every 24 hours; one QA workspace installation independently verified"
     },
-    "pilot_guide_update_pr": "https://github.com/minds-ai-co/minds-content/pull/103"
+    "pilot_guide_update_pr": "https://github.com/minds-ai-co/minds-content/pull/103",
+    "pilot_guide_update_revision": "668605dfaef53e19d5500d8b60c3788d0f579f2c",
+    "pilot_guide_update_deploy_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34958653182",
+    "pilot_guide_update_status": "Merged after Quality Checks and Build passed; canonical production rollout in progress"
   },
   "vertex_predeployment_acceptance": {
     "checked_at": "2026-09-15",
@@ -181,5 +184,35 @@
       "surface": "Completed synthetic QA result card in native Slack",
       "redaction": "Result-card-only crop; no sender/account identifiers, message/thread IDs, URLs, credentials or customer content. Respondent names are synthetic Minds."
     }
+  },
+  "marketplace_preparation": {
+    "verified_at": "2026-09-15",
+    "status": "Native listing and scope reasons saved; security questionnaire draft incomplete; not submitted",
+    "listing_fields": [
+      "Minds name and existing logo",
+      "Pilot description",
+      "Analytics category",
+      "English (U.S.) supported language",
+      "Included with service subscription pricing classification",
+      "Public installation guide, privacy policy, support URL and email",
+      "Native review-form screenshot uploaded"
+    ],
+    "scope_reasons_saved": [
+      "app_mentions:read",
+      "channels:read",
+      "chat:write",
+      "commands",
+      "groups:read"
+    ],
+    "screenshot": {
+      "artifact": "marketplace-review-form.png",
+      "dimensions": [
+        1600,
+        1000
+      ],
+      "redaction": "Native form only; browser capture hides surrounding workspace content. Synthetic QA stimulus; no submission performed for this capture."
+    },
+    "security_draft": "apps/slack/docs/marketplace-draft.json",
+    "remaining": "Verified organization/security answers, reviewer access, actual second-user/external-workspace tests, genuine active installation requirement and Slack review"
   }
 }

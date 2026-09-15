@@ -1,0 +1,49 @@
+{
+  "prepared_at": "2026-09-15",
+  "status": "Listing and scope reasons saved in native Slack; security answers prepared but incomplete and not submitted for review",
+  "listing": {
+    "name": "Minds",
+    "category": "Analytics",
+    "supported_language": "English (U.S.)",
+    "pricing_classification": "Included with service subscription",
+    "landing_page": "https://getminds.ai/guide/integration-slack",
+    "privacy_policy": "https://getminds.ai/legal/dataprivacy",
+    "support_url": "https://getminds.ai/guide/integration-slack#support",
+    "support_email": "hello@getminds.ai",
+    "screenshot": "captures/marketplace-review-form.png"
+  },
+  "security_draft": {
+    "tosUrl": "https://getminds.ai/legal/terms",
+    "dataRetentionPolicy": "Connection links and OAuth state expire after 10 minutes; pending research forms after 30 minutes; retained request/result records and thread context after seven days. Hourly cleanup removes expired records. Connection credentials remain until disconnection, revocation or workspace uninstall. Existing Minds Studies and Slack messages retain their own service policies.",
+    "dataArchivalRemovalPolicy": "Disconnect removes the requesting user\u2019s retained integration records and jobs and attempts remote token revocation. Slack workspace uninstall or bot-token revocation removes that workspace\u2019s retained integration records and jobs. These actions do not delete existing Minds Studies, posted Slack messages or provider-managed backups, or cancel research already running. Data access and deletion requests: privacy@getminds.ai.",
+    "dataStoragePolicy": "Integration credentials and retained application records are encrypted with AES-256-GCM in a dedicated PostgreSQL schema, accessed through a scoped service role with verified TLS. Tokens and raw research payloads are omitted from application logs. Each Slack user connects their own Minds account; delivery rechecks research access and conversation membership. See https://getminds.ai/guide/integration-slack and https://getminds.ai/legal/subprocessors.",
+    "dataHowHost": "A dedicated DigitalOcean application hosts the Slack HTTP service and durable worker. Supabase PostgreSQL stores encrypted integration records. Google Cloud Vertex AI prepares user-reviewed requests from deliberate messages and bounded accessible resource names/identifiers; it does not receive channel history or research results for this preparation. Research itself runs in the Minds service.",
+    "dataHostCompany": "DigitalOcean; Supabase; Google Cloud",
+    "certComplyGuidelinesSubProcessorsUrl": "https://getminds.ai/legal/subprocessors",
+    "llmDesc": "Gemini 3.6 Flash via Google Cloud Vertex AI prepares requests. Minds runs research using its configured model services; see the Minds subprocessor notice.",
+    "llmDataTenancyDesc": "Connections and requests are scoped by Slack workspace/user and Minds access is rechecked. Vertex preparation uses a dedicated service account in a shared Google Cloud project, not a separate model deployment per customer.",
+    "llmDataResidencyDesc": "The Slack service runs in Frankfurt. Vertex preparation uses the global endpoint; EU-only inference is not promised. Research follows the Minds service and subprocessor policy.",
+    "llmRetentionSettingsDesc": "App requests/results expire after 7 days. Vertex retention may include abuse-monitoring logs and in-memory caching; no zero-retention exception is claimed. Existing Studies follow Minds retention.",
+    "certComplyDataDeletionRequestsHandling": "Users can disconnect in Slack to erase retained personal integration state. Workspace uninstall removes retained workspace integration state. For requests concerning Minds Studies, Slack messages or provider backups, contact privacy@getminds.ai; identity and request scope must be verified before processing.",
+    "securityEmail": "hello@getminds.ai",
+    "securityThirdPartyServices": "Slack APIs; the Minds MCP/OAuth research service; DigitalOcean hosting; Supabase PostgreSQL; Google Cloud Vertex AI for request preparation. Research provider details are published at https://getminds.ai/legal/subprocessors."
+  },
+  "verified_boolean_answers": {
+    "uses_subprocessors": true,
+    "exposes_llm": true,
+    "requires_minds_oauth": true
+  },
+  "unanswered": [
+    "Confirm company/developer legal entity and headquarters for this listing",
+    "HIPAA compliance and any applicable certification evidence",
+    "Organization-level SSO/SAML support, dedicated security team, vulnerability disclosure and bug-bounty program status",
+    "Reviewer test-account provisioning and external-user/workspace acceptance"
+  ],
+  "provider_retention_reference": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/vertex-ai-zero-data-retention",
+  "publication_blockers": [
+    "At least 10 active workspace installations and required user activity; current dashboard reports zero on its daily counter",
+    "Complete second-user and external-workspace acceptance",
+    "Complete security/testing information and automated checks before submitting to Slack review"
+  ],
+  "marketplace_submitted": false
+}
