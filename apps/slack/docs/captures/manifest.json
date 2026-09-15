@@ -54,7 +54,7 @@
     ]
   },
   "publication_materials": {
-    "verified_at": "2026-09-14",
+    "verified_at": "2026-09-15",
     "guide_url": "https://getminds.ai/guide/integration-slack",
     "locales_verified": [
       "en",
@@ -74,6 +74,15 @@
     "deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34909177172",
     "slack_app_details": "Minds logo, pilot notice and setup/privacy/support links verified in the installed app Description tab",
     "public_distribution_enabled": false,
-    "marketplace_submitted": false
+    "marketplace_submitted": false,
+    "router_revision": "fa345cd56c06304bfa3be6d5a89d6d7bb39be0ca",
+    "router_deployment_run": "https://github.com/minds-ai-co/minds-content/actions/runs/34911256919",
+    "optimized_image_content_type": "image/png",
+    "browser_render_verified": true,
+    "browser_image_dimensions": [
+      520,
+      248
+    ],
+    "browser_image_alt_present": true
   }
 }

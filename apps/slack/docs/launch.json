@@ -26,7 +26,8 @@
         "apps/slack/docs/setup.md",
         "apps/slack/docs/operations.md",
         "https://github.com/minds-ai-co/minds-content/pull/98",
-        "https://github.com/minds-ai-co/minds-content/pull/99"
+        "https://github.com/minds-ai-co/minds-content/pull/99",
+        "https://github.com/minds-ai-co/minds-content/pull/100"
       ],
       "status": "live_pilot_guide",
       "quality_bar": "Document verified behavior and open launch dependencies",
