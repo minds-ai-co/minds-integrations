@@ -7,7 +7,7 @@ Prepared 2026-09-15. Refs minds-ai-co/webapp#6326. **Preparation complete for th
 - [Listing copy](listing.en.json): structured, paste-ready English draft.
 - [Reviewer walkthrough](reviewer-guide.md): setup, core workflow and expected results.
 - [Release gates](release-readiness.md): engineering and dashboard acceptance checklist.
-- [Public launch plan](public-launch-plan.md): store billing, installation boundaries and the remaining acceptance matrix.
+- [Public launch plan](public-launch-plan.md): billing model, installation boundaries and the remaining acceptance matrix.
 - [Retention review](retention-review.md): tracked data copies, the confirmed template-copy gap and remaining provider-retention evidence.
 - [Capture plan](capture-plan.md): real screenshots, reviewer video and integration-page clip.
 - [1200×1200 app icon](assets/minds-research-icon-1200.png): inspected PNG exported from the canonical Minds mark; [source provenance](assets/icon-provenance.json).
@@ -25,10 +25,10 @@ Prepared 2026-09-15. Refs minds-ai-co/webapp#6326. **Preparation complete for th
 | Current API version | `2026-07` |
 | Primary listing language | English |
 | Website / setup guide | https://getminds.ai/guide/integration-shopify |
-| Contact candidate | developers@getminds.ai; existing setup identity, verify monitored support/review routing before submission |
+| Support contact | support@getminds.ai (owner decision, 2026-09-15); confirm the mailbox is monitored before submission |
 | Emergency contact | Enter monitored email and phone privately in the dashboard; never in this repository |
 | Privacy policy | Select the approved public policy after the Shopify data/retention review below; do not assert a generic policy covers the unfinished flow |
-| Pricing | Pending Shopify billing and entitlement implementation; no price or free-plan promise is approved by this pack |
+| Pricing | Free to install; research uses the linked Minds account's allowance, billed by Minds (owner decision, 2026-09-15). Requires Shopify's written off-platform billing exception before submission; see [billing model](public-launch-plan.md#billing-model) |
 | Category | Select the current dashboard category matching synthetic product research; verify available taxonomy before saving |
 | Protected customer data | No customer/order scopes in the pilot; reassess against the final data inventory before opting out |
 | Reviewer credentials | Create dedicated review access after onboarding works; supply privately in Shopify's reviewer fields |
@@ -38,10 +38,10 @@ The nine public guides are already published: [en](https://getminds.ai/guide/int
 ## Submission sequence
 
 1. Close every blocking row in [release readiness](release-readiness.md), attaching actual evidence.
-2. Configure the public distribution app and billing; reconcile final identity, URLs, privacy policy, support contacts and scopes with this pack.
+2. Request Shopify's off-platform billing exception through a Partner Support case and record the written answer. Configure the public distribution app as free to install; reconcile final identity, URLs, privacy policy, support contacts and scopes with this pack.
 3. Complete the reviewer walkthrough on a fresh eligible store, then capture actual UI using [the shot list](capture-plan.md).
-4. Paste the listing draft, upload verified media, and privately provide working review credentials and emergency contact details.
-5. Run Shopify's submission checks, resolve failures, and submit only the finished app. Track review correspondence in the monitored developer mailbox.
+4. Paste the listing draft, upload verified media, and privately provide working review credentials and emergency contact details. Reference the billing exception case in the review instructions.
+5. Run Shopify's submission checks, resolve failures, and submit only the finished app. Track review correspondence in the monitored support mailbox.
 6. After Shopify approval and public availability, update the webapp directory and all nine guides from pilot wording to the verified install path; remove noindex only through the content release workflow.
 
 Shopify requires a primary-language listing, emergency contact, a 1200×1200 PNG/JPEG icon and successful automated checks before submission. Its guide warns against submitting incomplete apps. [Submission guide](https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review).
