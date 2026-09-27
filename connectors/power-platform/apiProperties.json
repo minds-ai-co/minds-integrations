@@ -5,7 +5,7 @@
         "type": "oauthSetting",
         "oAuthSettings": {
           "identityProvider": "oauth2generic",
-          "clientId": "",
+          "clientId": "chatgpt_c8ef7df9f3bfad76c8f70a31aac71b7d",
           "scopes": ["flows:read", "flows:write", "sparks:read"],
           "redirectMode": "GlobalPerConnector",
           "properties": {
