@@ -1,10 +1,11 @@
 const authentication = require("./src/authentication");
-const newPanel = require("./src/triggers/new-panel");
-const createPanel = require("./src/creates/create-panel");
+const newStudy = require("./src/triggers/new-study");
+const audienceList = require("./src/triggers/audience-list");
+const createStudy = require("./src/creates/create-study");
 const previewResearchPlan = require("./src/creates/preview-research-plan");
-const findPanel = require("./src/searches/find-panel");
-const getPanelSummary = require("./src/searches/get-panel-summary");
-const { addAuthorizationHeader } = require("./src/client");
+const findStudy = require("./src/searches/find-study");
+const getStudySummary = require("./src/searches/get-study-summary");
+const { addAuthorizationHeader, handleErrors } = require("./src/client");
 
 module.exports = {
   version: require("./package.json").version,
@@ -14,15 +15,28 @@ module.exports = {
   },
   authentication,
   beforeRequest: [addAuthorizationHeader],
+  afterResponse: [handleErrors],
   triggers: {
-    [newPanel.key]: newPanel,
+    [newStudy.key]: newStudy,
+    [audienceList.key]: audienceList,
   },
   searches: {
-    [findPanel.key]: findPanel,
-    [getPanelSummary.key]: getPanelSummary,
+    [findStudy.key]: findStudy,
+    [getStudySummary.key]: getStudySummary,
   },
   creates: {
-    [createPanel.key]: createPanel,
+    [createStudy.key]: createStudy,
     [previewResearchPlan.key]: previewResearchPlan,
+  },
+  searchOrCreates: {
+    [findStudy.key]: {
+      key: findStudy.key,
+      display: {
+        label: "Find or Create Study",
+        description: "Finds a Study by exact name, or creates it if none exists.",
+      },
+      search: findStudy.key,
+      create: createStudy.key,
+    },
   },
 };
