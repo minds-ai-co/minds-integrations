@@ -12,7 +12,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "validate": "zapier-platform validate"
+    "validate": "zapier-platform validate",
+    "smoke": "node scripts/live-smoke.js"
   },
   "dependencies": {
     "zapier-platform-core": "19.1.0"

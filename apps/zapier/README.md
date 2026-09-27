@@ -1,22 +1,27 @@
 # Minds for Zapier
 
-Use Minds Panels in automation workflows while preserving a review step before any study runs.
+Use Minds Studies in automation workflows while keeping a human review step before any research runs.
 
-The initial integration provides:
+The integration uses the canonical Minds Study API (`/api/v1/studies`). The legacy `/api/v1/panels` routes are deprecated aliases and are not used.
 
-- a polling trigger for new Panels;
-- actions to create a Panel and preview a research plan;
-- searches to retrieve a Panel or its persisted aggregate summary.
+| Type | Key | What it does |
+| --- | --- | --- |
+| Trigger | `new_study` | Fires when a new Study appears in the Minds account. |
+| Trigger (hidden) | `audience_list` | Feeds the Audience dropdown of Create Study. |
+| Action | `create_study` | Creates a Study and optionally attaches existing Audiences. |
+| Action | `preview_research_plan` | Drafts a reviewable research plan. Nothing runs until someone confirms it in Minds. |
+| Search | `find_study` | Finds a Study by ID or exact name. Also offered as Find or Create Study. |
+| Search | `get_study_summary` | Returns the saved aggregate summary; finds nothing until one exists. |
 
-The integration deliberately does not expose Panel deletion or study execution. A user reviews and confirms consequential research work in Minds.
+The integration deliberately does not expose Study deletion or study execution. A user reviews and confirms consequential research work in Minds.
 
 ## Authentication
 
-Create an API key in Minds and enter it as a password-protected Zapier connection field. Requests are sent only to `https://getminds.ai/api/v1` with Bearer authentication.
+Create an API key in Minds and enter it as a password-protected Zapier connection field. Requests are sent only to `https://getminds.ai/api/v1` with Bearer authentication. The connection test calls `GET /auth/me`.
 
 ## Development
 
-Use Node.js 22, then run:
+Use Node.js 22 or newer (Zapier runs the integration on Node.js 22), then run:
 
 ```bash
 npm install
@@ -24,8 +29,15 @@ npm test --workspace minds-zapier-integration
 npm run validate --workspace minds-zapier-integration
 ```
 
-Register and push the integration only from a Minds-owned Zapier account. Keep the integration private until authentication, all five operations, error handling, and a complete workflow pass end-to-end testing.
+Live smoke test against production (read-only unless `--write`, which creates a throwaway Study, previews a plan on it and deletes it; use a test account's key):
 
-Product documentation: [Minds API documentation](https://getminds.ai/api)
+```bash
+cd apps/zapier
+MINDS_API_KEY=... npm run smoke -- --write
+```
+
+Registering, pushing and publishing are described in [RELEASE.md](RELEASE.md).
+
+Product documentation: [Minds API documentation](https://getminds.ai/docs/api)
 
 Support: [Minds contact](https://getminds.ai/contact)
