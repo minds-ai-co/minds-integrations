@@ -2,7 +2,7 @@
 
 The code is ready: `npm test`, `zapier-platform validate` (28 of 28 integration checks, no publishing warnings) and the live smoke test pass on `zapier-platform-core` / `zapier-platform-cli` 19.1.0, the current release. Zapier runs 19.x on Node.js 22.
 
-Use the Minds-owned Zapier account (alexander@getminds.ai). Its email domain matches the homepage `getminds.ai`, which Zapier requires of an Admin before publishing (check M005).
+Registered on 2026-09-27 as integration 246865 (`.zapierapprc`) under the Minds-owned Zapier account developers@getminds.ai (password and deploy key in pass under `agents/zapier/getminds/`). Its email domain matches the homepage `getminds.ai`, which Zapier requires of an Admin before publishing (check M005). Zapier requires the first pushed version to be 0.0.x or 1.0.0, so the first release is 1.0.0.
 
 ## 1. Human steps in the browser (about 5 minutes)
 
@@ -48,12 +48,12 @@ Private testing:
 2. Invite testers by email, or share an invite link:
 
    ```bash
-   npx zapier-platform users:add colleague@getminds.ai 0.1.0 -f
+   npx zapier-platform users:add colleague@getminds.ai 1.0.0 -f
    npx zapier-platform users:links
    ```
 
    Email invites are capped at 200 users. The invite link cannot be revoked.
-3. Later versions: bump `version` in `package.json`, then `npx zapier-platform push`, and move users with `npx zapier-platform migrate 0.1.0 0.2.0 100`.
+3. Later versions: bump `version` in `package.json`, then `npx zapier-platform push`, and move users with `npx zapier-platform migrate 1.0.0 1.1.0 100`.
 
 ## 3. Going public (Zapier App Directory)
 
@@ -62,7 +62,7 @@ Publishing is gated by real usage and a human review:
 - **At least 3 users with a live Zap** that uses the integration (check S001), a live Zap for **every** visible trigger, action and search (S002), and a successful run of each (T001). Build these Zaps during private testing and keep them on. Zapier does not say whether the 3 users may be Minds employees.
 - A logo: upload `assets/logo-256.png` (256x256 PNG with transparency, check M004) in the developer platform under Integration Home → Settings.
 - A non-expiring Minds reviewer account for `integration-testing@zapier.com` with every feature the integration uses enabled (including paid features). Zapier support must be able to reset its password.
-- Submit in the developer platform: Integration Home → **Publish** → complete the form → **Submit for Review**. `npx zapier-platform promote 0.1.0` runs the same checks and returns the form URL. Review takes about a week; the integration stays private meanwhile.
+- Submit in the developer platform: Integration Home → **Publish** → complete the form → **Submit for Review**. `npx zapier-platform promote 1.0.0` runs the same checks and returns the form URL. Review takes about a week; the integration stays private meanwhile.
 - After approval the integration is listed with a **Beta** tag for 90 days, then becomes public automatically. It can leave Beta early after one Zapier signup through a Zapier embed.
 
 Building and publishing an integration is free, and the free Zapier plan is enough to build the test Zaps (two-step Zaps, 15-minute polling).
