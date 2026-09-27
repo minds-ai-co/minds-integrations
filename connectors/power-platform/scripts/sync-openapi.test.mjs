@@ -46,6 +46,12 @@ test("buildSwagger emits only the bounded operation set", () => {
   assert.equal(swagger.swagger, "2.0");
   assert.equal(swagger.paths["/panels/{panelId}"].delete, undefined);
   assert.equal(swagger.paths["/panels"].get.operationId, "ListPanels");
+  assert.deepEqual(Object.keys(swagger.securityDefinitions), ["oauth2_auth"]);
+  assert.equal(swagger.securityDefinitions.oauth2_auth.flow, "accessCode");
+  assert.equal(swagger.securityDefinitions.oauth2_auth.tokenUrl, "https://getminds.ai/oauth/token");
+  assert.deepEqual(swagger.paths["/panels"].get.security, [
+    { oauth2_auth: ["flows:read", "flows:write", "sparks:read"] },
+  ]);
   assert.deepEqual(swagger.definitions.Response, {
     type: "object",
     properties: { ok: { type: "boolean" } },
