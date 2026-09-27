@@ -16,7 +16,7 @@ workflow without creating a second research contract.
 | VS Code | Plan research from selected text, inspect Groups | Buildable alpha |
 | Google Workspace | Ask a Group from Sheets rows and write results back | Review package in progress |
 | Looker Studio | Read Panel analytics into a report data source | Review package in progress |
-| Microsoft Power Platform | Curated REST connector for Panel workflows | Validated package, certification gates pending |
+| Microsoft Power Platform | Curated REST connector for Panel workflows (OAuth 2.0 with PKCE) | Validated package, OAuth client and certification gates pending |
 | Zapier | Trigger on Studies, create and find Studies, preview plans, and retrieve summaries | Validated and live-smoked package, Zapier registration pending |
 | Make | List, create, and read Panels, preview plans, and retrieve results | Source-controlled custom app prototype |
 | Canva | Creative-test workflow | Architecture gate |

@@ -4,6 +4,18 @@ import { fileURLToPath } from "node:url";
 const DEFAULT_SOURCE = "https://getminds.ai/_openapi-3.0.json";
 const OUTPUT = fileURLToPath(new URL("../apiDefinition.swagger.json", import.meta.url));
 
+// Minds' own OAuth 2.0 authorization server, as published at
+// https://getminds.ai/.well-known/oauth-authorization-server. The same values
+// drive apiProperties.json; validate.mjs asserts that the two cannot drift.
+export const OAUTH_SECURITY_NAME = "oauth2_auth";
+export const OAUTH_AUTHORIZATION_URL = "https://getminds.ai/oauth/authorize";
+export const OAUTH_TOKEN_URL = "https://getminds.ai/oauth/token";
+export const OAUTH_SCOPES = {
+  "flows:read": "Read your Panels, their messages, and summaries.",
+  "flows:write": "Create Panels and preview research plans.",
+  "sparks:read": "Read the Minds and groups attached to your Panels.",
+};
+
 const operationSelection = [
   ["/api/v1/panels", "get", "ListPanels"],
   ["/api/v1/panels", "post", "CreatePanel"],
@@ -124,7 +136,7 @@ export function buildSwagger(openapi) {
       responses: Object.fromEntries(
         Object.entries(sourceOperation.responses || {}).map(([status, response]) => [status, convertResponse(response)]),
       ),
-      security: [{ apiKey: [] }],
+      security: [{ [OAUTH_SECURITY_NAME]: Object.keys(OAUTH_SCOPES) }],
     };
     const bodySchema = sourceOperation.requestBody?.content?.["application/json"]?.schema;
     if (bodySchema) {
@@ -157,6 +169,10 @@ export function buildSwagger(openapi) {
       title: "Minds Market Research",
       description: "Create and review synthetic market research Panels with Minds.",
       version: "1.0",
+      contact: {
+        name: "Minds Support",
+        url: "https://getminds.ai/contact",
+      },
     },
     host: "getminds.ai",
     basePath: "/api/v1",
@@ -164,16 +180,22 @@ export function buildSwagger(openapi) {
     consumes: ["application/json"],
     produces: ["application/json"],
     securityDefinitions: {
-      apiKey: {
-        type: "apiKey",
-        in: "header",
-        name: "Authorization",
-        description: "Enter the complete value: Bearer minds_..._key",
+      [OAUTH_SECURITY_NAME]: {
+        type: "oauth2",
+        flow: "accessCode",
+        authorizationUrl: OAUTH_AUTHORIZATION_URL,
+        tokenUrl: OAUTH_TOKEN_URL,
+        scopes: OAUTH_SCOPES,
       },
     },
-    security: [{ apiKey: [] }],
+    security: [{ [OAUTH_SECURITY_NAME]: Object.keys(OAUTH_SCOPES) }],
     paths,
     definitions,
+    "x-ms-connector-metadata": [
+      { propertyName: "Website", propertyValue: "https://getminds.ai" },
+      { propertyName: "Privacy policy", propertyValue: "https://getminds.ai/privacy" },
+      { propertyName: "Categories", propertyValue: "AI;Marketing" },
+    ],
   };
 }
 

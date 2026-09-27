@@ -3,7 +3,11 @@
   "info": {
     "title": "Minds Market Research",
     "description": "Create and review synthetic market research Panels with Minds.",
-    "version": "1.0"
+    "version": "1.0",
+    "contact": {
+      "name": "Minds Support",
+      "url": "https://getminds.ai/contact"
+    }
   },
   "host": "getminds.ai",
   "basePath": "/api/v1",
@@ -17,16 +21,25 @@
     "application/json"
   ],
   "securityDefinitions": {
-    "apiKey": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Authorization",
-      "description": "Enter the complete value: Bearer minds_..._key"
+    "oauth2_auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://getminds.ai/oauth/authorize",
+      "tokenUrl": "https://getminds.ai/oauth/token",
+      "scopes": {
+        "flows:read": "Read your Panels, their messages, and summaries.",
+        "flows:write": "Create Panels and preview research plans.",
+        "sparks:read": "Read the Minds and groups attached to your Panels."
+      }
     }
   },
   "security": [
     {
-      "apiKey": []
+      "oauth2_auth": [
+        "flows:read",
+        "flows:write",
+        "sparks:read"
+      ]
     }
   ],
   "paths": {
@@ -91,7 +104,11 @@
         },
         "security": [
           {
-            "apiKey": []
+            "oauth2_auth": [
+              "flows:read",
+              "flows:write",
+              "sparks:read"
+            ]
           }
         ]
       },
@@ -190,7 +207,11 @@
         },
         "security": [
           {
-            "apiKey": []
+            "oauth2_auth": [
+              "flows:read",
+              "flows:write",
+              "sparks:read"
+            ]
           }
         ]
       }
@@ -243,7 +264,11 @@
         },
         "security": [
           {
-            "apiKey": []
+            "oauth2_auth": [
+              "flows:read",
+              "flows:write",
+              "sparks:read"
+            ]
           }
         ]
       }
@@ -370,7 +395,11 @@
         },
         "security": [
           {
-            "apiKey": []
+            "oauth2_auth": [
+              "flows:read",
+              "flows:write",
+              "sparks:read"
+            ]
           }
         ]
       }
@@ -424,7 +453,11 @@
         },
         "security": [
           {
-            "apiKey": []
+            "oauth2_auth": [
+              "flows:read",
+              "flows:write",
+              "sparks:read"
+            ]
           }
         ]
       }
@@ -721,5 +754,19 @@
         }
       }
     }
-  }
+  },
+  "x-ms-connector-metadata": [
+    {
+      "propertyName": "Website",
+      "propertyValue": "https://getminds.ai"
+    },
+    {
+      "propertyName": "Privacy policy",
+      "propertyValue": "https://getminds.ai/privacy"
+    },
+    {
+      "propertyName": "Categories",
+      "propertyValue": "AI;Marketing"
+    }
+  ]
 }

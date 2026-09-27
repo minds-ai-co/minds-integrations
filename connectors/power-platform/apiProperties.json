@@ -1,13 +1,46 @@
 {
   "properties": {
     "connectionParameters": {
-      "apiKey": {
-        "type": "securestring",
+      "token": {
+        "type": "oauthSetting",
+        "oAuthSettings": {
+          "identityProvider": "oauth2generic",
+          "clientId": "",
+          "scopes": ["flows:read", "flows:write", "sparks:read"],
+          "redirectMode": "GlobalPerConnector",
+          "properties": {
+            "IsFirstParty": "False",
+            "IsOnbehalfofLoginSupported": false
+          },
+          "customParameters": {
+            "authorizationUrlTemplate": {
+              "value": "https://getminds.ai/oauth/authorize"
+            },
+            "authorizationUrlQueryStringTemplate": {
+              "value": "?client_id={ClientId}&response_type=code&redirect_uri={RedirectUrl}&scope={Scopes}&state={State}&code_challenge={CodeChallenge}&code_challenge_method=S256"
+            },
+            "tokenUrlTemplate": {
+              "value": "https://getminds.ai/oauth/token"
+            },
+            "tokenBodyTemplate": {
+              "value": "client_id={ClientId}&grant_type=authorization_code&code={Code}&redirect_uri={RedirectUrl}&code_verifier={CodeVerifier}"
+            },
+            "refreshUrlTemplate": {
+              "value": "https://getminds.ai/oauth/token"
+            },
+            "refreshBodyTemplate": {
+              "value": "client_id={ClientId}&grant_type=refresh_token&refresh_token={RefreshToken}"
+            },
+            "scopeListDelimiter": {
+              "value": " "
+            }
+          }
+        },
         "uiDefinition": {
-          "displayName": "Authorization",
-          "description": "Enter Bearer followed by your Minds API key.",
-          "tooltip": "Create an API key at getminds.ai/settings/api-keys.",
-          "constraints": { "tabIndex": 2, "clearText": false, "required": "true" }
+          "displayName": "Sign in with Minds",
+          "description": "Sign in with your Minds account to authorize access to your Panels.",
+          "tooltip": "You are redirected to getminds.ai to sign in and approve access.",
+          "constraints": { "required": "true", "hidden": "false" }
         }
       }
     },
