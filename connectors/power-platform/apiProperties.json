@@ -38,7 +38,7 @@
         },
         "uiDefinition": {
           "displayName": "Sign in with Minds",
-          "description": "Sign in with your Minds account to authorize access to your Panels.",
+          "description": "Sign in with your Minds account to authorize access to your Studies.",
           "tooltip": "You are redirected to getminds.ai to sign in and approve access.",
           "constraints": { "required": "true", "hidden": "false" }
         }

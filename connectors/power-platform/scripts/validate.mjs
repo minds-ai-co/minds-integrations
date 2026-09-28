@@ -10,11 +10,11 @@ import {
 const swaggerPath = fileURLToPath(new URL("../apiDefinition.swagger.json", import.meta.url));
 const propertiesPath = fileURLToPath(new URL("../apiProperties.json", import.meta.url));
 const requiredOperations = new Map([
-  ["GET /panels", "ListPanels"],
-  ["POST /panels", "CreatePanel"],
-  ["GET /panels/{panelId}", "GetPanel"],
-  ["POST /panels/{panelId}/research-plans/preview", "PreviewPanelResearchPlan"],
-  ["GET /panels/{panelId}/summary", "GetPanelSummary"],
+  ["GET /studies", "ListStudies"],
+  ["POST /studies", "CreateStudy"],
+  ["GET /studies/{studyId}", "GetStudy"],
+  ["POST /studies/{studyId}/research-plans/preview", "PreviewStudyResearchPlan"],
+  ["GET /studies/{studyId}/summary", "GetStudySummary"],
 ]);
 
 function fail(message) {
@@ -120,8 +120,26 @@ export function validateConnector(swagger, properties, { submission = false } = 
       const key = `${method.toUpperCase()} ${path}`;
       actualOperations.set(key, operation.operationId);
       if (!operation.summary || !operation.description) fail(`${key} needs a summary and description`);
+      // Certification: summaries are short phrases of letters, digits, spaces and parentheses.
+      if (operation.summary.length > 80 || !/^[A-Za-z0-9 ()]+$/.test(operation.summary)) {
+        fail(`${key} summary must be at most 80 alphanumeric characters`);
+      }
+      if (!/[.!?]$/.test(operation.description.trim())) fail(`${key} description must end with punctuation`);
       const successResponse = Object.entries(operation.responses || {}).find(([status]) => /^2\d\d$/.test(status));
       if (!successResponse?.[1]?.schema) fail(`${key} needs a successful response schema`);
+      for (const parameter of operation.parameters || []) {
+        const fields = parameter.in === "body" ? Object.entries(parameter.schema?.properties || {}) : [[parameter.name, parameter]];
+        for (const [name, field] of fields) {
+          if (!field["x-ms-summary"] || !/[.!?]$/.test(field.description?.trim() || "")) {
+            fail(`${key} parameter ${name} needs an x-ms-summary and a full-sentence description`);
+          }
+        }
+      }
+      walk(successResponse[1].schema, (schema) => {
+        if (schema.type === "object" && !schema.properties && !schema.$ref && !schema.additionalProperties && !schema.allOf) {
+          fail(`${key} has an empty object response schema`);
+        }
+      });
     }
   }
   if (actualOperations.size !== requiredOperations.size) fail(`expected ${requiredOperations.size} operations, found ${actualOperations.size}`);
@@ -129,10 +147,10 @@ export function validateConnector(swagger, properties, { submission = false } = 
     if (actualOperations.get(key) !== operationId) fail(`missing ${key} with operationId ${operationId}`);
   }
 
-  if (!swagger.paths["/panels"].get.parameters.some((parameter) => parameter.name === "limit")) {
-    fail("ListPanels must expose canonical pagination parameters");
+  if (!swagger.paths["/studies"].get.parameters.some((parameter) => parameter.name === "limit")) {
+    fail("ListStudies must expose canonical pagination parameters");
   }
-  if (!swagger.paths["/panels"].post.responses["201"]?.schema) fail("CreatePanel must retain the canonical 201 response");
+  if (!swagger.paths["/studies"].post.responses["201"]?.schema) fail("CreateStudy must retain the canonical 201 response");
   if (!Object.keys(swagger.definitions || {}).length) fail("canonical response definitions are missing");
 
   walk(swagger, (value) => {

@@ -53,6 +53,20 @@ test("rejects secrets, global redirects and scope drift", async () => {
   assert.throws(() => validateConnector(swagger, properties), /scopes drifted/);
 
   ({ swagger, properties } = await committed());
-  swagger.paths["/panels"].get.security = [{ apiKey: [] }];
+  swagger.paths["/studies"].get.security = [{ apiKey: [] }];
   assert.throws(() => validateConnector(swagger, properties), /OAuth scopes/);
+});
+
+test("enforces certification strings and non-empty response schemas", async () => {
+  let { swagger, properties } = await committed();
+  swagger.paths["/studies"].get.summary = "List Studies: all of them";
+  assert.throws(() => validateConnector(swagger, properties), /summary must be/);
+
+  ({ swagger, properties } = await committed());
+  delete swagger.paths["/studies"].get.parameters[0]["x-ms-summary"];
+  assert.throws(() => validateConnector(swagger, properties), /x-ms-summary/);
+
+  ({ swagger, properties } = await committed());
+  swagger.paths["/studies/{studyId}/summary"].get.responses["200"].schema.properties.data = { type: "object" };
+  assert.throws(() => validateConnector(swagger, properties), /empty object response schema/);
 });
