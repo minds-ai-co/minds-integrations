@@ -137,12 +137,41 @@ test("returns no summary until one is persisted", async () => {
     [],
   );
   const ready = fakeZ(() => response({ data: { summary: { headline: "Clear" }, revision: 3 } }));
-  const [summary] = await App.searches.get_study_summary.operation.perform(ready, {
+  const summaries = await App.searches.get_study_summary.operation.perform(ready, {
     inputData: { studyId: "study-1" },
   });
+  assert.deepEqual(summaries, [{
+    id: "study-1-summary-3",
+    studyId: "study-1",
+    summary: { headline: "Clear" },
+    revision: 3,
+  }]);
+  const [summary] = summaries;
   assert.equal(ready.calls[0].url, "https://getminds.ai/api/v1/studies/study-1/summary");
   assert.equal(summary.id, "study-1-summary-3");
   assert.equal(summary.studyId, "study-1");
+});
+
+test("returns an empty summary search result when Minds reports the Study is missing", async () => {
+  const z = fakeZ((options) => handleErrors({
+    ...response({ message: "Study not found" }, 404),
+    skipThrowForStatus: options.skipThrowForStatus,
+  }, z));
+  assert.deepEqual(
+    await App.searches.get_study_summary.operation.perform(z, { inputData: { studyId: "missing-study" } }),
+    [],
+  );
+  assert.equal(z.calls[0].url, "https://getminds.ai/api/v1/studies/missing-study/summary");
+});
+
+test("does not treat other summary request errors as an empty search result", async () => {
+  for (const status of [401, 403, 429, 500]) {
+    const z = fakeZ(() => response({ message: "Request failed" }, status));
+    await assert.rejects(
+      App.searches.get_study_summary.operation.perform(z, { inputData: { studyId: "study-1" } }),
+      new RegExp(`HTTP ${status}`),
+    );
+  }
 });
 
 test("previews a research plan without exposing a run action", async () => {
