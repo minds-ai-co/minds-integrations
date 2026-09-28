@@ -3,12 +3,14 @@ const { studyIdField } = require("../study-fields");
 
 const perform = async (z, bundle) => {
   const { studyId } = bundle.inputData;
-  const data = unwrapData(
-    await request(z, {
-      method: "GET",
-      path: `/studies/${encodeURIComponent(studyId)}/summary`,
-    }),
-  );
+  const response = await request(z, {
+    method: "GET",
+    path: `/studies/${encodeURIComponent(studyId)}/summary`,
+    skipThrowForStatus: true,
+  });
+  if (response.status === 404) return [];
+  response.throwForStatus();
+  const data = unwrapData(response.data);
   // No persisted summary yet is "not found", so Zaps can branch on it.
   if (!data || !data.summary) return [];
   return [toZapierRecord({ ...data, studyId }, `${studyId}-summary-${data.revision || 0}`)];
