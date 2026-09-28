@@ -2,21 +2,29 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { buildSwagger, convertSchema } from "./sync-openapi.mjs";
 
-test("convertSchema rewrites references and removes nullable unions", () => {
-  assert.deepEqual(convertSchema({ anyOf: [{ type: "string" }, { type: "null" }] }), { type: "string" });
-  assert.deepEqual(convertSchema({ $ref: "#/components/schemas/PanelSummary" }), {
-    $ref: "#/definitions/PanelSummary",
+test("convertSchema rewrites references and marks nullable unions", () => {
+  assert.deepEqual(convertSchema({ anyOf: [{ type: "string" }, { type: "null" }] }), { type: "string", "x-nullable": true });
+  assert.deepEqual(convertSchema({ type: ["string", "null"] }), { type: "string", "x-nullable": true });
+  assert.deepEqual(convertSchema({ anyOf: [{ type: "string" }] }), { type: "string" });
+  assert.deepEqual(convertSchema({ type: "string", format: "uuid" }), { type: "string" });
+  assert.deepEqual(convertSchema({ type: "integer" }), { type: "integer", format: "int32" });
+  assert.deepEqual(
+    convertSchema({ type: "object", required: ["id", "shareId"], properties: { id: { type: "string" }, shareId: { type: ["string", "null"] } } }),
+    { type: "object", required: ["id"], properties: { id: { type: "string" }, shareId: { type: "string", "x-nullable": true } } },
+  );
+  assert.deepEqual(convertSchema({ $ref: "#/components/schemas/StudySummary" }), {
+    $ref: "#/definitions/StudySummary",
   });
 });
 
 test("buildSwagger emits only the bounded operation set", () => {
   const paths = {};
   const selected = [
-    ["/api/v1/panels", "get"],
-    ["/api/v1/panels", "post"],
-    ["/api/v1/panels/{panelId}", "get"],
-    ["/api/v1/panels/{panelId}/research-plans/preview", "post"],
-    ["/api/v1/panels/{panelId}/summary", "get"],
+    ["/api/v1/studies", "get"],
+    ["/api/v1/studies", "post"],
+    ["/api/v1/studies/{studyId}", "get"],
+    ["/api/v1/studies/{studyId}/research-plans/preview", "post"],
+    ["/api/v1/studies/{studyId}/summary", "get"],
   ];
   for (const [path, method] of selected) {
     paths[path] ||= {};
@@ -32,7 +40,7 @@ test("buildSwagger emits only the bounded operation set", () => {
       },
     };
   }
-  paths["/api/v1/panels/{panelId}"].delete = {
+  paths["/api/v1/studies/{studyId}"].delete = {
     summary: "Delete",
     description: "Must not be emitted",
     responses: { 204: { description: "Deleted" } },
@@ -44,13 +52,13 @@ test("buildSwagger emits only the bounded operation set", () => {
   });
 
   assert.equal(swagger.swagger, "2.0");
-  assert.equal(swagger.paths["/panels/{panelId}"].delete, undefined);
-  assert.equal(swagger.paths["/panels"].get.operationId, "ListPanels");
-  assert.deepEqual(Object.keys(swagger.securityDefinitions), ["oauth2_auth"]);
-  assert.equal(swagger.securityDefinitions.oauth2_auth.flow, "accessCode");
-  assert.equal(swagger.securityDefinitions.oauth2_auth.tokenUrl, "https://getminds.ai/oauth/token");
-  assert.deepEqual(swagger.paths["/panels"].get.security, [
-    { oauth2_auth: ["flows:read", "flows:write", "sparks:read"] },
+  assert.equal(swagger.paths["/studies/{studyId}"].delete, undefined);
+  assert.equal(swagger.paths["/studies"].get.operationId, "ListStudies");
+  assert.deepEqual(Object.keys(swagger.securityDefinitions), ["oauth2-auth"]);
+  assert.equal(swagger.securityDefinitions["oauth2-auth"].flow, "accessCode");
+  assert.equal(swagger.securityDefinitions["oauth2-auth"].tokenUrl, "https://getminds.ai/oauth/token");
+  assert.deepEqual(swagger.paths["/studies"].get.security, [
+    { "oauth2-auth": ["flows:read", "flows:write", "sparks:read"] },
   ]);
   assert.deepEqual(swagger.definitions.Response, {
     type: "object",

@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Minds Market Research",
-    "description": "Create and review synthetic market research Panels with Minds.",
+    "description": "Create and review synthetic market research Studies with Minds.",
     "version": "1.0",
     "contact": {
       "name": "Minds Support",
@@ -21,21 +21,21 @@
     "application/json"
   ],
   "securityDefinitions": {
-    "oauth2_auth": {
+    "oauth2-auth": {
       "type": "oauth2",
       "flow": "accessCode",
       "authorizationUrl": "https://getminds.ai/oauth/authorize",
       "tokenUrl": "https://getminds.ai/oauth/token",
       "scopes": {
-        "flows:read": "Read your Panels, their messages, and summaries.",
-        "flows:write": "Create Panels and preview research plans.",
-        "sparks:read": "Read the Minds and groups attached to your Panels."
+        "flows:read": "Read your Studies, their messages, and summaries.",
+        "flows:write": "Create Studies and preview research plans.",
+        "sparks:read": "Read the Minds and Audiences attached to your Studies."
       }
     }
   },
   "security": [
     {
-      "oauth2_auth": [
+      "oauth2-auth": [
         "flows:read",
         "flows:write",
         "sparks:read"
@@ -43,13 +43,13 @@
     }
   ],
   "paths": {
-    "/panels": {
+    "/studies": {
       "get": {
-        "operationId": "ListPanels",
-        "summary": "List panels",
-        "description": "List panel-mode flows (multi-spark panel chats) owned by the authenticated user. Each panel embeds its attached groups and their member sparks.",
+        "operationId": "ListStudies",
+        "summary": "List Studies",
+        "description": "List Studies owned by the authenticated user, ordered by updatedAt descending and then id descending. Each Study embeds its attached Audiences and their member Minds. Offset pages may shift if Studies change between requests.",
         "tags": [
-          "Panels"
+          "Studies"
         ],
         "x-ms-visibility": "important",
         "parameters": [
@@ -57,25 +57,29 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Max panels per page.",
+            "description": "Maximum number of Studies to return.",
             "type": "integer",
             "default": 100,
             "minimum": 1,
-            "maximum": 100
+            "maximum": 100,
+            "format": "int32",
+            "x-ms-summary": "Limit"
           },
           {
             "name": "offset",
             "in": "query",
             "required": false,
-            "description": "Number of panels to skip.",
+            "description": "Number of Studies to skip before returning results.",
             "type": "integer",
             "default": 0,
-            "minimum": 0
+            "minimum": 0,
+            "format": "int32",
+            "x-ms-summary": "Offset"
           }
         ],
         "responses": {
           "200": {
-            "description": "A page of panels.",
+            "description": "A page of studies.",
             "schema": {
               "type": "object",
               "required": [
@@ -86,7 +90,7 @@
                 "data": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definitions/PanelSummary"
+                    "$ref": "#/definitions/StudySummary"
                   }
                 },
                 "pagination": {
@@ -104,7 +108,7 @@
         },
         "security": [
           {
-            "oauth2_auth": [
+            "oauth2-auth": [
               "flows:read",
               "flows:write",
               "sparks:read"
@@ -113,11 +117,11 @@
         ]
       },
       "post": {
-        "operationId": "CreatePanel",
-        "summary": "Create a panel",
-        "description": "Create a new panel-mode flow. Optionally attach one or more existing spark groups (the caller must have access to each — owner, member, team-shared, or public).",
+        "operationId": "CreateStudy",
+        "summary": "Create a Study",
+        "description": "Create a Study and optionally attach existing or newly created Audiences with audienceIds and audienceConfigs.",
         "tags": [
-          "Panels"
+          "Studies"
         ],
         "x-ms-visibility": "important",
         "parameters": [
@@ -133,42 +137,50 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "description": "Panel name."
+                  "description": "Name of the new Study.",
+                  "x-ms-summary": "Study name"
                 },
-                "groupIds": {
+                "audienceIds": {
                   "type": "array",
-                  "description": "IDs of spark groups to attach. De-duplicated server-side.",
+                  "description": "IDs of existing Audiences to attach to the Study.",
                   "items": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
+                    "type": "string"
+                  },
+                  "x-ms-summary": "Audience IDs"
                 },
-                "groupConfigs": {
+                "audienceConfigs": {
                   "type": "array",
-                  "description": "Groups to create atomically before attaching them to the Panel. Created Groups are rolled back if Panel creation fails.",
+                  "description": "Audiences to create from existing Minds and attach to the Study.",
                   "items": {
                     "type": "object",
                     "required": [
                       "name",
-                      "sparkIds"
+                      "mindIds"
                     ],
                     "properties": {
                       "name": {
-                        "type": "string"
+                        "type": "string",
+                        "x-ms-summary": "Audience name",
+                        "description": "Name of the new Audience."
                       },
-                      "sparkIds": {
+                      "mindIds": {
                         "type": "array",
                         "items": {
-                          "type": "string",
-                          "format": "uuid"
-                        }
+                          "type": "string"
+                        },
+                        "x-ms-summary": "Mind IDs",
+                        "description": "IDs of the Minds in the new Audience."
                       }
                     }
-                  }
+                  },
+                  "x-ms-summary": "New Audiences",
+                  "x-ms-visibility": "advanced"
                 },
                 "isLinkSharingEnabled": {
                   "type": "boolean",
-                  "description": "Enable public link sharing for the panel and its attached groups/Minds."
+                  "description": "Whether anyone with the link can view the Study and its Audiences.",
+                  "x-ms-summary": "Enable link sharing",
+                  "x-ms-visibility": "advanced"
                 }
               }
             }
@@ -176,7 +188,7 @@
         ],
         "responses": {
           "201": {
-            "description": "Panel created.",
+            "description": "Study created.",
             "schema": {
               "type": "object",
               "required": [
@@ -184,7 +196,7 @@
               ],
               "properties": {
                 "data": {
-                  "$ref": "#/definitions/PanelCreated"
+                  "$ref": "#/definitions/StudyCreated"
                 }
               }
             }
@@ -199,7 +211,7 @@
             "description": "Plan limit reached (`code: PLAN_LIMIT`)."
           },
           "404": {
-            "description": "One or more `groupIds` not found or not accessible to the caller."
+            "description": "One or more Audience IDs were not found or are inaccessible to the caller."
           },
           "500": {
             "description": "Internal server error."
@@ -207,7 +219,7 @@
         },
         "security": [
           {
-            "oauth2_auth": [
+            "oauth2-auth": [
               "flows:read",
               "flows:write",
               "sparks:read"
@@ -216,27 +228,28 @@
         ]
       }
     },
-    "/panels/{panelId}": {
+    "/studies/{studyId}": {
       "get": {
-        "operationId": "GetPanel",
-        "summary": "Get a panel",
-        "description": "Return a panel-mode Flow with its attached groups, Minds, and messages.",
+        "operationId": "GetStudy",
+        "summary": "Get a Study",
+        "description": "Return a Study with its attached audiences, Minds, and messages.",
         "tags": [
-          "Panels"
+          "Studies"
         ],
         "x-ms-visibility": "important",
         "parameters": [
           {
-            "name": "panelId",
+            "name": "studyId",
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "uuid"
+            "x-ms-summary": "Study ID",
+            "description": "The ID of the Study."
           }
         ],
         "responses": {
           "200": {
-            "description": "Panel details.",
+            "description": "Study details.",
             "schema": {
               "type": "object",
               "required": [
@@ -244,27 +257,27 @@
               ],
               "properties": {
                 "data": {
-                  "$ref": "#/definitions/PanelDetail"
+                  "$ref": "#/definitions/StudyDetail"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid panel ID or the Flow is not a panel."
+            "description": "Invalid study ID, or the Study is not in study mode."
           },
           "401": {
             "description": "Missing or invalid authentication."
           },
           "403": {
-            "description": "The caller cannot access this panel."
+            "description": "The caller cannot access this study."
           },
           "404": {
-            "description": "Panel not found."
+            "description": "Study not found."
           }
         },
         "security": [
           {
-            "oauth2_auth": [
+            "oauth2-auth": [
               "flows:read",
               "flows:write",
               "sparks:read"
@@ -273,23 +286,24 @@
         ]
       }
     },
-    "/panels/{panelId}/research-plans/preview": {
+    "/studies/{studyId}/research-plans/preview": {
       "post": {
-        "operationId": "PreviewPanelResearchPlan",
-        "summary": "Preview or revise a panel research plan",
-        "description": "Let the research-planning model capture intent, main source, questions, optional methods, semantic outputs, missing inputs, confirmation questions, and a proposed response contract for every question. Clients can deterministically edit response formats by question ID. The versioned draft is saved but never executed by this endpoint.",
+        "operationId": "PreviewStudyResearchPlan",
+        "summary": "Preview a Study research plan",
+        "description": "Let the research-planning model capture intent, main source, all attached assets, questions, optional methods, semantic outputs, missing inputs, confirmation questions, and a proposed response contract for every question. Clients can deterministically edit response formats and assign durable assets to exact questions. Pass `questions` instead of `request` to transcribe a fixed instrument exactly: text, order, ids, and per-item response contracts are stored as given and no planning model runs. Fetchable remote files are copied into durable Minds chat storage before the versioned draft is saved. Local file:// paths are not uploads. This endpoint never executes research.",
         "tags": [
-          "Panels",
+          "Studies",
           "Research"
         ],
         "x-ms-visibility": "important",
         "parameters": [
           {
-            "name": "panelId",
+            "name": "studyId",
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "uuid"
+            "x-ms-summary": "Study ID",
+            "description": "The ID of the Study."
           },
           {
             "name": "body",
@@ -299,15 +313,30 @@
               "type": "object",
               "properties": {
                 "request": {
-                  "type": "string"
+                  "type": "string",
+                  "x-ms-summary": "Research request",
+                  "description": "What you want to learn. Required when you start a new draft plan.",
+                  "x-ms-visibility": "important"
                 },
                 "studyLocale": {
                   "type": "string",
-                  "description": "Language used for the plan and its eventual study output."
+                  "description": "Language used for the plan and its eventual study output.",
+                  "enum": [
+                    "en",
+                    "es",
+                    "fr",
+                    "de",
+                    "zh",
+                    "tr",
+                    "ar",
+                    "ja",
+                    "ko"
+                  ],
+                  "x-ms-summary": "Study language"
                 },
                 "source": {
                   "type": "object",
-                  "description": "The main source. Prompt content is exact respondent-visible material and is separate from planner-only request text.",
+                  "description": "The main material that respondents see, such as a prompt, website, image, video or document.",
                   "properties": {
                     "kind": {
                       "type": "string",
@@ -319,43 +348,63 @@
                         "document",
                         "questionnaire",
                         "other"
-                      ]
+                      ],
+                      "x-ms-summary": "Source type",
+                      "description": "The type of the main source."
                     },
                     "label": {
-                      "type": "string"
+                      "type": "string",
+                      "x-ms-summary": "Source label",
+                      "description": "A short name for the main source."
                     },
                     "url": {
                       "type": "string",
-                      "format": "uri"
+                      "x-ms-summary": "Source URL",
+                      "description": "Public URL of the main source."
                     },
                     "mimeType": {
-                      "type": "string"
+                      "type": "string",
+                      "x-ms-summary": "Source MIME type",
+                      "description": "MIME type of the main source, for example image/png."
                     },
                     "content": {
-                      "type": "string"
+                      "type": "string",
+                      "maxLength": 20000,
+                      "x-ms-summary": "Source content",
+                      "description": "Exact text that respondents see, for a prompt source."
                     }
-                  }
+                  },
+                  "x-ms-summary": "Main source",
+                  "x-ms-visibility": "advanced"
                 },
                 "draftPlanId": {
                   "type": "string",
-                  "format": "uuid"
+                  "x-ms-summary": "Draft plan ID",
+                  "description": "ID of an existing draft plan to revise. Leave empty to start a new draft.",
+                  "x-ms-visibility": "advanced"
                 },
                 "revision": {
                   "type": "integer",
-                  "minimum": 1
+                  "minimum": 1,
+                  "format": "int32",
+                  "x-ms-summary": "Draft revision",
+                  "description": "Current revision number of the draft plan you revise.",
+                  "x-ms-visibility": "advanced"
                 },
                 "refinement": {
-                  "type": "string"
+                  "type": "string",
+                  "x-ms-summary": "Refinement",
+                  "description": "Instructions for revising the existing draft plan.",
+                  "x-ms-visibility": "advanced"
                 },
                 "answers": {
                   "type": "object",
                   "additionalProperties": {
                     "type": "string"
-                  }
-                },
-                "questionResponses": {
-                  "type": "object",
-                  "description": "Explicit response-format edits keyed by question ID from the current draft."
+                  },
+                  "x-ms-summary": "Answers",
+                  "description": "Answers to the planner's confirmation questions, keyed by question ID.",
+                  "x-ms-visibility": "advanced"
                 }
               }
             }
@@ -372,7 +421,11 @@
               "properties": {
                 "data": {
                   "type": "object",
-                  "properties": {}
+                  "properties": {
+                    "plan": {
+                      "$ref": "#/definitions/ResearchStudyPlan"
+                    }
+                  }
                 }
               }
             }
@@ -384,10 +437,10 @@
             "description": "Unauthorized."
           },
           "403": {
-            "description": "Panel access denied."
+            "description": "Study access denied."
           },
           "404": {
-            "description": "Panel or draft not found."
+            "description": "Study or draft not found."
           },
           "409": {
             "description": "Draft revision conflict."
@@ -395,7 +448,7 @@
         },
         "security": [
           {
-            "oauth2_auth": [
+            "oauth2-auth": [
               "flows:read",
               "flows:write",
               "sparks:read"
@@ -404,23 +457,24 @@
         ]
       }
     },
-    "/panels/{panelId}/summary": {
+    "/studies/{studyId}/summary": {
       "get": {
-        "operationId": "GetPanelSummary",
-        "summary": "Get a panel semantic summary",
+        "operationId": "GetStudySummary",
+        "summary": "Get a Study summary",
         "description": "Return the persisted whole-study summary, semantic output blocks, staleness, and message coverage. Renderers are hints; consumers may introduce new UI logic without changing evidence contracts.",
         "tags": [
-          "Panels",
+          "Studies",
           "Research"
         ],
         "x-ms-visibility": "important",
         "parameters": [
           {
-            "name": "panelId",
+            "name": "studyId",
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "uuid"
+            "x-ms-summary": "Study ID",
+            "description": "The ID of the Study."
           }
         ],
         "responses": {
@@ -433,27 +487,91 @@
               ],
               "properties": {
                 "data": {
-                  "type": "object"
+                  "type": "object",
+                  "required": [
+                    "revision",
+                    "isGenerating",
+                    "messageCount",
+                    "newMessageCount",
+                    "isStale",
+                    "hasEnoughContent"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "x-nullable": true,
+                      "description": "The persisted summary, or null when none has been generated yet.",
+                      "properties": {
+                        "content": {
+                          "type": "string",
+                          "description": "Summary text in Markdown."
+                        },
+                        "length": {
+                          "type": "string",
+                          "description": "Requested summary length."
+                        },
+                        "coveredMessageCount": {
+                          "type": "integer",
+                          "format": "int32",
+                          "description": "Number of messages the summary covers."
+                        },
+                        "coveredUpToMessageId": {
+                          "type": "string",
+                          "description": "ID of the last message the summary covers."
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "description": "When the summary was last updated."
+                        }
+                      }
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Summary revision number."
+                    },
+                    "isGenerating": {
+                      "type": "boolean",
+                      "description": "Whether a summary is being generated right now."
+                    },
+                    "messageCount": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Number of public messages in the Study."
+                    },
+                    "newMessageCount": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Messages added since the summary was generated."
+                    },
+                    "isStale": {
+                      "type": "boolean",
+                      "description": "Whether newer messages are not yet covered by the summary."
+                    },
+                    "hasEnoughContent": {
+                      "type": "boolean",
+                      "description": "Whether the Study has enough messages to summarize."
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Flow is not a panel."
+            "description": "Study is not in study mode."
           },
           "401": {
             "description": "Unauthorized."
           },
           "403": {
-            "description": "Panel access denied."
+            "description": "Study access denied."
           },
           "404": {
-            "description": "Panel not found."
+            "description": "Study not found."
           }
         },
         "security": [
           {
-            "oauth2_auth": [
+            "oauth2-auth": [
               "flows:read",
               "flows:write",
               "sparks:read"
@@ -464,72 +582,75 @@
     }
   },
   "definitions": {
-    "PanelSummary": {
+    "StudySummary": {
       "type": "object",
       "required": [
         "id",
         "name",
-        "flowMode",
+        "studyMode",
         "createdAt",
         "updatedAt",
         "messageCount",
-        "groups"
+        "audiences"
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "flowMode": {
+        "studyMode": {
           "type": "string",
-          "description": "Always `panel` on this endpoint.",
+          "description": "Canonical Study resource discriminator.",
           "enum": [
-            "panel"
+            "study"
           ]
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "updatedAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "messageCount": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Number of stored messages across all roles, including user, assistant and system messages.",
+          "format": "int32"
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Whether the Study is publicly accessible."
         },
         "isLinkSharingEnabled": {
           "type": "boolean"
         },
         "publicShareId": {
           "type": "string",
-          "format": "uuid"
+          "x-nullable": true
         },
-        "groups": {
+        "audiences": {
           "type": "array",
           "items": {
             "type": "object",
             "required": [
               "id",
               "name",
-              "sparkCount",
-              "sparks"
+              "mindCount",
+              "minds"
             ],
             "properties": {
               "id": {
-                "type": "string",
-                "format": "uuid"
+                "type": "string"
               },
               "name": {
                 "type": "string"
               },
-              "sparkCount": {
-                "type": "integer"
+              "mindCount": {
+                "type": "integer",
+                "format": "int32"
               },
-              "sparks": {
+              "minds": {
                 "type": "array",
                 "items": {
                   "type": "object",
@@ -539,18 +660,18 @@
                   ],
                   "properties": {
                     "id": {
-                      "type": "string",
-                      "format": "uuid"
+                      "type": "string"
                     },
                     "name": {
                       "type": "string"
                     },
                     "discipline": {
-                      "type": "string"
+                      "type": "string",
+                      "x-nullable": true
                     },
                     "profileImageUrl": {
                       "type": "string",
-                      "format": "uri"
+                      "x-nullable": true
                     }
                   }
                 }
@@ -570,142 +691,445 @@
       "properties": {
         "total": {
           "type": "integer",
-          "description": "Total matching rows."
+          "description": "Total matching rows.",
+          "format": "int32"
         },
         "limit": {
           "type": "integer",
-          "description": "Page size requested."
+          "description": "Page size requested.",
+          "format": "int32"
         },
         "offset": {
           "type": "integer",
-          "description": "Number of rows skipped."
+          "description": "Number of rows skipped.",
+          "format": "int32"
         }
       }
     },
-    "PanelCreated": {
+    "StudyCreated": {
       "type": "object",
       "required": [
         "id",
         "name",
-        "flowMode",
+        "studyMode",
         "createdAt",
         "isLinkSharingEnabled",
-        "publicShareId",
-        "groups"
+        "audiences"
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "flowMode": {
+        "studyMode": {
           "type": "string",
           "enum": [
-            "panel"
+            "study"
           ]
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "isLinkSharingEnabled": {
           "type": "boolean"
         },
         "publicShareId": {
           "type": "string",
-          "format": "uuid"
+          "x-nullable": true
         },
-        "groups": {
+        "audiences": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PanelGroup"
+            "$ref": "#/definitions/StudyAudience"
           }
         }
       }
     },
-    "PanelDetail": {
+    "StudyDetail": {
       "type": "object",
       "required": [
         "id",
         "name",
-        "flowMode",
+        "studyMode",
         "createdAt",
         "updatedAt",
         "isLinkSharingEnabled",
-        "publicShareId",
-        "groups",
+        "audiences",
         "messages"
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "flowMode": {
+        "studyMode": {
           "type": "string",
           "enum": [
-            "panel"
+            "study"
           ]
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "updatedAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Whether the Study is publicly accessible."
         },
         "isLinkSharingEnabled": {
           "type": "boolean"
         },
         "publicShareId": {
           "type": "string",
-          "format": "uuid"
+          "x-nullable": true
         },
-        "groups": {
+        "audiences": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PanelGroup"
+            "$ref": "#/definitions/StudyAudience"
           }
         },
         "messages": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PanelMessage"
+            "$ref": "#/definitions/StudyMessage"
           }
         }
       }
     },
-    "PanelGroup": {
+    "ResearchStudyPlan": {
+      "type": "object",
+      "description": "Versioned research plan. Every question exposes its proposed or confirmed response contract.",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "format": "int32",
+          "enum": [
+            1
+          ]
+        },
+        "executionPolicy": {
+          "type": "object",
+          "required": [
+            "sourcePolicy"
+          ],
+          "properties": {
+            "sourcePolicy": {
+              "type": "string",
+              "description": "Checksum-locked evidence policy for the confirmed run. request_only is the controlled-Study default; auto is an explicit experimental opt-in.",
+              "enum": [
+                "request_only",
+                "auto"
+              ]
+            },
+            "videoAnalysisStyle": {
+              "type": "string",
+              "description": "Register of the one video summary every Mind of this run reads. record (default) writes down the spoken script, the visible scenes and the on-screen text; analyst deliberately reproduces the pre-2026-09 prompt, which reads tone and intent and raises the panel's positive rating bias.",
+              "enum": [
+                "record",
+                "analyst"
+              ]
+            },
+            "mindSourcePolicyOverrides": {
+              "type": "array",
+              "description": "Deterministically ordered, checksum-lockable per-Mind experiment assignments. Unlisted Minds use sourcePolicy.",
+              "maxItems": 2000,
+              "items": {
+                "type": "object",
+                "required": [
+                  "mindId",
+                  "sourcePolicy"
+                ],
+                "properties": {
+                  "mindId": {
+                    "type": "string"
+                  },
+                  "sourcePolicy": {
+                    "type": "string",
+                    "enum": [
+                      "request_only",
+                      "auto"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "response": {
+                      "description": "Confirmed response contract for a planned question."
+                    },
+                    "askIf": {
+                      "type": "object",
+                      "description": "Ask this question only of respondents whose own answer to an earlier question matched. Give exactly one of: answerIn (asked when the respondent chose any of these options) or answerNotIn (asked when it chose none of them) for an earlier categorical or multiselect question, using its option labels exactly; or categoryIn / categoryNotIn for an earlier open (qualitative) question, which codes each respondent's own answer into one of the categories named for that question (one coding frame per question, at most 12 categories) after it has been answered and before this question runs. An answer that fits none of the categories counts as none of them. Scale and ranking questions cannot gate. Respondents not asked are recorded as not asked and excluded from this question's results.",
+                      "required": [
+                        "questionId"
+                      ],
+                      "properties": {
+                        "questionId": {
+                          "type": "string",
+                          "description": "Id of the earlier question whose answer decides.",
+                          "minLength": 1,
+                          "maxLength": 80
+                        },
+                        "answerIn": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 100,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 500
+                          }
+                        },
+                        "answerNotIn": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 100,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 500
+                          }
+                        },
+                        "categoryIn": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 100,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 500
+                          }
+                        },
+                        "categoryNotIn": {
+                          "type": "array",
+                          "minItems": 1,
+                          "maxItems": 100,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 500
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "attachmentIds": {
+                      "type": "array",
+                      "description": "Durable Study-asset IDs assigned only to this question.",
+                      "uniqueItems": true,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "ResearchQuestionResponse": {
+      "description": "Confirmed response contract for a planned question."
+    },
+    "ResearchQuestionCondition": {
+      "type": "object",
+      "description": "Ask this question only of respondents whose own answer to an earlier question matched. Give exactly one of: answerIn (asked when the respondent chose any of these options) or answerNotIn (asked when it chose none of them) for an earlier categorical or multiselect question, using its option labels exactly; or categoryIn / categoryNotIn for an earlier open (qualitative) question, which codes each respondent's own answer into one of the categories named for that question (one coding frame per question, at most 12 categories) after it has been answered and before this question runs. An answer that fits none of the categories counts as none of them. Scale and ranking questions cannot gate. Respondents not asked are recorded as not asked and excluded from this question's results.",
+      "required": [
+        "questionId"
+      ],
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "description": "Id of the earlier question whose answer decides.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "answerIn": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "answerNotIn": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "categoryIn": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "categoryNotIn": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "FixedInstrumentQuestions": {
+      "type": "array",
+      "description": "Fixed instrument. When present the planner is bypassed: every question is stored verbatim (whitespace collapsed), in this order, with exactly this response contract, except that a question sent as qualitative (or as a choice without options) whose own text lists its answers is stored as the choice question that text states: single choice, multiselect or ranking. Use `edits` on the saved revision to set it back to qualitative. Consecutive questions sharing a module label form one module. Cannot be combined with refinement, answers, questionResponses, or suggestQuestionStimuli. Repeated question texts or colliding ids are rejected.",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "response"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable item id; lower-cased to a slug. Defaults to q<position>.",
+            "maxLength": 80
+          },
+          "text": {
+            "type": "string",
+            "description": "Exact respondent-visible question text, including any anchors or labels. Skip and filter instructions (\"No -> go to Q12\", \"only if Q3 = Yes\") do not belong in the text either: transcribe each as askIf. A jump from an answer of item G to item N gives every item between G and N answerNotIn [that answer]; a filter gives answerIn. Tell the person about any instruction you cannot map to exact items and options instead of guessing it.",
+            "maxLength": 2000
+          },
+          "module": {
+            "type": "string",
+            "description": "Optional module (battery) label; consecutive questions with the same label are grouped.",
+            "maxLength": 200
+          },
+          "response": {
+            "description": "Confirmed response contract for a planned question."
+          },
+          "askIf": {
+            "type": "object",
+            "description": "Ask this question only of respondents whose own answer to an earlier question matched. Give exactly one of: answerIn (asked when the respondent chose any of these options) or answerNotIn (asked when it chose none of them) for an earlier categorical or multiselect question, using its option labels exactly; or categoryIn / categoryNotIn for an earlier open (qualitative) question, which codes each respondent's own answer into one of the categories named for that question (one coding frame per question, at most 12 categories) after it has been answered and before this question runs. An answer that fits none of the categories counts as none of them. Scale and ranking questions cannot gate. Respondents not asked are recorded as not asked and excluded from this question's results.",
+            "required": [
+              "questionId"
+            ],
+            "properties": {
+              "questionId": {
+                "type": "string",
+                "description": "Id of the earlier question whose answer decides.",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "answerIn": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              "answerNotIn": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              "categoryIn": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              },
+              "categoryNotIn": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 100,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "StudyAudience": {
       "type": "object",
       "required": [
         "id",
         "name",
-        "sparks"
+        "minds"
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "sparks": {
+        "minds": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PanelMind"
+            "$ref": "#/definitions/StudyMind"
           }
         }
       }
     },
-    "PanelMessage": {
+    "StudyMessage": {
       "type": "object",
       "required": [
         "id",
@@ -726,12 +1150,11 @@
         },
         "metadata": {},
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         }
       }
     },
-    "PanelMind": {
+    "StudyMind": {
       "type": "object",
       "required": [
         "id",
@@ -739,18 +1162,18 @@
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uuid"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
         "discipline": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         },
         "profileImageUrl": {
           "type": "string",
-          "format": "uri"
+          "x-nullable": true
         }
       }
     }
