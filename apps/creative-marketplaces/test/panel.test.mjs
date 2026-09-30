@@ -43,3 +43,21 @@ test('the panel sends only explicitly selected and approved material; retries re
   await click('summary'); await click('import'); assert.ok(imported[0].includes('A clear message'));
   assert.ok(!calls.some(call => /execute|confirm/.test(call.url)));
 });
+
+test('translated UI stays plain text and dynamic selection uses translated placeholders', async t => {
+  const dom = new JSDOM('<main></main>');
+  const original = { document: globalThis.document, Option: globalThis.Option };
+  globalThis.document = dom.window.document; globalThis.Option = dom.window.Option;
+  t.after(() => { Object.assign(globalThis, original); dom.window.close(); });
+  const hostile = '<img src=x onerror="bad()">';
+  mountPanel({ root: document.querySelector('main'), gatewayUrl: 'https://getminds.ai/integrations/creative', hostName: 'Test',
+    formatMessage: (message, values) => message.defaultMessage.includes('{material}') ? `${values.host}: ${values.material}` : hostile,
+    exportMaterial: async () => ({ kind: 'document', label: 'Selected PDF', url: 'https://assets.example/design.pdf' }), openUrl: async () => {},
+  });
+  assert.equal(document.querySelector('h1').textContent, hostile);
+  assert.equal(document.querySelector('#request').placeholder, hostile);
+  assert.equal(document.querySelectorAll('img').length, 1);
+  const button = document.querySelector('#export'); button.click();
+  for (let n = 0; n < 20 && button.disabled; n++) await new Promise(resolve => setImmediate(resolve));
+  assert.equal(document.querySelector('#material').textContent, 'Test: Selected PDF');
+});

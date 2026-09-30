@@ -1,31 +1,35 @@
+import { panelMessages, defaultText } from './messages.js';
 import { CreativeReviewClient } from '@minds/creative-review';
 
 export const styles = `body{margin:0;padding:16px;font:14px/1.5 system-ui;color:#18202a;background:#fff}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}button,input,select,textarea{font:inherit;box-sizing:border-box;border:1px solid #b6bdc7;border-radius:6px;padding:8px}button{cursor:pointer;background:#f3f4f6;margin:8px 4px 0 0}button:disabled{cursor:wait;opacity:.5}textarea,input,select{width:100%}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f7f9;padding:10px}img{max-width:100%;max-height:180px}a{color:#3646ac}#status{min-height:24px}[hidden]{display:none!important}`;
 
 // Each host supplies only explicit export/open/import operations.
 /** @param {any} options */
-export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFindings = undefined, hostName }) {
+export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFindings = undefined, hostName, formatMessage = defaultText }) {
   const client = new CreativeReviewClient(gatewayUrl);
-  root.innerHTML = `<h1>Minds creative review</h1><p>Review your artwork and copy with the AI personas in your Audience.</p>
-    <button id="connect">Connect Minds</button><button id="refresh">Refresh Studies</button><button id="disconnect">Disconnect</button>
-    <label for="study">Study</label><select id="study"><option value="">Connect and refresh Studies</option></select>
-    <label for="request">What do you want to learn?</label><textarea id="request" placeholder="Which parts are clear, credible and persuasive?"></textarea>
-    <label for="locale">Study language</label><select id="locale"><option value="en">English</option><option value="de">German</option><option value="es">Spanish</option><option value="fr">French</option><option value="zh">Chinese</option><option value="tr">Turkish</option><option value="ar">Arabic</option><option value="ja">Japanese</option><option value="ko">Korean</option></select>
-    <button id="export">Select material to review</button><p id="material">No material selected.</p><img id="image" alt="Selected artwork" hidden>
-    <label><input id="consent" type="checkbox" style="width:auto"> Send this selected material to Minds to draft a research plan.</label>
-    <button id="preview">Draft research plan</button><button id="open">Review and run in Minds</button>
-    <p>Review the plan and estimated cost in Minds before running the Study.</p>
-    <button id="summary">Load findings</button><button id="import" hidden>Add findings to design</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
+  const text = (source, values = {}) => formatMessage(panelMessages[source], values);
+  // Translated strings are data, including attribute values.
+  const html = source => text(source).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+  root.innerHTML = `<h1>${html("Minds creative review")}</h1><p>${html("Review your artwork and copy with the AI personas in your Audience.")}</p>
+    <button id="connect">${html("Connect Minds")}</button><button id="refresh">${html("Refresh Studies")}</button><button id="disconnect">${html("Disconnect")}</button>
+    <label for="study">${html("Study")}</label><select id="study"><option value="">${html("Connect and refresh Studies")}</option></select>
+    <label for="request">${html("What do you want to learn?")}</label><textarea id="request" placeholder="${html("Which parts are clear, credible and persuasive?")}"></textarea>
+    <label for="locale">${html("Study language")}</label><select id="locale"><option value="en">${html("English")}</option><option value="de">${html("German")}</option><option value="es">${html("Spanish")}</option><option value="fr">${html("French")}</option><option value="zh">${html("Chinese")}</option><option value="tr">${html("Turkish")}</option><option value="ar">${html("Arabic")}</option><option value="ja">${html("Japanese")}</option><option value="ko">${html("Korean")}</option></select>
+    <button id="export">${html("Select material to review")}</button><p id="material">${html("No material selected.")}</p><img id="image" alt="${html("Selected artwork")}" hidden>
+    <label><input id="consent" type="checkbox" style="width:auto"> ${html("Send this selected material to Minds to draft a research plan.")}</label>
+    <button id="preview">${html("Draft research plan")}</button><button id="open">${html("Review and run in Minds")}</button>
+    <p>${html("Review the plan and estimated cost in Minds before running the Study.")}</p>
+    <button id="summary">${html("Load findings")}</button><button id="import" hidden>${html("Add findings to design")}</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
   const el = id => root.querySelector(`#${id}`);
   let material, imageUrl, summary, previewKey, fingerprint, busy = false;
   let connected = false;
-  const requireConnection = () => { if (!connected) throw new Error('Connect Minds and refresh your Studies first.'); };
-  const studyId = () => { if (!el('study').value) throw new Error('Choose a Study.'); return el('study').value; };
+  const requireConnection = () => { if (!connected) throw new Error(text("Connect Minds and refresh your Studies first.")); };
+  const studyId = () => { if (!el('study').value) throw new Error(text("Choose a Study.")); return el('study').value; };
   const operation = fn => async () => {
     if (busy) return; busy = true;
     root.querySelectorAll('button').forEach(button => { button.disabled = true; });
-    el('status').textContent = 'Working…';
-    try { await fn(); } catch (error) { el('status').textContent = error.message || 'Unable to complete this action.'; }
+    el('status').textContent = text("Working\u2026");
+    try { await fn(); } catch (error) { el('status').textContent = error.message || text("Unable to complete this action."); }
     finally { busy = false; root.querySelectorAll('button').forEach(button => { button.disabled = false; }); }
   };
   async function refresh() {
@@ -33,42 +37,42 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     requireConnection();
     const value = await client.studies();
     const list = value.data?.studies || value.data?.items || value.data || [];
-    if (!Array.isArray(list)) throw new Error('Minds returned an unexpected Studies list.');
-    el('study').replaceChildren(new Option('Choose a Study', ''));
+    if (!Array.isArray(list)) throw new Error(text("Minds returned an unexpected Studies list."));
+    el('study').replaceChildren(new Option(text("Choose a Study"), ''));
     for (const study of list) el('study').append(new Option(study.name || study.title || study.id, study.id));
-    el('status').textContent = 'Choose an existing Study with your Audience in Minds.';
+    el('status').textContent = text("Choose an existing Study with your Audience in Minds.");
   }
   el('connect').onclick = operation(async () => {
     if (client.session) await client.disconnect();
     connected = false;
     const url = await client.connect(); await openUrl(url);
-    el('status').textContent = 'Approve the connection in your browser, then select Refresh Studies.';
+    el('status').textContent = text("Approve the connection in your browser, then select Refresh Studies.");
   });
   el('refresh').onclick = operation(refresh);
   el('disconnect').onclick = operation(async () => {
     await client.disconnect(); connected = false;
-    el('study').replaceChildren(new Option('Connect and refresh Studies', ''));
+    el('study').replaceChildren(new Option(text("Connect and refresh Studies"), ''));
     material = summary = previewKey = fingerprint = undefined;
     if (imageUrl) URL.revokeObjectURL(imageUrl);
     el('image').hidden = true; el('result').hidden = true; el('import').hidden = true;
-    el('material').textContent = 'No material selected.'; el('consent').checked = false;
-    el('status').textContent = 'Disconnected.';
+    el('material').textContent = text("No material selected."); el('consent').checked = false;
+    el('status').textContent = text("Disconnected.");
   });
   el('export').onclick = operation(async () => {
     const selected = await exportMaterial();
-    if (!selected) { el('status').textContent = 'Selection cancelled.'; return; }
+    if (!selected) { el('status').textContent = text("Selection cancelled."); return; }
     material = selected; previewKey = fingerprint = undefined; el('consent').checked = false;
     if (imageUrl) URL.revokeObjectURL(imageUrl);
     el('image').hidden = !material.blob;
     if (material.blob) { imageUrl = URL.createObjectURL(material.blob); el('image').src = imageUrl; }
-    el('material').textContent = `${material.label} — selected from ${hostName}`;
-    el('status').textContent = 'Check the selected material, then choose whether to send it to Minds.';
+    el('material').textContent = text("{material} — selected from {host}", { material: material.label, host: hostName });
+    el('status').textContent = text("Check the selected material, then choose whether to send it to Minds.");
   });
   el('preview').onclick = operation(async () => {
     requireConnection(); const id = studyId();
-    if (!material) throw new Error('Select material to review.');
-    if (!el('consent').checked) throw new Error('Confirm that you want to send the selected material to Minds.');
-    if (!el('request').value.trim()) throw new Error('Describe what you want to learn.');
+    if (!material) throw new Error(text("Select material to review."));
+    if (!el('consent').checked) throw new Error(text("Confirm that you want to send the selected material to Minds."));
+    if (!el('request').value.trim()) throw new Error(text("Describe what you want to learn."));
     if (material.blob && !material.url) {
       const uploaded = await client.upload(material.blob, `${material.label}.png`);
       material.url = uploaded.url;
@@ -79,20 +83,20 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     if (nextFingerprint !== fingerprint) { previewKey = crypto.randomUUID(); fingerprint = nextFingerprint; }
     const result = await client.preview(id, input, previewKey);
     el('result').hidden = false; el('result').textContent = JSON.stringify(result.data || result, null, 2);
-    el('status').textContent = 'Draft ready. Review and confirm it in Minds to run the Study.';
+    el('status').textContent = text("Draft ready. Review and confirm it in Minds to run the Study.");
   });
-  el('open').onclick = operation(async () => { await openUrl(`https://getminds.ai/?studyId=${encodeURIComponent(studyId())}`); el('status').textContent = 'Minds opened.'; });
+  el('open').onclick = operation(async () => { await openUrl(`https://getminds.ai/?studyId=${encodeURIComponent(studyId())}`); el('status').textContent = text("Minds opened."); });
   el('summary').onclick = operation(async () => {
     requireConnection();
     const value = await client.summary(studyId());
     summary = JSON.stringify(value.data || value, null, 2);
     el('result').hidden = false; el('result').textContent = summary;
     el('import').hidden = !importFindings;
-    el('status').textContent = 'Aggregate findings loaded.';
+    el('status').textContent = text("Aggregate findings loaded.");
   });
   el('study').onchange = () => { summary = undefined; el('import').hidden = true; el('result').hidden = true; };
   el('import').onclick = operation(async () => {
-    if (!summary) throw new Error('Load findings first.');
-    await importFindings(`Minds research findings\n${summary}`); el('status').textContent = 'Findings added to your design.';
+    if (!summary) throw new Error(text("Load findings first."));
+    await importFindings(`${text("Minds research findings")}\n${summary}`); el('status').textContent = text("Findings added to your design.");
   });
 }
