@@ -6,7 +6,7 @@ export const styles = `body{margin:0;padding:16px;font:14px/1.5 system-ui;color:
 /** @param {any} options */
 export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFindings = undefined, hostName }) {
   const client = new CreativeReviewClient(gatewayUrl);
-  root.innerHTML = `<h1>Minds creative review</h1><p>Learn how your Audience reacts to your artwork and copy.</p>
+  root.innerHTML = `<h1>Minds creative review</h1><p>Review your artwork and copy with the AI personas in your Audience.</p>
     <button id="connect">Connect Minds</button><button id="refresh">Refresh Studies</button><button id="disconnect">Disconnect</button>
     <label for="study">Study</label><select id="study"><option value="">Connect and refresh Studies</option></select>
     <label for="request">What do you want to learn?</label><textarea id="request" placeholder="Which parts are clear, credible and persuasive?"></textarea>
