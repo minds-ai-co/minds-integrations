@@ -31,6 +31,28 @@ export function studyPath(studyId, suffix = '') {
   return `/api/v1/studies/${encodeURIComponent(studyId)}${suffix}`;
 }
 
+export function reviewUrl(studyId, draftPlanId) {
+  studyPath(studyId);
+  if (typeof draftPlanId !== 'string' || !draftPlanId.trim() || draftPlanId.length > 200) throw new Error('Save a research draft first.');
+  return `${MINDS_ORIGIN}/?${new URLSearchParams({ studyId, draftPlanId })}`;
+}
+
+/** Only findings from this completed run; never substitute a whole-Study summary. */
+export function formatRunFindings(run) {
+  if (run?.status !== 'completed' || !Array.isArray(run.artifacts)) return null;
+  const answers = run.artifacts.filter(artifact => artifact.kind === 'responses');
+  if (!answers.length) return null;
+  const sections = answers.map(artifact => {
+    const output = artifact.outputData;
+    if (!output || artifact.error || artifact.responseCoverage) return null;
+    const summary = typeof output.summary === 'string' ? output.summary.trim() : '';
+    const finding = typeof output.keyFinding === 'string' ? output.keyFinding.trim() : '';
+    if (!summary && !finding) return null;
+    return [output.formattedQuestion || output.title, finding, summary].filter(Boolean).join('\n\n');
+  });
+  return sections.every(Boolean) ? sections.join('\n\n—\n\n') : null;
+}
+
 // Only the gateway's short-lived session capability enters the adapter UI.
 // Minds OAuth tokens remain in the gateway. Nothing is persisted in localStorage.
 export class CreativeReviewClient {
@@ -70,5 +92,9 @@ export class CreativeReviewClient {
     return this.call('/preview', { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
   }
   summary(studyId) { studyPath(studyId); return this.call(`/summary?studyId=${encodeURIComponent(studyId)}`); }
+  run(studyId, draftPlanId) {
+    reviewUrl(studyId, draftPlanId);
+    return this.call(`/run?${new URLSearchParams({ studyId, draftPlanId })}`);
+  }
   async disconnect() { try { await this.call('/session', { method: 'DELETE' }); } finally { this.session = null; } }
 }

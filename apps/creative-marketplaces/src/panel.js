@@ -1,5 +1,5 @@
 import { panelMessages, defaultText } from './messages.js';
-import { CreativeReviewClient } from '@minds/creative-review';
+import { CreativeReviewClient, reviewUrl, formatRunFindings } from '@minds/creative-review';
 
 export const styles = `body{margin:0;padding:16px;font:14px/1.5 system-ui;color:#18202a;background:#fff}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}button,input,select,textarea{font:inherit;box-sizing:border-box;border:1px solid #b6bdc7;border-radius:6px;padding:8px}button{cursor:pointer;background:#f3f4f6;margin:8px 4px 0 0}button:disabled{cursor:wait;opacity:.5}textarea,input,select{width:100%}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f7f9;padding:10px}img{max-width:100%;max-height:180px}a{color:#3646ac}#status{min-height:24px}[hidden]{display:none!important}`;
 
@@ -18,19 +18,21 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     <button id="export">${html("Select material to review")}</button><p id="material">${html("No material selected.")}</p><img id="image" alt="${html("Selected artwork")}" hidden>
     <label><input id="consent" type="checkbox" style="width:auto"> ${html("Send this selected material to Minds to draft a research plan.")}</label>
     <button id="preview">${html("Draft research plan")}</button><button id="open">${html("Open Study in Minds")}</button>
-    <p>${html("Review the draft below. This development version cannot run the saved draft.")}</p>
+    <p>${html("Review and run the saved plan in Minds, then return here to load its findings.")}</p>
     <button id="summary">${html("Load findings")}</button><button id="import" hidden>${html("Add findings to design")}</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
   const el = id => root.querySelector(`#${id}`);
   let material, imageUrl, summary, previewKey, fingerprint, busy = false;
+  let savedDraft;
+  const resetDraft = () => { savedDraft = summary = undefined; el('import').hidden = true; el('result').hidden = true; };
   let connected = false;
   const requireConnection = () => { if (!connected) throw new Error(text("Connect Minds and refresh your Studies first.")); };
   const studyId = () => { if (!el('study').value) throw new Error(text("Choose a Study.")); return el('study').value; };
   const operation = fn => async () => {
     if (busy) return; busy = true;
-    root.querySelectorAll('button').forEach(button => { button.disabled = true; });
+    root.querySelectorAll('button,input,select,textarea').forEach(control => { control.disabled = true; });
     el('status').textContent = text("Working\u2026");
     try { await fn(); } catch (error) { el('status').textContent = error.message || text("Unable to complete this action."); }
-    finally { busy = false; root.querySelectorAll('button').forEach(button => { button.disabled = false; }); }
+    finally { busy = false; root.querySelectorAll('button,input,select,textarea').forEach(control => { control.disabled = false; }); }
   };
   async function refresh() {
     connected = (await client.status()).connected;
@@ -52,7 +54,7 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   el('disconnect').onclick = operation(async () => {
     await client.disconnect(); connected = false;
     el('study').replaceChildren(new Option(text("Connect and refresh Studies"), ''));
-    material = summary = previewKey = fingerprint = undefined;
+    material = previewKey = fingerprint = undefined; resetDraft();
     if (imageUrl) URL.revokeObjectURL(imageUrl);
     el('image').hidden = true; el('result').hidden = true; el('import').hidden = true;
     el('material').textContent = text("No material selected."); el('consent').checked = false;
@@ -61,7 +63,7 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   el('export').onclick = operation(async () => {
     const selected = await exportMaterial();
     if (!selected) { el('status').textContent = text("Selection cancelled."); return; }
-    material = selected; previewKey = fingerprint = undefined; el('consent').checked = false;
+    material = selected; previewKey = fingerprint = undefined; el('consent').checked = false; resetDraft();
     if (imageUrl) URL.revokeObjectURL(imageUrl);
     el('image').hidden = !material.blob;
     if (material.blob) { imageUrl = URL.createObjectURL(material.blob); el('image').src = imageUrl; }
@@ -82,24 +84,35 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     const nextFingerprint = JSON.stringify({ id, input });
     if (nextFingerprint !== fingerprint) { previewKey = crypto.randomUUID(); fingerprint = nextFingerprint; }
     const result = await client.preview(id, input, previewKey);
-    el('result').hidden = false; el('result').textContent = JSON.stringify(result.data || result, null, 2);
-    el('status').textContent = text("Draft saved. Review it below. Confirmation and execution are not available in this development version.");
+    const draft = result.data || result;
+    if (!draft.draftPlanId) throw new Error(text('Minds did not return a saved draft. Try again.'));
+    savedDraft = { studyId: id, draftPlanId: draft.draftPlanId };
+    summary = undefined; el('import').hidden = true;
+    el('result').hidden = false; el('result').textContent = [draft.plan?.intent?.objective,
+      ...(draft.plan?.modules || []).flatMap(module => module.questions.map((question, index) => `${index + 1}. ${question.text}`)),
+      ...(draft.plan?.confirmation?.missingInputs || [])].filter(Boolean).join('\n\n');
+    el('status').textContent = text("Draft saved. Open it in Minds to review usage, confirm and run research.");
   });
-  el('open').onclick = operation(async () => { await openUrl(`https://getminds.ai/?studyId=${encodeURIComponent(studyId())}`); el('status').textContent = text("Minds opened."); });
+  el('open').onclick = operation(async () => {
+    if (!savedDraft) throw new Error(text('Draft a research plan first.'));
+    await openUrl(reviewUrl(savedDraft.studyId, savedDraft.draftPlanId)); el('status').textContent = text("Minds opened.");
+  });
   el('summary').onclick = operation(async () => {
     requireConnection();
     summary = undefined; el('import').hidden = true;
-    const value = await client.summary(studyId());
-    const report = (value.data || value).summary;
-    if (!report || (typeof report === 'string' && !report.trim()) || (typeof report === 'object' && !Object.keys(report).length)) {
-      throw new Error(text('Findings are not ready. Run the Study and generate its summary in Minds, then try again.'));
-    }
-    summary = typeof report === 'string' ? report : JSON.stringify(report, null, 2);
+    if (!savedDraft) throw new Error(text('Draft a research plan first.'));
+    const value = await client.run(savedDraft.studyId, savedDraft.draftPlanId);
+    const report = value.data || value;
+    if (report.draftPlanId !== savedDraft.draftPlanId) throw new Error(text('Findings do not match this saved draft.'));
+    summary = formatRunFindings(report);
+    if (!summary) throw new Error(text('Findings are not ready. Open this draft in Minds to check its research status, then try again.'));
     el('result').hidden = false; el('result').textContent = summary;
     el('import').hidden = !importFindings;
     el('status').textContent = text("Aggregate findings loaded.");
   });
-  el('study').onchange = () => { summary = undefined; el('import').hidden = true; el('result').hidden = true; };
+  el('study').onchange = resetDraft;
+  el('request').oninput = resetDraft;
+  el('locale').onchange = resetDraft;
   el('import').onclick = operation(async () => {
     if (!summary) throw new Error(text("Load findings first."));
     await importFindings(`${text("Minds research findings")}\n${summary}`); el('status').textContent = text("Findings added to your design.");

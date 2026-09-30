@@ -44,7 +44,9 @@ const perform = async (z, bundle) => {
     headers,
   });
   const data = unwrapData(payload);
-  return toZapierRecord({ ...data, studyId: bundle.inputData.studyId }, `${bundle.inputData.studyId}-plan`);
+  if (!data.draftPlanId) throw new Error("Minds did not return a saved draft. Retry the same request identifier.");
+  const reviewUrl = `https://getminds.ai/?${new URLSearchParams({ studyId: bundle.inputData.studyId, draftPlanId: data.draftPlanId })}`;
+  return toZapierRecord({ ...data, studyId: bundle.inputData.studyId, reviewUrl }, `${bundle.inputData.studyId}-plan`);
 };
 
 module.exports = {
@@ -123,6 +125,7 @@ module.exports = {
       planningMode: "planner",
       status: "needs_confirmation",
       nextAction: "confirm",
+      reviewUrl: "https://getminds.ai/?studyId=943f9d7c-aab6-4a78-ab67-a7827e1358c9&draftPlanId=75e10cab-cf1a-4dd2-8470-c71b8c450d90",
     },
     outputFields: [
       { key: "id", label: "Draft Plan ID" },
@@ -132,6 +135,7 @@ module.exports = {
       { key: "status", label: "Plan Status" },
       { key: "draftStatus", label: "Draft Status" },
       { key: "nextAction", label: "Next Action" },
+      { key: "reviewUrl", label: "Review and Run in Minds", type: "string" },
       { key: "plan__objective", label: "Plan Objective" },
     ],
   },

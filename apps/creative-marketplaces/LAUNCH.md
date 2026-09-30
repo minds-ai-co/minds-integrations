@@ -25,14 +25,16 @@ The inventory was checked against origin/main at 259b70e and the current Zapier 
 
 No existing Slack or Shopify worktree was modified.
 
-## Workflow implemented
+## Current branch workflow (deployment and native execution QA pending)
 
 1. Connect a Minds account through a browser consent flow. OAuth tokens remain in the gateway; the panel keeps an opaque session capability in memory only.
 2. Select an existing Study with an Audience. The first 100 Studies are available in the development panel.
 3. Explicitly select the material: Canva export-dialog PDF (multi-page safe), one selected Figma node as PNG, the current approved Adobe Express page as PNG, or one chosen GenStudio email experience's copy.
 4. Review the selection and approve sending it to Minds. PNGs use the authenticated owned-upload endpoint. Export URLs use the canonical research preview source importer, which copies readable material into Minds storage.
 5. Draft a plan through the canonical Study research-plan preview endpoint, with a stable idempotency key for retries. Changed Study/request/material gets a new key. This does not confirm or execute research.
-6. Review the saved draft in the panel and open the Study in Minds. The current Minds UI does not expose external API drafts for confirmation: this pilot cannot run its saved draft. Implement a supported confirmation/cost/execution handoff before public release. Existing completed Study summaries can be read back; Canva and Figma can explicitly add findings as text to the design. Empty summaries do not enable import.
+6. Open the exact saved draft in Minds using its Study and draft IDs. The paired webapp handoff shows the instrument and current allowance, resolves missing inputs, saves reviewed revisions and requires explicit confirmation before running. Follow durable status and open the existing Study results.
+7. Return to the panel and load the saved draft’s own completed run findings. Partial, failed or mismatched runs cannot supply findings. Canva and Figma can explicitly insert the resulting text; Express and GenStudio display it in the panel. This branch behavior still requires deployment and actual new-run acceptance in each host.
+8. Zapier 1.2.0 returns the exact draft review link and adds Get Completed Research Results; map the same Study and draft IDs to that search. The existing aggregate-summary search remains separate.
 
 GenStudio reviews text fields; it does not render or review the visual layout. It supports the email channel in this first package. It does not certify legal, regulatory or medical compliance.
 

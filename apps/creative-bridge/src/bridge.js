@@ -144,6 +144,25 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
       if (path === '/summary' && req.method === 'GET') {
         json(res, 200, await upstream(studyPath(url.searchParams.get('studyId'), '/summary'), { headers })); return;
       }
+      if (path === '/run' && req.method === 'GET') {
+        const studyId = url.searchParams.get('studyId');
+        const draftPlanId = url.searchParams.get('draftPlanId');
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(draftPlanId || '')) throw fail(400, 'Choose a saved research draft.');
+        // Loading proves draft ownership and resolves its durable run identity.
+        // This preview mode reads only; the gateway still has no execution endpoint.
+        const preview = await upstream(studyPath(studyId, '/research-plans/preview'), {
+          method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ loadLatest: true, draftPlanId }),
+        });
+        const draft = preview.data;
+        if (draft?.draftPlanId !== draftPlanId) throw fail(502, 'Invalid saved draft.');
+        if (draft.draftStatus !== 'confirmed') { json(res, 200, { data: { status: 'not_started', draftPlanId, runId: draftPlanId } }); return; }
+        const runId = draft.runId || draftPlanId;
+        if (!/^[0-9a-f-]{36}$/i.test(runId)) throw fail(502, 'Invalid research run.');
+        const result = await upstream(studyPath(studyId, `/research-runs/${encodeURIComponent(runId)}`), { headers });
+        if (result.data?.runId !== runId) throw fail(502, 'Invalid research run.');
+        json(res, 200, { data: { ...result.data, draftPlanId } }); return;
+      }
       if (path === '/upload' && req.method === 'POST') {
         if (req.headers['content-type'] !== 'image/png') throw fail(400, 'Export your selected artwork as PNG.');
         const data = await bytes(req, 25 * 1024 * 1024);

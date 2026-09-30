@@ -240,25 +240,40 @@ export const panelMessages = {
     "defaultMessage": "Canva design",
     "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
   },
-  "Findings are not ready. Run the Study and generate its summary in Minds, then try again.": {
-    "id": "minds.creative.b62c3cff940696e8",
-    "defaultMessage": "Findings are not ready. Run the Study and generate its summary in Minds, then try again.",
-    "description": "Status when the Study has no aggregate summary available. Directs users to run and summarize research in Minds before importing findings."
-  },
   "Open Study in Minds": {
     "id": "minds.creative.2fa08bbcf03bfa8e",
     "defaultMessage": "Open Study in Minds",
     "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
   },
-  "Review the draft below. This development version cannot run the saved draft.": {
-    "id": "minds.creative.c585ab66559beabb",
-    "defaultMessage": "Review the draft below. This development version cannot run the saved draft.",
-    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
+  "Minds did not return a saved draft. Try again.": {
+    "id": "minds.creative.5f288a076554144e",
+    "defaultMessage": "Minds did not return a saved draft. Try again.",
+    "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
   },
-  "Draft saved. Review it below. Confirmation and execution are not available in this development version.": {
-    "id": "minds.creative.5c0f1518d6a6f603",
-    "defaultMessage": "Draft saved. Review it below. Confirmation and execution are not available in this development version.",
-    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
+  "Draft a research plan first.": {
+    "id": "minds.creative.092af89430776ebc",
+    "defaultMessage": "Draft a research plan first.",
+    "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
+  },
+  "Findings do not match this saved draft.": {
+    "id": "minds.creative.48e6f35da1ebf562",
+    "defaultMessage": "Findings do not match this saved draft.",
+    "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
+  },
+  "Findings are not ready. Open this draft in Minds to check its research status, then try again.": {
+    "id": "minds.creative.3215ffbae5c449de",
+    "defaultMessage": "Findings are not ready. Open this draft in Minds to check its research status, then try again.",
+    "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
+  },
+  "Draft saved. Open it in Minds to review usage, confirm and run research.": {
+    "id": "minds.creative.3de40851bdf889d4",
+    "defaultMessage": "Draft saved. Open it in Minds to review usage, confirm and run research.",
+    "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
+  },
+  "Review and run the saved plan in Minds, then return here to load its findings.": {
+    "id": "minds.creative.f74e5579b51161fe",
+    "defaultMessage": "Review and run the saved plan in Minds, then return here to load its findings.",
+    "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
   }
 };
 export function defaultText(message, values = {}) {

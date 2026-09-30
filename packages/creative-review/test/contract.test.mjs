@@ -1,11 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { previewBody, studyPath, CreativeReviewClient } from '../src/index.js';
+import { previewBody, studyPath, CreativeReviewClient, reviewUrl, formatRunFindings } from '../src/index.js';
 test('exports only the selected source and never a run instruction', () => {
   const body = previewBody({ request: 'Evaluate clarity', source: { kind: 'document', label: 'Selected design', url: 'https://assets.example/design.pdf' }, run: true });
   assert.deepEqual(Object.keys(body), ['request', 'studyLocale', 'source']);
   assert.equal(body.source.url, 'https://assets.example/design.pdf');
   assert.equal(studyPath('a/b', '/summary'), '/api/v1/studies/a%2Fb/summary');
+});
+
+test('review links preserve the exact draft identity and findings require complete matching evidence', () => {
+  assert.equal(reviewUrl('study/a', 'draft&b'), 'https://getminds.ai/?studyId=study%2Fa&draftPlanId=draft%26b');
+  const artifacts = [{ kind: 'responses', outputData: { title: 'Clarity', keyFinding: 'Clear headline', summary: 'The message was understood.' } }];
+  assert.match(formatRunFindings({ status: 'completed', artifacts }), /The message was understood/);
+  for (const status of ['queued', 'running', 'partial', 'failed', 'cancelled', 'plan_limited']) assert.equal(formatRunFindings({ status, artifacts }), null);
+  assert.equal(formatRunFindings({ status: 'completed', artifacts: [{ kind: 'responses', outputData: { title: 'No summary yet' } }] }), null);
+  assert.equal(formatRunFindings({ status: 'completed', artifacts: [{ ...artifacts[0], responseCoverage: { missing: 2 } }] }), null);
 });
 test('requires readable sources and supports signed owner-scoped uploads', () => {
   for (const url of ['http://assets.example/a.png', 'https://user:pass@assets.example/a.png', '//assets.example/a.png', '/private/file.png']) {

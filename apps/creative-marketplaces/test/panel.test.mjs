@@ -13,7 +13,8 @@ test('the panel sends only explicitly selected and approved material; retries re
     const value = url.endsWith('/sessions') ? { session: 'session', connectUrl: 'https://getminds.ai/connect' }
       : url.endsWith('/session') ? { connected: true }
       : url.endsWith('/studies') ? { data: [{ id: 'study-1', name: 'Creative study' }] }
-      : url.endsWith('/preview') ? { data: { status: 'needs_confirmation' } }
+      : url.endsWith('/preview') ? { data: { status: 'needs_confirmation', draftPlanId: 'draft-a' } }
+      : url.includes('/run?') ? { data: { status: 'completed', draftPlanId: 'draft-a', runId: 'draft-a', artifacts: [{ kind: 'responses', outputData: { title: 'Clarity', summary: 'A clear message' } }] } }
       : { data: { summary: 'A clear message' } };
     return new Response(JSON.stringify(value), { status: 200 });
   };
@@ -39,12 +40,18 @@ test('the panel sends only explicitly selected and approved material; retries re
   el('request').value = 'Evaluate purchase intent'; await click('preview');
   previews = calls.filter(call => call.url.endsWith('/preview'));
   assert.notEqual(previews[0].options.headers['Idempotency-Key'], previews[2].options.headers['Idempotency-Key']);
-  await click('open'); assert.equal(opened.at(-1), 'https://getminds.ai/?studyId=study-1');
+  await click('open'); assert.equal(opened.at(-1), 'https://getminds.ai/?studyId=study-1&draftPlanId=draft-a');
   await click('summary'); await click('import'); assert.ok(imported[0].includes('A clear message'));
-  globalThis.fetch = async () => new Response(JSON.stringify({ data: { summary: null, hasEnoughContent: false } }), { status: 200 });
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'draft-a', runId: 'draft-a', status: 'running', artifacts: [] } }), { status: 200 });
   await click('summary');
   assert.equal(el('import').hidden, true);
   assert.match(el('status').textContent, /Findings are not ready/);
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'older-draft', runId: 'older-run', status: 'completed', artifacts: [{ kind: 'responses', outputData: { summary: 'Old findings' } }] } }), { status: 200 });
+  await click('summary'); assert.equal(el('import').hidden, true);
+  assert.match(el('status').textContent, /do not match/);
+  el('request').dispatchEvent(new dom.window.Event('input'));
+  await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
+  assert.ok(!calls.some(call => call.url.includes('/summary?')));
   assert.ok(!calls.some(call => /execute|confirm/.test(call.url)));
 });
 

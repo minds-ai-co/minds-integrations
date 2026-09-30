@@ -2,6 +2,18 @@
 
 Owner: Minds developer account. Verified implementation and native acceptance record: 2026-09-30. Source of truth for provider status: [LAUNCH.md](LAUNCH.md). Local desktop handoff: [FIGMA-DESKTOP.md](FIGMA-DESKTOP.md).
 
+## Complete-workflow implementation (release in progress)
+
+The current branch adds the missing saved-draft review and completed-run return. The paired [webapp PR #8006](https://github.com/minds-ai-co/webapp/pull/8006) loads the exact creator-owned draft, shows material, Audience, questions and allowance, accepts revision-safe refinements, requires explicit confirmation and follows the durable run. Its detailed [customer workflow](https://github.com/minds-ai-co/webapp/blob/feature/7998-creative-complete-workflow/docs/integrations/creative-customer-workflow.md) includes failure recovery and capture requirements.
+
+Creative panels now retain both Study and draft IDs, open their exact `reviewUrl`, and read the draft's own run through authenticated `GET /run?studyId=…&draftPlanId=…`. The gateway first reads the creator-owned draft through canonical preview `loadLatest`, resolves its confirmed run ID, then reads the canonical run status. It remains read-only: confirmation and execution happen in Minds. Findings require completed response artifacts with real summaries or key findings; partial, failed, missing or mismatched runs do not enable insertion. Changing source, request, language or Study resets consent, draft identity and results. All input controls are disabled during operations to prevent selection races.
+
+Zapier source version 1.2.0 adds `reviewUrl` to Preview Research Plan and a Get Completed Research Results search taking the same Study and draft IDs. It returns run artifacts/calculations only after that exact run completes. The legacy aggregate-summary search remains available separately. Express source package 0.1.6 contains the new panel flow. These versions are prepared, not yet demonstrated as installed provider releases.
+
+Code validation passed: the full integration repository `npm run check`, 30 focused creative/Zapier tests, bundle build and Zapier validation. Zapier's D004 general warning records that the draft ID is mapped from the preview output rather than selected from a dynamic dropdown; there is no draft-list API. Public publishing still needs genuine-user eligibility. Native full execution acceptance, current package upload and gateway/edge deployment must be verified separately before the release record changes to shipped.
+
+The remainder below records the previously deployed pilot boundary and its acceptance. Its existing-summary tests do not establish acceptance of this new run-specific workflow.
+
 ## Supported boundary and release state
 
 The four native creative adapters share material selection, transfer consent, Minds authorization, Study draft preview and existing-summary retrieval. They do not execute research. The current Minds navigation handoff does not expose their external saved drafts for confirmation or execution, so public release remains blocked. A successful source import, preview or existing-summary read must not be described as a completed run on newly selected artwork.

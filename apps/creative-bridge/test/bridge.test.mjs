@@ -82,3 +82,34 @@ test('expires sessions and bounds unauthenticated connection allocation', async 
   time = 3600001;
   assert.equal((await env.call('/session', { headers: { Origin: 'https://app.example', Authorization: `Bearer ${session.session}` } })).status, 401);
 });
+
+test('run retrieval resolves an owned draft and never exposes an execute gateway', async t => {
+  const draftPlanId = '75e10cab-cf1a-4dd2-8470-c71b8c450d90';
+  const runId = '943f9d7c-aab6-4a78-ab67-a7827e1358c9';
+  let confirmed = false;
+  const calls = [];
+  const env = await setup(t, { request: async (url, options) => {
+    calls.push({ url, options });
+    const value = url.endsWith('/oauth/register') ? { client_id: 'test' }
+      : url.endsWith('/oauth/token') ? { access_token: 'fake-access', expires_in: 3600 }
+      : url.endsWith('/preview') ? { data: { draftPlanId, draftStatus: confirmed ? 'confirmed' : 'draft', runId } }
+      : { data: { runId, status: 'completed', artifacts: [] } };
+    return new Response(JSON.stringify(value));
+  } });
+  const { headers } = await authorize(env);
+  const path = `/run?studyId=study-1&draftPlanId=${draftPlanId}`;
+  assert.equal((await (await env.call(path, { headers })).json()).data.status, 'not_started');
+  assert.ok(!calls.some(call => call.url.includes('/research-runs/')));
+  confirmed = true;
+  const result = await (await env.call(path, { headers })).json();
+  assert.equal(result.data.draftPlanId, draftPlanId);
+  assert.equal(result.data.runId, runId);
+  const read = calls.find(call => call.url.includes('/research-runs/'));
+  assert.equal(read.url, `https://getminds.ai/api/v1/studies/study-1/research-runs/${runId}`);
+  assert.equal(read.options.headers.Authorization, 'Bearer fake-access');
+  assert.deepEqual(JSON.parse(calls.find(call => call.url.endsWith('/preview')).options.body), { loadLatest: true, draftPlanId });
+  assert.equal((await env.call('/run?studyId=study-1&draftPlanId=bad', { headers })).status, 400);
+  assert.equal((await env.call(path, { headers: { ...headers, Origin: 'null' } })).status, 403);
+  assert.equal((await env.call('/execute', { method: 'POST', headers })).status, 404);
+  assert.equal((await env.call('/run', { method: 'POST', headers })).status, 404);
+});
