@@ -1,0 +1,16 @@
+{
+  "name": "minds-creative-review-proxy",
+  "main": "proxy.mjs",
+  "compatibility_date": "2026-09-30",
+  "account_id": "409a50190b35c913717ddba9beed1905",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "logpush": false,
+  "routes": [{ "pattern": "getminds.ai/integrations/creative/*", "zone_name": "getminds.ai" }],
+  "vars": {
+    "UPSTREAM_ORIGIN": "https://deployment-required.ondigitalocean.app",
+    "ALLOWED_ORIGINS": "https://app-aahogk2l5z4.canva-apps.com,https://wj4173926.wxp.adobe-addons.com"
+  },
+  "ratelimits": [{ "name": "RATE_LIMITER", "namespace_id": "930202642", "simple": { "limit": 120, "period": 60 } }]
+}

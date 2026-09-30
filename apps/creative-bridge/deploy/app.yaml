@@ -1,0 +1,29 @@
+name: minds-creative-review
+region: fra
+services:
+  - name: gateway
+    github:
+      repo: minds-ai-co/minds-integrations
+      branch: feature/creative-marketplace-connectors
+      deploy_on_push: false
+    dockerfile_path: apps/creative-bridge/Dockerfile
+    http_port: 8788
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    health_check:
+      http_path: /integrations/creative/health
+    envs:
+      - key: CREATIVE_PUBLIC_URL
+        value: https://getminds.ai/integrations/creative
+        scope: RUN_TIME
+      - key: CREATIVE_ALLOWED_ORIGINS
+        value: https://app-aahogk2l5z4.canva-apps.com,https://wj4173926.wxp.adobe-addons.com
+        scope: RUN_TIME
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /
+      component:
+        name: gateway
+        preserve_path_prefix: true
