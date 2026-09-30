@@ -16,7 +16,7 @@ async function bytes(req, max) {
 }
 
 /** Ephemeral OAuth gateway. Restart disconnects clients; there is no token file. */
-export function createBridge({ publicUrl, allowedOrigins, clientId, request = fetch, now = Date.now, capacity = 1000 }) {
+export function createBridge({ publicUrl, allowedOrigins, clientId, request = fetch, now = Date.now, capacity = 1000, previewConcurrency = 8 }) {
   const base = new URL(publicUrl);
   if (base.search || base.hash || base.username || base.password || !(base.protocol === 'https:' || (base.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(base.hostname)))) throw new Error('Invalid public gateway URL');
   if (!Array.isArray(allowedOrigins) || !allowedOrigins.length || allowedOrigins.includes('*')) throw new Error('Configure exact adapter origins');
@@ -26,6 +26,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
   const expiry = 60 * 60 * 1000;
   let registered = clientId;
   let registering;
+  let pendingPreviews = 0;
   function prune() {
     for (const map of [sessions, tickets, states]) for (const [key, value] of map) if (value.expiresAt <= now()) map.delete(key);
   }
@@ -189,13 +190,15 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         if (job && job.fingerprint !== fingerprint) throw fail(409, 'Use a new request identifier for changed material.');
         if (job?.error) { session.previews.delete(key); job = undefined; }
         if (!job) {
+          if (pendingPreviews >= previewConcurrency) throw fail(429, 'Minds is busy. Try again shortly.');
           if (session.previews.size >= 20) throw fail(429, 'Reconnect after completing your draft requests.');
           job = { studyId: input.studyId, fingerprint };
           session.previews.set(key, job);
           // Planning continues independently of the platform's short HTTP ingress timeout.
           const pending = job;
+          pendingPreviews++;
           void upstream(target, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': key },
-            body: JSON.stringify(body) }).then(result => { pending.result = result; }, error => { pending.error = error; });
+            body: JSON.stringify(body) }).then(result => { pending.result = result; }, error => { pending.error = error; }).finally(() => { pendingPreviews--; });
         }
         if (job.error) throw job.error;
         json(res, job.result ? 200 : 202, job.result || { pending: true }); return;

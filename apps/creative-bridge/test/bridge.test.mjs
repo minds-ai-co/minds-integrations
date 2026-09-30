@@ -119,7 +119,7 @@ test('slow drafts acknowledge immediately, stay session-bound and deduplicate re
   let finish;
   const waiting = new Promise(resolve => { finish = resolve; });
   let plans = 0;
-  const env = await setup(t, { request: async url => {
+  const env = await setup(t, { previewConcurrency: 1, request: async url => {
     if (url.endsWith('/preview')) { plans++; await waiting; }
     const value = url.endsWith('/oauth/register') ? { client_id: 'test' } : url.endsWith('/oauth/token') ? { access_token: 'fake-access', expires_in: 3600 } : { data: { draftPlanId: 'owned-draft' } };
     return new Response(JSON.stringify(value));
@@ -129,6 +129,7 @@ test('slow drafts acknowledge immediately, stay session-bound and deduplicate re
   assert.equal((await env.call('/preview', options)).status, 202);
   assert.equal((await env.call('/preview', options)).status, 202);
   assert.equal(plans, 1);
+  assert.equal((await env.call('/preview', { ...options, headers: { ...options.headers, 'Idempotency-Key': 'another-event' } })).status, 429);
   const poll = '/preview?studyId=study-1&requestId=slow-event';
   assert.equal((await env.call(poll, { headers })).status, 202);
   assert.equal((await env.call(poll.replace('study-1', 'study-2'), { headers })).status, 404);
