@@ -90,12 +90,13 @@ export class CreativeReviewClient {
     if (!idempotencyKey) throw new Error('Missing preview request identifier.');
     const body = previewBody(input);
     studyPath(studyId);
-    let result = await this.call('/preview', { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
+    const options = { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } };
+    let result = await this.call('/preview', options);
     const deadline = Date.now() + 90000;
     while (result.pending) {
       if (Date.now() >= deadline) throw new Error('Draft preparation is taking longer. Retry the same request to check its saved result.');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      result = await this.call(`/preview?${new URLSearchParams({ studyId, requestId: idempotencyKey })}`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      result = await this.call('/preview', options);
     }
     return result;
   }

@@ -50,3 +50,16 @@ test('HTML timeout pages produce a safe retry instruction without exposing provi
   const client = new CreativeReviewClient('https://getminds.ai/integrations/creative', async () => new Response('<html>private upstream diagnostic</html>', { status: 504, headers: { 'Content-Type': 'text/html' } }));
   await assert.rejects(client.status(), error => /Retry the same draft request/.test(error.message) && !error.message.includes('private'));
 });
+
+
+test('pending preparation polls the same idempotent POST without changing source or identity', async () => {
+  const calls = [];
+  const client = new CreativeReviewClient('https://getminds.ai/integrations/creative', async (url, options) => {
+    calls.push({ url, options });
+    return new Response(JSON.stringify(calls.length === 1 ? { pending: true } : { data: { draftPlanId: 'saved-draft' } }), { status: calls.length === 1 ? 202 : 200, headers: { 'Content-Type': 'application/json' } });
+  });
+  const result = await client.preview('study-1', { request: 'Review clarity', source: { kind: 'prompt', label: 'Copy', content: 'Coffee' } }, 'event-1');
+  assert.equal(result.data.draftPlanId, 'saved-draft');
+  assert.equal(calls.length, 2);
+  assert.deepEqual(calls[1], calls[0]);
+});
