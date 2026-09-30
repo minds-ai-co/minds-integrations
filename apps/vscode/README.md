@@ -5,10 +5,10 @@ research plan without leaving VS Code.
 
 ## What it does
 
-- Browse the research Groups available in your Minds account.
+- Browse the Audiences available in your Minds account.
 - Select text in an editor and create a structured study-plan draft for an
-  existing Panel.
-- Open Groups and plan results as Markdown documents that you can inspect,
+  existing Study.
+- Open Audiences and plan results as Markdown documents that you can inspect,
   compare, and save locally if you choose.
 
 The extension never executes a multi-question study. It calls the planning
@@ -17,10 +17,10 @@ explicitly confirmed workflow in Minds.
 
 ## Setup
 
-1. Create an API key in [Minds API settings](https://getminds.ai/?settings=api).
+1. Create an API key (`minds_…`) under **Settings → API Keys** in [Minds](https://getminds.ai/?settings=api).
 2. Run `Minds: Set API Key` from the Command Palette.
 3. The extension validates the key before storing it in VS Code SecretStorage.
-4. Run `Minds: Browse Research Groups`, or select text and choose
+4. Run `Minds: Browse Audiences`, or select text and choose
    `Minds: Plan Research for Selected Text` from the editor context menu.
 
 ## Commands
@@ -29,8 +29,8 @@ explicitly confirmed workflow in Minds.
 | --- | --- |
 | `Minds: Set API Key` | Validates and stores a Minds API key in SecretStorage. |
 | `Minds: Clear API Key` | Deletes the stored key from SecretStorage. |
-| `Minds: Browse Research Groups` | Opens the available Groups as Markdown. |
-| `Minds: Plan Research for Selected Text` | Creates a reviewable plan draft from the explicit selection. |
+| `Minds: Browse Audiences` | Opens the available Audiences as Markdown (`list_audiences`). |
+| `Minds: Plan Research for Selected Text` | Creates a reviewable plan draft from the explicit selection (`plan_study_questions`). |
 
 ## Data and security
 

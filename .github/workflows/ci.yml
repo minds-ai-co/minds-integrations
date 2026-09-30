@@ -43,5 +43,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run check
+      - name: Verify called MCP tools are on the live surface
+        run: npm run check:mcp-tools
       - run: npm run validate:json
       - run: npm run build --workspace minds-shopify-integration

@@ -13,8 +13,8 @@ workflow without creating a second research contract.
 | Surface | Workflow | State |
 | --- | --- | --- |
 | Shopify | Product purchase-barrier Studies | Restricted development pilot deployed; installed-browser acceptance pending |
-| VS Code | Plan research from selected text, inspect Groups | Buildable alpha |
-| Google Workspace | Ask a Group from Sheets rows and write results back | Review package in progress |
+| VS Code | Plan research from selected text, inspect Audiences | Buildable alpha |
+| Google Workspace | Ask an Audience from Sheets rows and write results back | Review package in progress |
 | Looker Studio | Read Panel analytics into a report data source | Review package in progress |
 | Microsoft Power Platform | Curated REST connector for Panel workflows (OAuth 2.0 with PKCE) | Validated package, OAuth client and certification gates pending |
 | Zapier | Trigger on Studies, create and find Studies, preview plans, and retrieve summaries | Validated and live-smoked package, Zapier registration pending |
