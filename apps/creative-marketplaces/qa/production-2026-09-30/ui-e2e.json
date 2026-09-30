@@ -1,0 +1,62 @@
+{
+  "base": "https://getminds.ai",
+  "checkedAt": "2026-09-30T21:11:31.690Z",
+  "authenticated": true,
+  "cards": [
+    {
+      "name": "Canva",
+      "path": "/guide/integration-canva",
+      "comingSoon": true,
+      "guideOnlyAction": true,
+      "guideLoaded": true
+    },
+    {
+      "name": "Figma · Minds Creative Review",
+      "path": "/guide/integration-figma-plugin",
+      "comingSoon": true,
+      "guideOnlyAction": true,
+      "guideLoaded": true
+    },
+    {
+      "name": "Adobe Express",
+      "path": "/guide/integration-adobe-express",
+      "comingSoon": true,
+      "guideOnlyAction": true,
+      "guideLoaded": true
+    },
+    {
+      "name": "Adobe GenStudio",
+      "path": "/guide/integration-adobe-genstudio",
+      "comingSoon": true,
+      "guideOnlyAction": true,
+      "guideLoaded": true
+    },
+    {
+      "name": "Zapier",
+      "path": "/guide/integration-zapier",
+      "comingSoon": true,
+      "guideOnlyAction": true,
+      "guideLoaded": true
+    }
+  ],
+  "figmaAccountAndPluginDistinct": true,
+  "figmaAccountOAuthActionPreserved": true,
+  "plannedExcludedFromConnected": true,
+  "connectorMutations": [],
+  "screenshots": [
+    {
+      "file": "integrations-canva-card.png",
+      "selector": "[data-testid=\"integrations-surface\"]",
+      "scope": "Canva search result; account chrome excluded"
+    },
+    {
+      "file": "integrations-canva-detail.png",
+      "selector": "[role=\"dialog\"]",
+      "scope": "Canva guide-only Coming soon detail; account chrome excluded"
+    }
+  ],
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  }
+}

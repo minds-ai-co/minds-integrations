@@ -1,0 +1,36 @@
+{
+  "url": "https://getminds.ai/?settings=integrations",
+  "backend": "Playwright over CDP, native Chrome profile",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "productionRevision": "64856529cd7dd1ca87f7fa576885ea200345fc41",
+  "records": [
+    {
+      "file": "integrations-canva-card.png",
+      "selector": "[data-testid=\"integrations-surface\"]",
+      "width": 1810,
+      "height": 1080,
+      "sha256": "94016d77c80bfce34bb00c80298c6fb1986fe5742a9ad124b3e75b7d279c304a",
+      "capturedAt": "2026-09-30T21:11:11.954189+00:00",
+      "visuallyChecked": true
+    },
+    {
+      "file": "integrations-canva-detail.png",
+      "selector": "[role=\"dialog\"]",
+      "width": 1825,
+      "height": 1080,
+      "sha256": "d40744bb6459da3d1ae9ce8dff9e671adddb43f678e619fe84b4a169332e3f4b",
+      "capturedAt": "2026-09-30T21:11:12.114187+00:00",
+      "visuallyChecked": true
+    }
+  ],
+  "readiness": {
+    "authenticated": true,
+    "fontsReady": true,
+    "noLoadingState": true,
+    "animations": "disabled"
+  },
+  "privacy": "Native component crops exclude account chrome, customer research, identifiers and credentials."
+}
