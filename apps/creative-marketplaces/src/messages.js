@@ -110,16 +110,6 @@ export const panelMessages = {
     "defaultMessage": "Draft research plan",
     "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
   },
-  "Review and run in Minds": {
-    "id": "minds.creative.29322adf020b0ed4",
-    "defaultMessage": "Review and run in Minds",
-    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
-  },
-  "Review the plan and estimated cost in Minds before running the Study.": {
-    "id": "minds.creative.98e8e767013db6d2",
-    "defaultMessage": "Review the plan and estimated cost in Minds before running the Study.",
-    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
-  },
   "Load findings": {
     "id": "minds.creative.8b06cb095e427156",
     "defaultMessage": "Load findings",
@@ -210,11 +200,6 @@ export const panelMessages = {
     "defaultMessage": "Check the selected material, then choose whether to send it to Minds.",
     "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
   },
-  "Draft ready. Review and confirm it in Minds to run the Study.": {
-    "id": "minds.creative.62b2150e1ff422c7",
-    "defaultMessage": "Draft ready. Review and confirm it in Minds to run the Study.",
-    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
-  },
   "Minds opened.": {
     "id": "minds.creative.0abd6a56dfceacf2",
     "defaultMessage": "Minds opened.",
@@ -253,6 +238,26 @@ export const panelMessages = {
   "Canva design": {
     "id": "minds.creative.2649e3220391d64b",
     "defaultMessage": "Canva design",
+    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
+  },
+  "Findings are not ready. Run the Study and generate its summary in Minds, then try again.": {
+    "id": "minds.creative.b62c3cff940696e8",
+    "defaultMessage": "Findings are not ready. Run the Study and generate its summary in Minds, then try again.",
+    "description": "Status when the Study has no aggregate summary available. Directs users to run and summarize research in Minds before importing findings."
+  },
+  "Open Study in Minds": {
+    "id": "minds.creative.2fa08bbcf03bfa8e",
+    "defaultMessage": "Open Study in Minds",
+    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
+  },
+  "Review the draft below. This development version cannot run the saved draft.": {
+    "id": "minds.creative.c585ab66559beabb",
+    "defaultMessage": "Review the draft below. This development version cannot run the saved draft.",
+    "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
+  },
+  "Draft saved. Review it below. Confirmation and execution are not available in this development version.": {
+    "id": "minds.creative.5c0f1518d6a6f603",
+    "defaultMessage": "Draft saved. Review it below. Confirmation and execution are not available in this development version.",
     "description": "Text in the creative research panel. Study and Audience are Minds product concepts. Preserve Minds and Canva brand names."
   }
 };

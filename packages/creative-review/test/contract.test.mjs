@@ -25,3 +25,14 @@ test('the browser uses an ephemeral gateway session with credentials omitted', a
   assert.equal(calls[1].options.credentials, 'omit');
   assert.equal(client.session, null);
 });
+
+test('default fetch preserves the browser receiver required by Adobe Express', async t => {
+  const original = globalThis.fetch;
+  t.after(() => { globalThis.fetch = original; });
+  globalThis.fetch = function () {
+    assert.equal(this, globalThis);
+    return Promise.resolve(new Response(JSON.stringify({ connected: false }), { status: 200 }));
+  };
+  const client = new CreativeReviewClient('https://getminds.ai/integrations/creative');
+  assert.deepEqual(await client.status(), { connected: false });
+});

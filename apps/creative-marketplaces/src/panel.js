@@ -17,8 +17,8 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     <label for="locale">${html("Study language")}</label><select id="locale"><option value="en">${html("English")}</option><option value="de">${html("German")}</option><option value="es">${html("Spanish")}</option><option value="fr">${html("French")}</option><option value="zh">${html("Chinese")}</option><option value="tr">${html("Turkish")}</option><option value="ar">${html("Arabic")}</option><option value="ja">${html("Japanese")}</option><option value="ko">${html("Korean")}</option></select>
     <button id="export">${html("Select material to review")}</button><p id="material">${html("No material selected.")}</p><img id="image" alt="${html("Selected artwork")}" hidden>
     <label><input id="consent" type="checkbox" style="width:auto"> ${html("Send this selected material to Minds to draft a research plan.")}</label>
-    <button id="preview">${html("Draft research plan")}</button><button id="open">${html("Review and run in Minds")}</button>
-    <p>${html("Review the plan and estimated cost in Minds before running the Study.")}</p>
+    <button id="preview">${html("Draft research plan")}</button><button id="open">${html("Open Study in Minds")}</button>
+    <p>${html("Review the draft below. This development version cannot run the saved draft.")}</p>
     <button id="summary">${html("Load findings")}</button><button id="import" hidden>${html("Add findings to design")}</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
   const el = id => root.querySelector(`#${id}`);
   let material, imageUrl, summary, previewKey, fingerprint, busy = false;
@@ -83,13 +83,18 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     if (nextFingerprint !== fingerprint) { previewKey = crypto.randomUUID(); fingerprint = nextFingerprint; }
     const result = await client.preview(id, input, previewKey);
     el('result').hidden = false; el('result').textContent = JSON.stringify(result.data || result, null, 2);
-    el('status').textContent = text("Draft ready. Review and confirm it in Minds to run the Study.");
+    el('status').textContent = text("Draft saved. Review it below. Confirmation and execution are not available in this development version.");
   });
   el('open').onclick = operation(async () => { await openUrl(`https://getminds.ai/?studyId=${encodeURIComponent(studyId())}`); el('status').textContent = text("Minds opened."); });
   el('summary').onclick = operation(async () => {
     requireConnection();
+    summary = undefined; el('import').hidden = true;
     const value = await client.summary(studyId());
-    summary = JSON.stringify(value.data || value, null, 2);
+    const report = (value.data || value).summary;
+    if (!report || (typeof report === 'string' && !report.trim()) || (typeof report === 'object' && !Object.keys(report).length)) {
+      throw new Error(text('Findings are not ready. Run the Study and generate its summary in Minds, then try again.'));
+    }
+    summary = typeof report === 'string' ? report : JSON.stringify(report, null, 2);
     el('result').hidden = false; el('result').textContent = summary;
     el('import').hidden = !importFindings;
     el('status').textContent = text("Aggregate findings loaded.");

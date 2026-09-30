@@ -34,7 +34,7 @@ export function studyPath(studyId, suffix = '') {
 // Only the gateway's short-lived session capability enters the adapter UI.
 // Minds OAuth tokens remain in the gateway. Nothing is persisted in localStorage.
 export class CreativeReviewClient {
-  constructor(baseUrl, request = fetch) {
+  constructor(baseUrl, request = (...args) => globalThis.fetch(...args)) {
     const url = new URL(baseUrl);
     if (url.username || url.password || url.search || url.hash || !(url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname)))) {
       throw new Error('Use HTTPS for the integration gateway.');

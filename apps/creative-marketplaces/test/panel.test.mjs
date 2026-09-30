@@ -14,7 +14,7 @@ test('the panel sends only explicitly selected and approved material; retries re
       : url.endsWith('/session') ? { connected: true }
       : url.endsWith('/studies') ? { data: [{ id: 'study-1', name: 'Creative study' }] }
       : url.endsWith('/preview') ? { data: { status: 'needs_confirmation' } }
-      : { data: { findings: 'A clear message' } };
+      : { data: { summary: 'A clear message' } };
     return new Response(JSON.stringify(value), { status: 200 });
   };
   t.after(() => { Object.assign(globalThis, original); dom.window.close(); });
@@ -41,6 +41,10 @@ test('the panel sends only explicitly selected and approved material; retries re
   assert.notEqual(previews[0].options.headers['Idempotency-Key'], previews[2].options.headers['Idempotency-Key']);
   await click('open'); assert.equal(opened.at(-1), 'https://getminds.ai/?studyId=study-1');
   await click('summary'); await click('import'); assert.ok(imported[0].includes('A clear message'));
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: { summary: null, hasEnoughContent: false } }), { status: 200 });
+  await click('summary');
+  assert.equal(el('import').hidden, true);
+  assert.match(el('status').textContent, /Findings are not ready/);
   assert.ok(!calls.some(call => /execute|confirm/.test(call.url)));
 });
 
