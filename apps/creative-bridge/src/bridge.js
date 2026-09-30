@@ -188,7 +188,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         const fingerprint = JSON.stringify({ target, body });
         let job = session.previews.get(key);
         if (job && job.fingerprint !== fingerprint) throw fail(409, 'Use a new request identifier for changed material.');
-        if (job?.error) { session.previews.delete(key); job = undefined; }
+        if (job?.error) { session.previews.delete(key); throw job.error; }
         if (!job) {
           if (pendingPreviews >= previewConcurrency) throw fail(429, 'Minds is busy. Try again shortly.');
           if (session.previews.size >= 20) throw fail(429, 'Reconnect after completing your draft requests.');

@@ -140,3 +140,20 @@ test('slow drafts acknowledge immediately, stay session-bound and deduplicate re
   await new Promise(resolve => setImmediate(resolve));
   assert.equal((await (await env.call(poll, { headers })).json()).data.draftPlanId, 'owned-draft');
 });
+
+test('failed preparation is surfaced once and only a later explicit retry starts another attempt', async t => {
+  let plans = 0;
+  const env = await setup(t, { request: async url => {
+    if (url.endsWith('/preview')) { plans++; throw new Error('private provider diagnostic'); }
+    return new Response(JSON.stringify(url.endsWith('/oauth/register') ? { client_id: 'test' } : { access_token: 'fake-access', expires_in: 3600 }));
+  } });
+  const { headers } = await authorize(env);
+  const options = { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': 'failed-event' }, body: JSON.stringify({ studyId: 'study-1', request: 'Review', source: { kind: 'prompt', label: 'Copy', content: 'Coffee' } }) };
+  assert.equal((await env.call('/preview', options)).status, 202);
+  const failed = await env.call('/preview', options);
+  assert.equal(failed.status, 500);
+  assert.equal((await failed.json()).message, 'Creative review is temporarily unavailable.');
+  assert.equal(plans, 1);
+  assert.equal((await env.call('/preview', options)).status, 202);
+  assert.equal(plans, 2);
+});
