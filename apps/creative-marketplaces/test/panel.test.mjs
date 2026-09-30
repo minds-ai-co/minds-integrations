@@ -16,7 +16,7 @@ test('the panel sends only explicitly selected and approved material; retries re
       : url.endsWith('/preview') ? { data: { status: 'needs_confirmation', draftPlanId: 'draft-a' } }
       : url.includes('/run?') ? { data: { status: 'completed', draftPlanId: 'draft-a', runId: 'draft-a', artifacts: [{ kind: 'responses', outputData: { title: 'Clarity', summary: 'A clear message' } }] } }
       : { data: { summary: 'A clear message' } };
-    return new Response(JSON.stringify(value), { status: 200 });
+    return new Response(JSON.stringify(value), { status: 200, headers: { 'Content-Type': 'application/json' } });
   };
   t.after(() => { Object.assign(globalThis, original); dom.window.close(); });
   let exportCount = 0;
@@ -42,11 +42,11 @@ test('the panel sends only explicitly selected and approved material; retries re
   assert.notEqual(previews[0].options.headers['Idempotency-Key'], previews[2].options.headers['Idempotency-Key']);
   await click('open'); assert.equal(opened.at(-1), 'https://getminds.ai/?studyId=study-1&draftPlanId=draft-a');
   await click('summary'); await click('import'); assert.ok(imported[0].includes('A clear message'));
-  globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'draft-a', runId: 'draft-a', status: 'running', artifacts: [] } }), { status: 200 });
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'draft-a', runId: 'draft-a', status: 'running', artifacts: [] } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   await click('summary');
   assert.equal(el('import').hidden, true);
   assert.match(el('status').textContent, /Findings are not ready/);
-  globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'older-draft', runId: 'older-run', status: 'completed', artifacts: [{ kind: 'responses', outputData: { summary: 'Old findings' } }] } }), { status: 200 });
+  globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'older-draft', runId: 'older-run', status: 'completed', artifacts: [{ kind: 'responses', outputData: { summary: 'Old findings' } }] } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   await click('summary'); assert.equal(el('import').hidden, true);
   assert.match(el('status').textContent, /do not match/);
   el('request').dispatchEvent(new dom.window.Event('input'));

@@ -27,7 +27,7 @@ test('the browser uses an ephemeral gateway session with credentials omitted', a
   const calls = [];
   const client = new CreativeReviewClient('https://getminds.ai/integrations/creative', async (url, options) => {
     calls.push({ url, options });
-    return new Response(JSON.stringify(url.endsWith('/sessions') ? { session: 'ephemeral', connectUrl: 'https://getminds.ai/connect' } : { connected: true }), { status: 200 });
+    return new Response(JSON.stringify(url.endsWith('/sessions') ? { session: 'ephemeral', connectUrl: 'https://getminds.ai/connect' } : { connected: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   });
   await client.connect(); await client.status(); await client.disconnect();
   assert.equal(calls[1].options.headers.Authorization, 'Bearer ephemeral');
@@ -40,8 +40,13 @@ test('default fetch preserves the browser receiver required by Adobe Express', a
   t.after(() => { globalThis.fetch = original; });
   globalThis.fetch = function () {
     assert.equal(this, globalThis);
-    return Promise.resolve(new Response(JSON.stringify({ connected: false }), { status: 200 }));
+    return Promise.resolve(new Response(JSON.stringify({ connected: false }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
   };
   const client = new CreativeReviewClient('https://getminds.ai/integrations/creative');
   assert.deepEqual(await client.status(), { connected: false });
+});
+
+test('HTML timeout pages produce a safe retry instruction without exposing provider content', async () => {
+  const client = new CreativeReviewClient('https://getminds.ai/integrations/creative', async () => new Response('<html>private upstream diagnostic</html>', { status: 504, headers: { 'Content-Type': 'text/html' } }));
+  await assert.rejects(client.status(), error => /Retry the same draft request/.test(error.message) && !error.message.includes('private'));
 });

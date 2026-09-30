@@ -186,3 +186,9 @@ Minds Content owns `/guide/integration-canva`, `/guide/integration-figma-plugin`
 Screenshots and their provenance live in `minds-content/public/images/integrations/creative/`. Use real native hosts and explicit crops, exclude browser chrome, credentials, private summaries and asset access URLs, and describe the installed version. Figma/GenStudio have no working native screenshot because their host tests remain blocked. Do not generate fake screenshots to fill that gap.
 
 Whenever code, provider state or release availability changes, update the native test record, canonical engineering guide, English public guide and all localized siblings together. Re-run registry, mounted UI, directory, localization, internal-link and content contracts before changing availability. Public release status requires provider-side verification, not an optimistic roadmap entry.
+
+## Native QA ingress timeout repair
+
+The 2026-09-30 Canva current-bundle acceptance found HTTP 504 HTML on long draft preparation. The bridge now acknowledges planning with HTTP 202 and keeps at most 20 preview jobs in each one-hour session. The panel polls the same authenticated preview route with Study and request identity. Identical retries share the pending/result job; changed input with the same key is rejected, other sessions cannot read it, and upstream failures permit a canonical idempotent retry. Gateway restart still clears sessions and requires reconnecting. The canonical draft remains durable in Minds; this is not a new execution queue.
+
+Full repository checks and all four bundle builds passed. Native package re-upload and gateway deployment verification are required for this repair. HTML upstream errors produce a safe retry instruction without displaying provider page content.

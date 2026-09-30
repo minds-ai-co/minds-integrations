@@ -93,7 +93,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         if (sessions.size >= capacity) throw fail(429, 'Too many connections. Try again later.');
         const capability = random(), ticket = random();
         const key = digest(capability);
-        sessions.set(key, { expiresAt: now() + expiry, origin });
+        sessions.set(key, { expiresAt: now() + expiry, origin, previews: new Map() });
         tickets.set(digest(ticket), { key, expiresAt: now() + 600000 });
         json(res, 201, { session: capability, connectUrl: `${publicUrl.replace(/\/$/, '')}/connect?ticket=${ticket}` }); return;
       }
@@ -171,6 +171,12 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         const form = new FormData(); form.append('folder', 'chat'); form.append('file', new Blob([data], { type: 'image/png' }), name);
         json(res, 200, await upstream('/api/uploads/proxy', { method: 'POST', headers, body: form })); return;
       }
+      if (path === '/preview' && req.method === 'GET') {
+        const job = session.previews.get(url.searchParams.get('requestId'));
+        if (!job || job.studyId !== url.searchParams.get('studyId')) throw fail(404, 'Draft request not found. Retry from your app.');
+        if (job.error) throw job.error;
+        json(res, job.result ? 200 : 202, job.result || { pending: true }); return;
+      }
       if (path === '/preview' && req.method === 'POST') {
         const key = req.headers['idempotency-key'];
         if (typeof key !== 'string' || !/^[\w-]{1,128}$/.test(key)) throw fail(400, 'Missing preview request identifier.');
@@ -178,8 +184,21 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         let body, target;
         try { body = previewBody(input); target = studyPath(input.studyId, '/research-plans/preview'); }
         catch { throw fail(400, 'Choose a Study, a supported language and readable material, then describe what you want to learn.'); }
-        json(res, 200, await upstream(target, { method: 'POST',
-          headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: JSON.stringify(body) })); return;
+        const fingerprint = JSON.stringify({ target, body });
+        let job = session.previews.get(key);
+        if (job && job.fingerprint !== fingerprint) throw fail(409, 'Use a new request identifier for changed material.');
+        if (job?.error) { session.previews.delete(key); job = undefined; }
+        if (!job) {
+          if (session.previews.size >= 20) throw fail(429, 'Reconnect after completing your draft requests.');
+          job = { studyId: input.studyId, fingerprint };
+          session.previews.set(key, job);
+          // Planning continues independently of the platform's short HTTP ingress timeout.
+          const pending = job;
+          void upstream(target, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': key },
+            body: JSON.stringify(body) }).then(result => { pending.result = result; }, error => { pending.error = error; });
+        }
+        if (job.error) throw job.error;
+        json(res, job.result ? 200 : 202, job.result || { pending: true }); return;
       }
       throw fail(404, 'Not found.');
     } catch (error) {

@@ -71,6 +71,7 @@ export class CreativeReviewClient {
       headers: { ...(this.session ? { Authorization: `Bearer ${this.session}` } : {}), ...headers },
       body, signal: AbortSignal.timeout(90000),
     });
+    if (!(response.headers.get('content-type') || '').includes('json')) throw new Error('Minds is temporarily unavailable. Retry the same draft request.');
     const value = await response.json();
     if (!response.ok) throw new Error(value.message || 'Minds request failed.');
     return value;
@@ -85,11 +86,18 @@ export class CreativeReviewClient {
   async upload(blob, name = 'creative.png') {
     return this.call('/upload', { method: 'POST', body: blob, headers: { 'Content-Type': blob.type, 'X-Creative-Name': encodeURIComponent(name) } });
   }
-  preview(studyId, input, idempotencyKey) {
+  async preview(studyId, input, idempotencyKey) {
     if (!idempotencyKey) throw new Error('Missing preview request identifier.');
     const body = previewBody(input);
     studyPath(studyId);
-    return this.call('/preview', { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
+    let result = await this.call('/preview', { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
+    const deadline = Date.now() + 90000;
+    while (result.pending) {
+      if (Date.now() >= deadline) throw new Error('Draft preparation is taking longer. Retry the same request to check its saved result.');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      result = await this.call(`/preview?${new URLSearchParams({ studyId, requestId: idempotencyKey })}`);
+    }
+    return result;
   }
   summary(studyId) { studyPath(studyId); return this.call(`/summary?studyId=${encodeURIComponent(studyId)}`); }
   run(studyId, draftPlanId) {

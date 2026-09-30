@@ -68,7 +68,8 @@ test('uploads PNG bytes as owner-scoped material and previews with an idempotenc
   assert.equal(upload.status, 200);
   const source = { kind: 'image', label: 'Frame', url: (await upload.json()).url };
   const preview = await env.call('/preview', { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': 'event-1' }, body: JSON.stringify({ studyId: 'study-1', request: 'Evaluate clarity', source, run: true }) });
-  assert.equal(preview.status, 200);
+  assert.equal(preview.status, 202);
+  assert.equal((await env.call('/preview?studyId=study-1&requestId=event-1', { headers })).status, 200);
   const request = env.upstreamCalls.find(call => call.url.endsWith('/preview'));
   assert.equal(request.options.headers['Idempotency-Key'], 'event-1');
   assert.equal(JSON.parse(request.options.body).run, undefined);
@@ -112,4 +113,29 @@ test('run retrieval resolves an owned draft and never exposes an execute gateway
   assert.equal((await env.call(path, { headers: { ...headers, Origin: 'null' } })).status, 403);
   assert.equal((await env.call('/execute', { method: 'POST', headers })).status, 404);
   assert.equal((await env.call('/run', { method: 'POST', headers })).status, 404);
+});
+
+test('slow drafts acknowledge immediately, stay session-bound and deduplicate retries', async t => {
+  let finish;
+  const waiting = new Promise(resolve => { finish = resolve; });
+  let plans = 0;
+  const env = await setup(t, { request: async url => {
+    if (url.endsWith('/preview')) { plans++; await waiting; }
+    const value = url.endsWith('/oauth/register') ? { client_id: 'test' } : url.endsWith('/oauth/token') ? { access_token: 'fake-access', expires_in: 3600 } : { data: { draftPlanId: 'owned-draft' } };
+    return new Response(JSON.stringify(value));
+  } });
+  const { headers } = await authorize(env);
+  const options = { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': 'slow-event' }, body: JSON.stringify({ studyId: 'study-1', request: 'Review', source: { kind: 'prompt', label: 'Copy', content: 'Coffee' } }) };
+  assert.equal((await env.call('/preview', options)).status, 202);
+  assert.equal((await env.call('/preview', options)).status, 202);
+  assert.equal(plans, 1);
+  const poll = '/preview?studyId=study-1&requestId=slow-event';
+  assert.equal((await env.call(poll, { headers })).status, 202);
+  assert.equal((await env.call(poll.replace('study-1', 'study-2'), { headers })).status, 404);
+  const other = await authorize(env);
+  assert.equal((await env.call(poll, { headers: other.headers })).status, 404);
+  assert.equal((await env.call('/preview', { ...options, body: options.body.replace('Coffee', 'Tea') })).status, 409);
+  finish();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal((await (await env.call(poll, { headers })).json()).data.draftPlanId, 'owned-draft');
 });
