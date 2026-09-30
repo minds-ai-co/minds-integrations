@@ -191,3 +191,27 @@ test("previews a research plan without exposing a run action", async () => {
   assert.equal(result.id, "draft-1");
   assert.equal(result.studyId, "study-1");
 });
+
+test("attaches creative URLs and preserves retry identity without running research", async () => {
+  const z = fakeZ(() => response({ data: { draftPlanId: "draft-image", status: "needs_confirmation" } }));
+  await App.creates.preview_research_plan.operation.perform(z, { inputData: {
+    studyId: "study-1", request: "Review this creative", sourceUrl: "https://assets.example/frame.png", sourceKind: "image", idempotencyKey: "event-1",
+  } });
+  assert.deepEqual(z.calls[0].body.source, { kind: "image", label: "Zapier creative", url: "https://assets.example/frame.png" });
+  assert.equal(z.calls[0].headers["Idempotency-Key"], "event-1");
+  assert.equal(z.calls[0].body.run, undefined);
+});
+
+test("rejects ambiguous material and non-HTTPS URLs before making an API call", async () => {
+  for (const input of [
+    { sourceUrl: "http://assets.example/a.png" },
+    { sourceUrl: "https://user:password@assets.example/a.png" },
+    { sourceUrl: "https://assets.example/a.png", sourceContent: "copy" },
+    { sourceUrl: "https://assets.example/a.png", sourceKind: "invalid" },
+    { idempotencyKey: "bad key" },
+  ]) {
+    const z = fakeZ(() => { throw new Error("must not call"); });
+    await assert.rejects(App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: "study-1", request: "Review", ...input } }));
+    assert.equal(z.calls.length, 0);
+  }
+});

@@ -8,7 +8,9 @@
     "apps/vscode",
     "apps/zapier",
     "apps/slack",
-    "apps/shopify"
+    "apps/shopify",
+    "apps/creative-bridge",
+    "apps/creative-marketplaces"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

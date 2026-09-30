@@ -18,17 +18,30 @@ const perform = async (z, bundle) => {
     request: bundle.inputData.request,
     studyLocale: bundle.inputData.studyLocale || "en",
   };
-  if (bundle.inputData.sourceContent) {
+  if (bundle.inputData.sourceUrl) {
+    if (bundle.inputData.sourceContent) throw new Error("Use either a material URL or exact text, then include any additional context in the Research Request.");
+    const url = new URL(bundle.inputData.sourceUrl);
+    if (url.protocol !== "https:" || url.username || url.password) throw new Error("Material URL must be a readable HTTPS URL without embedded credentials.");
+    const kind = bundle.inputData.sourceKind || "image";
+    if (!["image", "video", "document", "website"].includes(kind)) throw new Error("Choose a supported material type.");
+    body.source = { kind, label: bundle.inputData.sourceLabel || "Zapier creative", url: bundle.inputData.sourceUrl };
+  } else if (bundle.inputData.sourceContent) {
     body.source = {
       kind: "prompt",
       label: bundle.inputData.sourceLabel || "Zapier input",
       content: bundle.inputData.sourceContent,
     };
   }
+  const headers = {};
+  if (bundle.inputData.idempotencyKey) {
+    if (!/^[\w-]{1,128}$/.test(bundle.inputData.idempotencyKey)) throw new Error("Use an idempotency key of up to 128 letters, digits, underscores or hyphens.");
+    headers["Idempotency-Key"] = bundle.inputData.idempotencyKey;
+  }
   const payload = await request(z, {
     method: "POST",
     path: `/studies/${encodeURIComponent(bundle.inputData.studyId)}/research-plans/preview`,
     body,
+    headers,
   });
   const data = unwrapData(payload);
   return toZapierRecord({ ...data, studyId: bundle.inputData.studyId }, `${bundle.inputData.studyId}-plan`);
@@ -70,6 +83,28 @@ module.exports = {
         required: false,
         helpText:
           "Optional exact text the Minds should react to, such as ad copy or a landing page headline.",
+      },
+      {
+        key: "sourceUrl",
+        label: "Material URL",
+        type: "string",
+        required: false,
+        helpText: "A readable HTTPS image, video, PDF or webpage URL. Minds imports the material when drafting the plan. Use this or Material to Review text, rather than both. Links requiring sign-in cannot be imported.",
+      },
+      {
+        key: "sourceKind",
+        label: "Material Type",
+        type: "string",
+        required: false,
+        choices: { image: "Image", video: "Video", document: "Document / PDF", website: "Webpage" },
+        helpText: "Type of the linked material. Defaults to Image when a URL is supplied.",
+      },
+      {
+        key: "idempotencyKey",
+        label: "Preview Request Identifier",
+        type: "string",
+        required: false,
+        helpText: "Optional stable ID from the source event. Reuse it for retries of the same Study, request and material; use a new ID when those change.",
       },
       {
         key: "sourceLabel",

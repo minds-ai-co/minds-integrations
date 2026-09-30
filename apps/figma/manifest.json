@@ -1,0 +1,5 @@
+{
+  "name": "Minds creative review", "api": "1.0.0", "editorType": ["figma"],
+  "main": "code.js", "ui": "ui.html", "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["https://getminds.ai"], "reasoning": "Connect to Minds, send selected artwork for a research plan, and retrieve aggregate findings." }
+}

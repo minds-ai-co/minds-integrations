@@ -1,5 +1,7 @@
 # Releasing Minds for Zapier
 
+2026-09-30 update: reused integration 246865 and pushed private 1.1.0 with creative-URL previews and retry identifiers. Version 1.0.0 remains private with one Zap user. Its public promotion was attempted; the returned checks passed except S001 (at least three users with live Zaps). The deploy key already exists in the vault; do not create a duplicate. See [creative launch record](../creative-marketplaces/LAUNCH.md).
+
 The code is ready: `npm test`, `zapier-platform validate` (28 of 28 integration checks, no publishing warnings) and the live smoke test pass on `zapier-platform-core` / `zapier-platform-cli` 19.1.0, the current release. Zapier runs 19.x on Node.js 22.
 
 Registered on 2026-09-27 as integration 246865 (`.zapierapprc`) under the Minds-owned Zapier account developers@getminds.ai (password and deploy key in pass under `agents/zapier/getminds/`). Its email domain matches the homepage `getminds.ai`, which Zapier requires of an Admin before publishing (check M005). Zapier requires the first pushed version to be 0.0.x or 1.0.0, so the first release is 1.0.0.

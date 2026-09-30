@@ -1,0 +1,9 @@
+{
+  "name": "minds-creative-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": { "@minds/creative-review": "0.1.0" },
+  "scripts": { "start": "node src/main.js", "test": "node --test test/*.test.mjs" },
+  "engines": { "node": ">=22" }
+}
