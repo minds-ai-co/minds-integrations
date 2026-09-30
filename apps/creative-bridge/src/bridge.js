@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { importCanvaPdf } from './canva-export.js';
 import { MINDS_ORIGIN, previewBody, studyPath } from '@minds/creative-review';
 
 const random = () => randomBytes(32).toString('base64url');
@@ -197,8 +198,9 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
           // Planning continues independently of the platform's short HTTP ingress timeout.
           const pending = job;
           pendingPreviews++;
-          void upstream(target, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': key },
-            body: JSON.stringify(body) }).then(result => { pending.result = result; }, error => { pending.error = error; }).finally(() => { pendingPreviews--; });
+          void importCanvaPdf(body, { request, upload: form => upstream('/api/uploads/proxy', { method: 'POST', headers, body: form }) })
+            .then(prepared => upstream(target, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': key },
+              body: JSON.stringify(prepared) })).then(result => { pending.result = result; }, error => { pending.error = error; }).finally(() => { pendingPreviews--; });
         }
         if (job.error) throw job.error;
         json(res, job.result ? 200 : 202, job.result || { pending: true }); return;
