@@ -3,6 +3,21 @@ import assert from 'node:assert/strict';
 import { proxy } from '../deploy/proxy.mjs';
 
 const env = { ALLOWED_ORIGINS: 'https://app.example', UPSTREAM_ORIGIN: 'https://pilot.ondigitalocean.app', RATE_LIMITER: { limit: async () => ({ success: true }) } };
+test('Figma opaque origin forwards the capability but strips ambient login cookies', async () => {
+  const figma = { ...env, ALLOWED_ORIGINS: `${env.ALLOWED_ORIGINS},null` };
+  const request = new Request('https://getminds.ai/integrations/creative/studies', { headers: {
+    Origin: 'null', Authorization: `Bearer ${'b'.repeat(43)}`, Cookie: 'app_login=private',
+  } });
+  const response = await proxy(request, figma, async (_url, options) => {
+    assert.equal(options.headers.get('origin'), 'null');
+    assert.equal(options.headers.get('authorization'), `Bearer ${'b'.repeat(43)}`);
+    assert.equal(options.headers.get('cookie'), null);
+    return new Response('{}', { headers: { 'Access-Control-Allow-Origin': 'null' } });
+  });
+  assert.equal(response.headers.get('access-control-allow-origin'), 'null');
+  assert.equal(response.headers.get('access-control-allow-credentials'), null);
+  assert.equal((await proxy(request, env, () => { throw Error('Must remain disabled without opt-in'); })).status, 403);
+});
 test('proxy strips Minds login cookies and unrelated headers while preserving callback and redirect', async () => {
   const request = new Request('https://getminds.ai/integrations/creative/callback?code=private-code', { headers: {
     cookie: `app_login=private; minds_creative_oauth=${'a'.repeat(43)}; other=private`, 'x-private-header': 'private',

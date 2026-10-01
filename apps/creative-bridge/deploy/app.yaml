@@ -4,7 +4,7 @@ services:
   - name: gateway
     github:
       repo: minds-ai-co/minds-integrations
-      branch: feature/creative-marketplace-connectors
+      branch: main
       deploy_on_push: false
     dockerfile_path: apps/creative-bridge/Dockerfile
     http_port: 8788
@@ -17,7 +17,7 @@ services:
         value: https://getminds.ai/integrations/creative
         scope: RUN_TIME
       - key: CREATIVE_ALLOWED_ORIGINS
-        value: https://app-aahogk2l5z4.canva-apps.com,https://wj4173926.wxp.adobe-addons.com
+        value: https://app-aahogk2l5z4.canva-apps.com,https://wj4173926.wxp.adobe-addons.com,null
         scope: RUN_TIME
 ingress:
   rules:
