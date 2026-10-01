@@ -20,10 +20,10 @@
     "description": "Returns information about a specific study by its ID."
   },
   {
-    "name": "searchStudies",
+    "name": "listStudies",
     "typeId": 9,
-    "label": "Search studies",
-    "description": "Returns a list of studies filtered by name, most recently updated first."
+    "label": "List studies",
+    "description": "Returns a list of studies, most recently updated first."
   },
   {
     "name": "getStudySummary",

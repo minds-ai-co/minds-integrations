@@ -6,10 +6,7 @@
   },
   "response": {
     "limit": "{{parameters.limit}}",
-    "iterate": {
-      "container": "{{body.data}}",
-      "condition": "{{if(parameters.name, contains(lower(item.name), lower(parameters.name)), true)}}"
-    },
+    "iterate": "{{body.data}}",
     "output": "{{item}}"
   },
   "pagination": {

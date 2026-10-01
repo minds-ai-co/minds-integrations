@@ -124,7 +124,7 @@ test("uses only canonical Study API operations", () => {
 
 test("follows Make naming, structure and review rules", () => {
   const names = manifest.map(({ name }) => name);
-  assert.deepEqual(names, ["watchNewStudies", "createStudy", "getStudy", "searchStudies", "getStudySummary", "previewResearchPlan", "makeApiCall"]);
+  assert.deepEqual(names, ["watchNewStudies", "createStudy", "getStudy", "listStudies", "getStudySummary", "previewResearchPlan", "makeApiCall"]);
   assert.equal(manifest.filter(({ typeId }) => typeId === 12).length, 1, "exactly one universal module");
   assert.equal(names.some((name) => /delete|run|execute|confirm/i.test(name)), false, "no destructive or execution module");
   for (const { name, label, description, typeId } of manifest) {
@@ -138,12 +138,12 @@ test("follows Make naming, structure and review rules", () => {
     assert.deepEqual(files, typeId === 1 ? [...expected.slice(0, 1), "epoch.json", ...expected.slice(1)] : expected);
   }
   // Polling triggers, searches and RPCs need a limit and pagination.
-  for (const name of ["watchNewStudies", "searchStudies"]) {
+  for (const name of ["watchNewStudies", "listStudies"]) {
     assert.equal(module(name).response.limit, "{{parameters.limit}}");
     assert.ok(module(name).pagination.condition);
   }
   assert.equal(module("watchNewStudies", "parameters.json")[0].required, true);
-  const searchLimit = module("searchStudies", "expect.json").find(({ name }) => name === "limit");
+  const searchLimit = module("listStudies", "expect.json").find(({ name }) => name === "limit");
   assert.equal(searchLimit.required, false);
   assert.equal(searchLimit.default, 10);
   for (const { name } of json("rpcs/manifest.json")) {
@@ -157,7 +157,7 @@ test("follows Make naming, structure and review rules", () => {
   const universal = module("makeApiCall");
   assert.equal(universal.url, "https://getminds.ai/api/{{parameters.url}}");
   // Dates are parsed in every Study interface.
-  for (const name of ["watchNewStudies", "getStudy", "searchStudies"]) {
+  for (const name of ["watchNewStudies", "getStudy", "listStudies"]) {
     const types = Object.fromEntries(module(name, "interface.json").map(({ name: field, type }) => [field, type]));
     assert.equal(types.createdAt, "date");
     assert.equal(types.updatedAt, "date");
@@ -217,13 +217,16 @@ test("Get a study and Get a study summary read one Study", async () => {
     (error) => error.type === "InvalidAccessTokenError");
 });
 
-test("Search studies filters by name across pages and honours the limit", async () => {
+test("List studies pages with offsets and honours the limit", async () => {
   const { fetch, calls } = fakeMinds();
-  const named = await run(module("searchStudies"), { name: "homepage" , limit: 10 }, { fetch });
-  assert.deepEqual(named.output.map(({ name }) => name), ["Homepage Positioning review"]);
-  assert.equal(calls.length, 3, "keeps paging while fewer matches than the limit");
-  const all = await run(module("searchStudies"), { limit: 150 }, { fetch: fakeMinds().fetch });
+  const all = await run(module("listStudies"), { limit: 150 }, { fetch });
   assert.equal(all.output.length, 150);
+  assert.deepEqual(calls.map(({ query }) => query.offset ?? "0"), ["0", "100"]);
+  const few = fakeMinds();
+  assert.equal((await run(module("listStudies"), { limit: 10 }, { fetch: few.fetch })).output.length, 10);
+  assert.equal(few.calls.length, 1);
+  // Filtering stays with Make's own filters; the module has no client-side filter.
+  assert.equal(typeof module("listStudies").response.iterate, "string");
 });
 
 test("Preview a research plan drafts a plan and never runs research", async () => {

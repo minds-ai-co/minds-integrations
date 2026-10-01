@@ -16,7 +16,7 @@ Research never runs from Make. **Preview a research plan** saves a draft and ret
 | Watch new studies | Triggers when a new Study is created in your Minds account. |
 | Create a study | Creates a Study and optionally attaches existing Audiences. Does not run research. |
 | Get a study | Returns a Study by its ID. |
-| Search studies | Returns Studies whose name contains a text, most recently updated first. |
+| List studies | Returns Studies, most recently updated first. Use a Make filter to pick Studies by name. |
 | Get a study summary | Returns the saved aggregate summary of a Study. `Has summary` is false until one exists. |
 | Preview a research plan | Drafts a research plan for a Study, optionally with text or a file or webpage URL to react to, and returns a **Review and run in Minds** link. |
 | Make an API call | Sends an authorized request to any [Minds API](https://getminds.ai/docs/api) endpoint. |

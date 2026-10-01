@@ -12,7 +12,7 @@ The app uses the canonical Minds Study API (`https://getminds.ai/api/v1/studies`
 | Watch new studies (`watchNewStudies`) | Polling trigger | `GET /studies` |
 | Create a study (`createStudy`) | Action | `POST /studies` |
 | Get a study (`getStudy`) | Action | `GET /studies/{studyId}` |
-| Search studies (`searchStudies`) | Search | `GET /studies`, filtered by name |
+| List studies (`listStudies`) | Search | `GET /studies`, newest update first |
 | Get a study summary (`getStudySummary`) | Action | `GET /studies/{studyId}/summary` |
 | Preview a research plan (`previewResearchPlan`) | Action | `POST /studies/{studyId}/research-plans/preview` |
 | Make an API call (`makeApiCall`) | Universal | any path under `https://getminds.ai/api` |

@@ -27,8 +27,8 @@ const watched = await run(module("watchNewStudies"), { limit: 3 });
 log("watchNewStudies", `${watched.output.length} bundles, createdAt ${watched.output[0]?.createdAt}`);
 const epoch = await run(module("watchNewStudies", "epoch.json"));
 log("watchNewStudies epoch", `${epoch.output.length} items`);
-const searched = await run(module("searchStudies"), { limit: 10 });
-log("searchStudies", `${searched.output.length} bundles`);
+const listed = await run(module("listStudies"), { limit: 10 });
+log("listStudies", `${listed.output.length} bundles`);
 
 let created;
 try {
@@ -40,9 +40,9 @@ try {
     })).output;
     studyId = created.id;
     log("createStudy", `${created.id} with ${created.audiences.length} Audience(s)`);
-    const found = await run(module("searchStudies"), { name: "Make live smoke", limit: 5 });
-    if (!found.output.some(({ id }) => id === studyId)) throw new Error("searchStudies did not find the new Study");
-    log("searchStudies by name", `${found.output.length} match(es)`);
+    const latest = await run(module("listStudies"), { limit: 5 });
+    if (!latest.output.some(({ id }) => id === studyId)) throw new Error("listStudies did not return the new Study");
+    log("listStudies after create", "new Study listed");
   }
   if (!studyId) throw new Error("No Study to read; rerun with --write.");
   const got = await run(module("getStudy"), { studyId });
