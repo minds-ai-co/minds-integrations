@@ -1,12 +1,14 @@
 # Releasing Minds for Zapier
 
-2026-09-30 update: reused integration 246865 and pushed private 1.1.0 with creative-URL previews and retry identifiers. Version 1.0.0 remains private with one Zap user. Its public promotion was attempted; the returned checks passed except S001 (at least three users with live Zaps). The deploy key already exists in the vault; do not create a duplicate. See [creative launch record](../creative-marketplaces/LAUNCH.md).
+2026-10-01 update: existing integration 246865 has private version 1.2.0 uploaded, including material previews, stable retry identifiers, an exact-draft review URL and Get Completed Research Results. Native editor acceptance of the complete workflow awaits the paired webapp release. Version 1.0.0 remains private with one Zap user. Its public promotion was attempted; the returned checks passed except S001 (at least three users with live Zaps). The deploy key already exists in the vault; do not create a duplicate. See [creative launch record](../creative-marketplaces/LAUNCH.md).
 
-The code is ready: `npm test`, `zapier-platform validate` (28 of 28 integration checks, no publishing warnings) and the live smoke test pass on `zapier-platform-core` / `zapier-platform-cli` 19.1.0, the current release. Zapier runs 19.x on Node.js 22.
+Current 1.2.0 validation reports 27 passing checks, no errors or publishing warnings, and one D004 general warning: its draft ID is mapped from the preview action because no draft-list API exists. Earlier live smoke evidence predates the complete-run return and does not establish its native acceptance. The package uses `zapier-platform-core` / `zapier-platform-cli` 19.1.0, the current release. Zapier runs 19.x on Node.js 22.
 
 Registered on 2026-09-27 as integration 246865 (`.zapierapprc`) under the Minds-owned Zapier account developers@getminds.ai (password and deploy key in pass under `agents/zapier/getminds/`). Its email domain matches the homepage `getminds.ai`, which Zapier requires of an Admin before publishing (check M005). Zapier requires the first pushed version to be 0.0.x or 1.0.0, so the first release is 1.0.0.
 
-## 1. Human steps in the browser (about 5 minutes)
+## 1. Existing account and deploy-key ownership
+
+The Minds company account, registration and deploy key already exist. Reuse them; the setup history below is not an instruction to register another app or issue another deploy key.
 
 1. Sign in at <https://developer.zapier.com> with the Minds account. Complete the developer profile and accept the Zapier Developer Terms / Platform Agreement when prompted (<https://zapier.com/developer-platform/tos>). Publishing is blocked until they are accepted (check U001).
 2. Create a deploy key at <https://developer.zapier.com/partner-settings/deploy-keys/>. Store it in the team vault; do not paste it into chat, tickets or the repository. It replaces an interactive CLI login, including for SSO accounts and CI.
@@ -71,7 +73,7 @@ Building and publishing an integration is free, and the free Zapier plan is enou
 
 ## Operating limits to keep in mind
 
-- Each action, search and polling call must finish within 30 seconds. Preview Research Plan took about 4 seconds in the live smoke test; very large requests may approach the limit.
+- Each action, search and polling call must finish within 30 seconds. An earlier preview took about four seconds, but research interpretation can exceed that. Verify the current preview action in the real editor; do not treat old timing as a guarantee or auto-confirm research to work around this platform limit.
 - New Study returns the newest 100 Studies; Zapier deduplicates by Study `id`, so each Study fires once.
 
 References: [CLI reference](https://docs.zapier.com/platform/reference/cli-docs), [publishing requirements](https://docs.zapier.com/platform/publish/integration-publishing-requirements), [integration checks](https://docs.zapier.com/platform/publish/integration-checks-reference), [public integration process](https://docs.zapier.com/platform/publish/public-integration), [sharing](https://docs.zapier.com/platform/manage/sharing), [operating constraints](https://docs.zapier.com/platform/build/operating-constraints).

@@ -53,6 +53,14 @@ test('the panel sends only explicitly selected and approved material; retries re
   await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
   assert.ok(!calls.some(call => call.url.includes('/summary?')));
   assert.ok(!calls.some(call => /execute|confirm/.test(call.url)));
+  globalThis.fetch = async (url, options) => new Response(JSON.stringify(options.method === 'DELETE' ? { message: 'Reconnect your Minds account.' } : { session: 'fresh', connectUrl: 'https://getminds.ai/connect' }), { status: options.method === 'DELETE' ? 401 : 200, headers: { 'Content-Type': 'application/json' } });
+  el('consent').checked = true;
+  await click('connect');
+  assert.equal(opened.at(-1), 'https://getminds.ai/connect');
+  assert.equal(el('study').value, ''); assert.equal(el('consent').checked, false);
+  assert.equal(el('material').textContent, 'No material selected.');
+  await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
+
 });
 
 test('translated UI stays plain text and dynamic selection uses translated placeholders', async t => {

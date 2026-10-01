@@ -24,6 +24,13 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   let material, imageUrl, summary, previewKey, fingerprint, busy = false;
   let savedDraft;
   const resetDraft = () => { savedDraft = summary = undefined; el('import').hidden = true; el('result').hidden = true; };
+  const clearSelection = () => {
+    el('study').replaceChildren(new Option(text("Connect and refresh Studies"), ''));
+    material = previewKey = fingerprint = undefined; resetDraft();
+    if (imageUrl) URL.revokeObjectURL(imageUrl);
+    imageUrl = undefined; el('image').hidden = true;
+    el('material').textContent = text("No material selected."); el('consent').checked = false;
+  };
   let connected = false;
   const requireConnection = () => { if (!connected) throw new Error(text("Connect Minds and refresh your Studies first.")); };
   const studyId = () => { if (!el('study').value) throw new Error(text("Choose a Study.")); return el('study').value; };
@@ -46,18 +53,14 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   }
   el('connect').onclick = operation(async () => {
     if (client.session) await client.disconnect();
-    connected = false;
+    connected = false; clearSelection();
     const url = await client.connect(); await openUrl(url);
     el('status').textContent = text("Approve the connection in your browser, then select Refresh Studies.");
   });
   el('refresh').onclick = operation(refresh);
   el('disconnect').onclick = operation(async () => {
     await client.disconnect(); connected = false;
-    el('study').replaceChildren(new Option(text("Connect and refresh Studies"), ''));
-    material = previewKey = fingerprint = undefined; resetDraft();
-    if (imageUrl) URL.revokeObjectURL(imageUrl);
-    el('image').hidden = true; el('result').hidden = true; el('import').hidden = true;
-    el('material').textContent = text("No material selected."); el('consent').checked = false;
+    clearSelection();
     el('status').textContent = text("Disconnected.");
   });
   el('export').onclick = operation(async () => {

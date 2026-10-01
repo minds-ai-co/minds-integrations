@@ -63,3 +63,12 @@ test('pending preparation polls the same idempotent POST without changing source
   assert.equal(calls.length, 2);
   assert.deepEqual(calls[1], calls[0]);
 });
+
+ test('expired sessions can reconnect, while failed revocation stays visible', async () => {
+  for (const status of [401, 503]) {
+    const client = new CreativeReviewClient('https://getminds.ai/integrations/creative', async (url, options) => new Response(JSON.stringify(options.method === 'DELETE' ? { message: 'Session unavailable' } : { session: 'fresh', connectUrl: 'https://getminds.ai/connect' }), { status: options.method === 'DELETE' ? status : 200, headers: { 'Content-Type': 'application/json' } }));
+    client.session = 'expired';
+    if (status === 401) { await client.disconnect(); assert.equal(client.session, null); await client.connect(); assert.equal(client.session, 'fresh'); }
+    else { await assert.rejects(client.disconnect(), { message: 'Session unavailable' }); assert.equal(client.session, null); }
+  }
+});

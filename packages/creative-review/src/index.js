@@ -73,7 +73,11 @@ export class CreativeReviewClient {
     });
     if (!(response.headers.get('content-type') || '').includes('json')) throw new Error('Minds is temporarily unavailable. Retry the same draft request.');
     const value = await response.json();
-    if (!response.ok) throw new Error(value.message || 'Minds request failed.');
+    if (!response.ok) {
+      const error = new Error(value.message || 'Minds request failed.');
+      error.status = response.status;
+      throw error;
+    }
     return value;
   }
   async connect() {
@@ -105,5 +109,9 @@ export class CreativeReviewClient {
     reviewUrl(studyId, draftPlanId);
     return this.call(`/run?${new URLSearchParams({ studyId, draftPlanId })}`);
   }
-  async disconnect() { try { await this.call('/session', { method: 'DELETE' }); } finally { this.session = null; } }
+  async disconnect() {
+    try { await this.call('/session', { method: 'DELETE' }); }
+    catch (error) { if (error.status !== 401) throw error; }
+    finally { this.session = null; }
+  }
 }

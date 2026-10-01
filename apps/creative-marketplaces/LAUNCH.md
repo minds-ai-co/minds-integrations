@@ -10,7 +10,7 @@ These are development bundles, not public marketplace releases. The shared gatew
 
 - Gateway source `09bbb52b14a40811eacfadbebade96be853ff0fd` is active, including bounded asynchronous preparation, exact-draft completed-run retrieval and Canva PDF owned import.
 - Canva’s current uploaded bundle passed native PDF export, consent, owned upload, draft creation and navigation to that exact draft. No new research execution is claimed yet.
-- Adobe Express private 0.1.8 passed native PNG-to-draft acceptance. Public 0.1.9 was validated and saved, but not submitted for review.
+- Adobe Express private 0.1.10 and public 0.1.11 validated and saved after fixing expired-session reconnection. Native PNG-to-draft acceptance was on private 0.1.8; fresh 0.1.10 production acceptance is pending. The public candidate has not been submitted for review.
 - Zapier 1.2.0 is privately uploaded; the public three-genuine-user eligibility requirement remains unmet.
 - Figma’s current built development handoff is `minds-figma-complete-workflow-v2.tgz`; genuine Desktop plugin registration and sandbox verification remain required.
 - The paired webapp PR #8006 is still awaiting final hosted acceptance and production release. All 45 customer guides from minds-content PR #386 are verified live.
@@ -107,3 +107,7 @@ For each host: connect/cancel/revoke OAuth; export/cancel; verify no upload befo
 Canva and Figma verification emails addressed to developers@getminds.ai were found forwarded into Alexander's Gmail using an in:anywhere search, then consumed privately to complete both accounts. No mailbox permission was changed; direct delegated access to developers@ was unnecessary.
 
 References: [Canva exports](https://www.canva.dev/docs/apps/exporting-designs/), [Canva release](https://www.canva.dev/docs/apps/releasing-apps/), [Figma manifest](https://developers.figma.com/docs/plugins/manifest/), [Figma publishing](https://developers.figma.com/docs/plugins/publishing/), [Figma desktop setup](https://developers.figma.com/docs/plugins/plugin-quickstart-guide/), [Express renditions](https://developer.adobe.com/express/add-ons/docs/guides/learn/how-to/create-renditions), [Express manifest](https://developer.adobe.com/express/add-ons/docs/references/manifest/), [GenStudio guide](https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/ext-guide/home), [Adobe's validation-extension reference](https://github.com/adobe/genstudio-extensibility-examples/tree/main/genstudio-create-validation), [Zapier checks](https://docs.zapier.com/platform/publish/integration-checks-reference).
+
+### 2026-10-01 connection expiry recovery
+
+Native Canva rechecking exposed a 401 from revoking an already expired gateway session, which prevented a fresh connection. The client now treats only that expired-session response as successful disconnection; other revocation failures remain visible. Reconnecting clears selected material, Study, consent and saved draft so another account cannot reuse them. Ten client/panel regressions and the complete repository check passed. Canva accepted the rebuilt bundle and its fresh native connection, PDF transfer, saved draft and exact owned review link passed. The fresh fixture is recorded privately until complete production run acceptance. Adobe validated private 0.1.10 and public 0.1.11 with the same fix.
