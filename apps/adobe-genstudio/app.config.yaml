@@ -1,0 +1,7 @@
+extensions:
+  dx_genstudio/genstudiopem/1:
+    operations:
+      view:
+        - type: web
+          impl: index.html
+    web: ../../apps/creative-marketplaces/dist/genstudio

@@ -1,0 +1,321 @@
+{
+  "timestamp": "2026-10-01T07:49:23.217Z",
+  "deployment": "1b0a75752a2b760f9c5fd57b4ef5cb3edca0955a",
+  "results": [
+    {
+      "locale": "en",
+      "id": "canva",
+      "path": "/guide/integration-canva.md",
+      "status": 200,
+      "bytes": 10616
+    },
+    {
+      "locale": "en",
+      "id": "figma-plugin",
+      "path": "/guide/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 10481
+    },
+    {
+      "locale": "en",
+      "id": "adobe-express",
+      "path": "/guide/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 10527
+    },
+    {
+      "locale": "en",
+      "id": "adobe-genstudio",
+      "path": "/guide/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 10556
+    },
+    {
+      "locale": "en",
+      "id": "zapier",
+      "path": "/guide/integration-zapier.md",
+      "status": 200,
+      "bytes": 10250
+    },
+    {
+      "locale": "de",
+      "id": "canva",
+      "path": "/guide/de/integration-canva.md",
+      "status": 200,
+      "bytes": 10897
+    },
+    {
+      "locale": "de",
+      "id": "figma-plugin",
+      "path": "/guide/de/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 10467
+    },
+    {
+      "locale": "de",
+      "id": "adobe-express",
+      "path": "/guide/de/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 10468
+    },
+    {
+      "locale": "de",
+      "id": "adobe-genstudio",
+      "path": "/guide/de/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 11009
+    },
+    {
+      "locale": "de",
+      "id": "zapier",
+      "path": "/guide/de/integration-zapier.md",
+      "status": 200,
+      "bytes": 10569
+    },
+    {
+      "locale": "es",
+      "id": "canva",
+      "path": "/guide/es/integration-canva.md",
+      "status": 200,
+      "bytes": 10719
+    },
+    {
+      "locale": "es",
+      "id": "figma-plugin",
+      "path": "/guide/es/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 10736
+    },
+    {
+      "locale": "es",
+      "id": "adobe-express",
+      "path": "/guide/es/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 10435
+    },
+    {
+      "locale": "es",
+      "id": "adobe-genstudio",
+      "path": "/guide/es/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 11053
+    },
+    {
+      "locale": "es",
+      "id": "zapier",
+      "path": "/guide/es/integration-zapier.md",
+      "status": 200,
+      "bytes": 10494
+    },
+    {
+      "locale": "fr",
+      "id": "canva",
+      "path": "/guide/fr/integration-canva.md",
+      "status": 200,
+      "bytes": 11074
+    },
+    {
+      "locale": "fr",
+      "id": "figma-plugin",
+      "path": "/guide/fr/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 11109
+    },
+    {
+      "locale": "fr",
+      "id": "adobe-express",
+      "path": "/guide/fr/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 11029
+    },
+    {
+      "locale": "fr",
+      "id": "adobe-genstudio",
+      "path": "/guide/fr/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 11136
+    },
+    {
+      "locale": "fr",
+      "id": "zapier",
+      "path": "/guide/fr/integration-zapier.md",
+      "status": 200,
+      "bytes": 10902
+    },
+    {
+      "locale": "zh",
+      "id": "canva",
+      "path": "/guide/zh/integration-canva.md",
+      "status": 200,
+      "bytes": 4266
+    },
+    {
+      "locale": "zh",
+      "id": "figma-plugin",
+      "path": "/guide/zh/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 4598
+    },
+    {
+      "locale": "zh",
+      "id": "adobe-express",
+      "path": "/guide/zh/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 4182
+    },
+    {
+      "locale": "zh",
+      "id": "adobe-genstudio",
+      "path": "/guide/zh/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 4598
+    },
+    {
+      "locale": "zh",
+      "id": "zapier",
+      "path": "/guide/zh/integration-zapier.md",
+      "status": 200,
+      "bytes": 4662
+    },
+    {
+      "locale": "tr",
+      "id": "canva",
+      "path": "/guide/tr/integration-canva.md",
+      "status": 200,
+      "bytes": 9960
+    },
+    {
+      "locale": "tr",
+      "id": "figma-plugin",
+      "path": "/guide/tr/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 9924
+    },
+    {
+      "locale": "tr",
+      "id": "adobe-express",
+      "path": "/guide/tr/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 9808
+    },
+    {
+      "locale": "tr",
+      "id": "adobe-genstudio",
+      "path": "/guide/tr/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 10039
+    },
+    {
+      "locale": "tr",
+      "id": "zapier",
+      "path": "/guide/tr/integration-zapier.md",
+      "status": 200,
+      "bytes": 9902
+    },
+    {
+      "locale": "ar",
+      "id": "canva",
+      "path": "/guide/ar/integration-canva.md",
+      "status": 200,
+      "bytes": 8447
+    },
+    {
+      "locale": "ar",
+      "id": "figma-plugin",
+      "path": "/guide/ar/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 8473
+    },
+    {
+      "locale": "ar",
+      "id": "adobe-express",
+      "path": "/guide/ar/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 8504
+    },
+    {
+      "locale": "ar",
+      "id": "adobe-genstudio",
+      "path": "/guide/ar/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 8848
+    },
+    {
+      "locale": "ar",
+      "id": "zapier",
+      "path": "/guide/ar/integration-zapier.md",
+      "status": 200,
+      "bytes": 8508
+    },
+    {
+      "locale": "ja",
+      "id": "canva",
+      "path": "/guide/ja/integration-canva.md",
+      "status": 200,
+      "bytes": 5952
+    },
+    {
+      "locale": "ja",
+      "id": "figma-plugin",
+      "path": "/guide/ja/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 5897
+    },
+    {
+      "locale": "ja",
+      "id": "adobe-express",
+      "path": "/guide/ja/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 5887
+    },
+    {
+      "locale": "ja",
+      "id": "adobe-genstudio",
+      "path": "/guide/ja/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 6140
+    },
+    {
+      "locale": "ja",
+      "id": "zapier",
+      "path": "/guide/ja/integration-zapier.md",
+      "status": 200,
+      "bytes": 6074
+    },
+    {
+      "locale": "ko",
+      "id": "canva",
+      "path": "/guide/ko/integration-canva.md",
+      "status": 200,
+      "bytes": 5949
+    },
+    {
+      "locale": "ko",
+      "id": "figma-plugin",
+      "path": "/guide/ko/integration-figma-plugin.md",
+      "status": 200,
+      "bytes": 5938
+    },
+    {
+      "locale": "ko",
+      "id": "adobe-express",
+      "path": "/guide/ko/integration-adobe-express.md",
+      "status": 200,
+      "bytes": 5918
+    },
+    {
+      "locale": "ko",
+      "id": "adobe-genstudio",
+      "path": "/guide/ko/integration-adobe-genstudio.md",
+      "status": 200,
+      "bytes": 6196
+    },
+    {
+      "locale": "ko",
+      "id": "zapier",
+      "path": "/guide/ko/integration-zapier.md",
+      "status": 200,
+      "bytes": 6090
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-10-01T08:18:28.729085+00:00",
+  "backend": "Playwright CDP attached to owned native Adobe Express browser; Page.captureScreenshot",
+  "host": "https://express.adobe.com",
+  "package": "private 0.1.8",
+  "gatewayRevision": "09bbb52b14a40811eacfadbebade96be853ff0fd",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "clip": {
+    "x": 1600,
+    "y": 180,
+    "width": 320,
+    "height": 900
+  },
+  "fixture": "Owned synthetic coffee headline in native Adobe Express QA design",
+  "readiness": {
+    "connected": true,
+    "selectedSourceVisible": true,
+    "transferConsentVisible": true,
+    "nativePngExported": true,
+    "ownedSourceVerified": true,
+    "exactDraftVerified": true,
+    "questionCount": 1,
+    "researchExecuted": false,
+    "visuallyInspected": true
+  },
+  "artifacts": [
+    "express-source-consent.png"
+  ]
+}

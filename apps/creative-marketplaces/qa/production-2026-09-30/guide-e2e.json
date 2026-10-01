@@ -1,0 +1,332 @@
+{
+  "base": "https://getminds.ai",
+  "guides": [
+    {
+      "path": "/guide/ar/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ar/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ar/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ar/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ar/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/de/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/de/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/de/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/de/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/de/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/es/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/es/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/es/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/es/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/es/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/fr/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/fr/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/fr/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/fr/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/fr/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ja/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ja/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ja/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ja/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ja/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ko/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ko/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ko/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ko/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/ko/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/tr/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/tr/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/tr/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/tr/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/tr/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/zh/integration-adobe-express",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/zh/integration-adobe-genstudio",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/zh/integration-canva",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/zh/integration-figma-plugin",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    },
+    {
+      "path": "/guide/zh/integration-zapier",
+      "status": 200,
+      "headingMatches": true,
+      "noindex": true,
+      "canonicalMatches": true
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "/images/integrations/creative/canva-development-panel.png",
+      "status": 200,
+      "sha256Matches": true
+    },
+    {
+      "path": "/images/integrations/creative/minds-study-handoff-gap.png",
+      "status": 200,
+      "sha256Matches": true
+    }
+  ]
+}

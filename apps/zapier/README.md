@@ -11,7 +11,12 @@ The integration uses the canonical Minds Study API (`/api/v1/studies`). The lega
 | Action | `create_study` | Creates a Study and optionally attaches existing Audiences. |
 | Action | `preview_research_plan` | Drafts a reviewable research plan. Nothing runs until someone confirms it in Minds. |
 | Search | `find_study` | Finds a Study by ID or exact name. Also offered as Find or Create Study. |
+| Search | `get_research_results` | Returns only the exact saved draft’s completed durable run, artifacts and calculations; unfinished or partial runs find nothing. |
 | Search | `get_study_summary` | Returns the saved aggregate summary; finds nothing until one exists. |
+
+Preview Research Plan returns both the saved draft ID and its review URL. Map the same Study and draft IDs into Get Completed Research Results after a person opens that URL and explicitly confirms the reviewed revision in Minds. The aggregate-summary search is a separate operation and does not establish completion of the imported source event.
+
+Version 1.2.0 is uploaded privately to the existing app 246865. Marketplace publication still requires three genuine users with live Zaps and provider review; see [the current candidate receipts](../creative-marketplaces/LAUNCH.md).
 
 The integration deliberately does not expose Study deletion or study execution. A user reviews and confirms consequential research work in Minds.
 

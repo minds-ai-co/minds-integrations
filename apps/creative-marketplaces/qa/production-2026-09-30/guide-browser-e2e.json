@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-09-30T20:35:27.539Z",
+  "records": [
+    {
+      "path": "/guide/integration-canva",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "screenshotsDecoded": true,
+      "noHorizontalOverflow": true
+    },
+    {
+      "path": "/guide/integration-canva",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotsDecoded": true,
+      "noHorizontalOverflow": true
+    },
+    {
+      "path": "/guide/de/integration-adobe-express",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "screenshotsDecoded": true,
+      "noHorizontalOverflow": true
+    },
+    {
+      "path": "/guide/ar/integration-canva",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshotsDecoded": true,
+      "noHorizontalOverflow": true
+    }
+  ]
+}

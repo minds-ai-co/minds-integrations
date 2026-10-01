@@ -35,7 +35,7 @@ const fakeZ = (reply) => {
 test("defines the bounded Study surface on the canonical API", () => {
   assert.deepEqual(Object.keys(App.triggers).sort(), ["audience_list", "new_study"]);
   assert.equal(App.triggers.audience_list.display.hidden, true);
-  assert.deepEqual(Object.keys(App.searches).sort(), ["find_study", "get_study_summary"]);
+  assert.deepEqual(Object.keys(App.searches).sort(), ["find_study", "get_research_results", "get_study_summary"]);
   assert.deepEqual(Object.keys(App.creates).sort(), ["create_study", "preview_research_plan"]);
   assert.equal(App.authentication.fields[0].type, "password");
   for (const operation of [
@@ -190,4 +190,48 @@ test("previews a research plan without exposing a run action", async () => {
   assert.equal(z.calls[0].body.studyLocale, "de");
   assert.equal(result.id, "draft-1");
   assert.equal(result.studyId, "study-1");
+});
+
+test("returns an exact draft review link and finds only its completed run", async () => {
+  const draftPlanId = 'draft-new';
+  const draft = { draftPlanId, draftStatus: 'confirmed', runId: 'run-new' };
+  const preview = fakeZ(() => response({ data: draft }));
+  const result = await App.creates.preview_research_plan.operation.perform(preview, { inputData: { studyId: 'study-a', request: 'Review clarity' } });
+  assert.equal(result.reviewUrl, 'https://getminds.ai/?studyId=study-a&draftPlanId=draft-new');
+  for (const status of ['running', 'partial', 'failed', 'completed']) {
+    const z = fakeZ(options => response({ data: options.url.endsWith('/preview') ? draft : { runId: 'run-new', status, artifacts: [{ id: 'new-artifact' }], calculations: [] } }));
+    const found = await App.searches.get_research_results.operation.perform(z, { inputData: { studyId: 'study-a', draftPlanId } });
+    assert.equal(found.length, status === 'completed' ? 1 : 0);
+    assert.equal(z.calls[1].url, 'https://getminds.ai/api/v1/studies/study-a/research-runs/run-new');
+    assert.ok(!z.calls.some(call => call.url.endsWith('/summary')));
+  }
+  const notStarted = fakeZ(() => response({ data: { ...draft, draftStatus: 'draft' } }));
+  assert.deepEqual(await App.searches.get_research_results.operation.perform(notStarted, { inputData: { studyId: 'study-a', draftPlanId } }), []);
+  assert.equal(notStarted.calls.length, 1);
+  const mismatch = fakeZ(options => response({ data: options.url.endsWith('/preview') ? draft : { runId: 'older-run', status: 'completed' } }));
+  await assert.rejects(() => App.searches.get_research_results.operation.perform(mismatch, { inputData: { studyId: 'study-a', draftPlanId } }), /different research run/);
+});
+
+test("attaches creative URLs and preserves retry identity without running research", async () => {
+  const z = fakeZ(() => response({ data: { draftPlanId: "draft-image", status: "needs_confirmation" } }));
+  await App.creates.preview_research_plan.operation.perform(z, { inputData: {
+    studyId: "study-1", request: "Review this creative", sourceUrl: "https://assets.example/frame.png", sourceKind: "image", idempotencyKey: "event-1",
+  } });
+  assert.deepEqual(z.calls[0].body.source, { kind: "image", label: "Zapier creative", url: "https://assets.example/frame.png" });
+  assert.equal(z.calls[0].headers["Idempotency-Key"], "event-1");
+  assert.equal(z.calls[0].body.run, undefined);
+});
+
+test("rejects ambiguous material and non-HTTPS URLs before making an API call", async () => {
+  for (const input of [
+    { sourceUrl: "http://assets.example/a.png" },
+    { sourceUrl: "https://user:password@assets.example/a.png" },
+    { sourceUrl: "https://assets.example/a.png", sourceContent: "copy" },
+    { sourceUrl: "https://assets.example/a.png", sourceKind: "invalid" },
+    { idempotencyKey: "bad key" },
+  ]) {
+    const z = fakeZ(() => { throw new Error("must not call"); });
+    await assert.rejects(App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: "study-1", request: "Review", ...input } }));
+    assert.equal(z.calls.length, 0);
+  }
 });

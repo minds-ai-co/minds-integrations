@@ -5,6 +5,7 @@ const createStudy = require("./src/creates/create-study");
 const previewResearchPlan = require("./src/creates/preview-research-plan");
 const findStudy = require("./src/searches/find-study");
 const getStudySummary = require("./src/searches/get-study-summary");
+const getResearchResults = require("./src/searches/get-research-results");
 const { addAuthorizationHeader, handleErrors } = require("./src/client");
 
 module.exports = {
@@ -23,6 +24,7 @@ module.exports = {
   searches: {
     [findStudy.key]: findStudy,
     [getStudySummary.key]: getStudySummary,
+    [getResearchResults.key]: getResearchResults,
   },
   creates: {
     [createStudy.key]: createStudy,
