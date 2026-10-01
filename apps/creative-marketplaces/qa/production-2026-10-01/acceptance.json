@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-01",
+  "productionCommit": "053f4358a795228e6a9cf2cc7d2edf5c07e46a4f",
+  "productionImage": "production-053f4358a795",
+  "deployment": "093ed5b0-b694-4d77-856e-3e7d984cf9a5",
+  "deployWorkflow": 36842991211,
+  "clientCommit": "a359406476ac745a8fa1e082da37eb740323c2d6",
+  "capture": {
+    "nativeSourceViewport": [
+      1920,
+      1080
+    ],
+    "mindsScreenshotLosslessROI": [
+      751,
+      0,
+      1519,
+      1080
+    ],
+    "pixelEqualityVerified": true,
+    "syntheticFixture": "Coffee, ready when you are.",
+    "privacy": "Only owned synthetic material and its results are included; unrelated sidebar and account details removed by lossless crop."
+  },
+  "nativeAcceptance": {
+    "canva": {
+      "draftAndRunId": "bb89a727-89ac-4eb1-8b07-adfa888485fa",
+      "status": "completed",
+      "progress": 100,
+      "questions": 1,
+      "minds": 20,
+      "failedQuestions": 0,
+      "partialQuestions": 0,
+      "skippedQuestions": 0,
+      "responsesArtifacts": 1,
+      "sameRunResumedOnReload": true,
+      "exactNativeFindingsCompared": true,
+      "findingsSHA256": "541875116d8e15715ad4ca75ac040f44552c43f4b8c6000460eb3c348ac573f3",
+      "sourceConsent": true,
+      "explicitResearchConfirmation": true,
+      "insertion": "native Canva SDK resolved; confirmation displayed"
+    },
+    "express": {
+      "draftAndRunId": "d727a1ce-14be-410b-b574-27b12afd23fb",
+      "status": "completed",
+      "progress": 100,
+      "questions": 1,
+      "minds": 20,
+      "failedQuestions": 0,
+      "partialQuestions": 0,
+      "skippedQuestions": 0,
+      "responsesArtifacts": 1,
+      "sameRunResumedOnReload": true,
+      "exactNativeFindingsCompared": true,
+      "findingsSHA256": "8d14a4a3f4428218aec1ccf25263734523d3da68a673b9265cd50725e2378a22",
+      "sourceConsent": true,
+      "explicitResearchConfirmation": true,
+      "insertion": "display only; no insertion control"
+    }
+  },
+  "screenshots": {
+    "canva-minds-completed.png": {
+      "sha256": "1489ae43b0efe65e2cd6a7b75af200cbf2415c200cbc0cff7f080e1946068696"
+    },
+    "express-minds-completed.png": {
+      "sha256": "f7d06a04338bbf3d16c8584de1dbd74e45cbac7b8c9e67cd1a7573a1bc591f55"
+    },
+    "canva-completed-findings.png": {
+      "sha256": "e3eb1bcc75acf7e9416697248112dacc7f79e2ebb3dbed8e04f891dd9fbb9977"
+    },
+    "express-completed-findings.png": {
+      "sha256": "640709b5bbde9b92e01dfd9db585c655255cfb4de109eb959070bd543b8c31dd"
+    }
+  },
+  "zapier": {
+    "appId": 246865,
+    "version": "1.2.0",
+    "hostedRemoteAuthentication": "passed",
+    "createOwnedStudy": "passed",
+    "previewSavedPlan": "passed",
+    "unfinishedResults": [],
+    "nativeEditorAcceptance": false,
+    "publicListing": false,
+    "publicUserGate": {
+      "actual": 1,
+      "required": 3
+    }
+  },
+  "providerGates": {
+    "canva": "public listing draft, not approved",
+    "express": "private 0.1.10; validated public draft 0.1.11, not approved",
+    "figma": "genuine Desktop-generated Review plugin ID and native acceptance required; existing import is separate",
+    "genstudio": "App Builder/GenStudio-entitled organization required"
+  }
+}
