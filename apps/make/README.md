@@ -34,9 +34,13 @@ request) and emits only Studies created after the last run.
   Credentials: pass `agents/make/getminds/` (`developers-account-password`,
   `api-token`, `app-invite-token`).
 - App `minds-0q4qep` v1.0.0, published 2026-10-01 and submitted to Make's public
-  app review the same day (status "pending approval").
+  app review the same day (status "pending approval"). Make's automated
+  pre-review (ticket #2323174) found no functional blockers; its questions were
+  answered and its fixes deployed the same evening.
 - Review scenarios: 7724018 (create, get, preview, summary, API call, list),
-  7724023 (watch new studies), 7724024 (unknown Study ID, expected 404). They
+  7724399 (Preview with no material, text and URL material, with and without an
+  identifier, plus Make an API call), 7724023 (watch new studies), 7724024
+  (unknown Study ID, expected 404). They
   run on demand against the mcp-review@getminds.ai test account; rerun them
   before each review round, because Free-plan logs are kept for 7 days.
 - After approval, changes to a published app go through Make's update review,

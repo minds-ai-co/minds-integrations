@@ -6,7 +6,7 @@ Research never runs from Make. **Preview a research plan** saves a draft and ret
 
 ## Connect Minds
 
-1. In Minds, open [API settings](https://getminds.ai/?settings=api) and create an API key. It starts with `minds_`.
+1. In Minds, open [API settings](https://getminds.ai/settings/api-keys) and create an API key. It starts with `minds_`.
 2. In Make, add a Minds module, click **Create a connection** and paste the key.
 
 ## Modules

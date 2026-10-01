@@ -97,4 +97,8 @@ for (const stale of [...rpcs].filter((rpc) => !wantedRpcs.has(rpc))) {
   if (isPublic) console.warn(`rpc ${stale} is no longer in the manifest; published apps keep it`);
   else { await call("DELETE", `${appPath}/rpcs/${stale}`); console.log(`deleted rpc ${stale}`); }
 }
+// Published apps: keep every manifest module visible to other users.
+if (isPublic) {
+  for (const module of wanted) await call("POST", `${appPath}/modules/${module}/public`);
+}
 console.log(`deployed ${name} v${version} to ${zone}`);
