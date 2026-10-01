@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-01T18:22:33.279672+00:00",
+  "version": 1,
+  "status": "changes_required",
+  "issue": "Full stop in short description",
+  "providerRequirement": "If the app short description is one sentence, do not end it with punctuation.",
+  "correction": "Version 2 short description: Review designs with AI personas in Minds"
+}

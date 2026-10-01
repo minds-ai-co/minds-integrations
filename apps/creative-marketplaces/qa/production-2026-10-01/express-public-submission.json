@@ -1,0 +1,9 @@
+{
+  "platform": "express",
+  "version": "0.1.11",
+  "submittedAt": "2026-10-01T18:24:31.690Z",
+  "nativeSuccessHeading": "You successfully submitted a public add-on listing!",
+  "nativeStatus": "In review",
+  "editingLockedDuringReview": true,
+  "public": false
+}

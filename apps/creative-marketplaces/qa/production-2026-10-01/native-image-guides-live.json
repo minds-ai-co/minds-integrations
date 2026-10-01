@@ -1,0 +1,114 @@
+{
+  "checkedAt": "2026-10-01T17:58:51.014478+00:00",
+  "deploymentRun": 36858857386,
+  "results": [
+    {
+      "locale": "en",
+      "path": "/guide/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "en",
+      "path": "/guide/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "de",
+      "path": "/guide/de/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "de",
+      "path": "/guide/de/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "ar",
+      "path": "/guide/ar/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "ar",
+      "path": "/guide/ar/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "es",
+      "path": "/guide/es/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "es",
+      "path": "/guide/es/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "fr",
+      "path": "/guide/fr/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "fr",
+      "path": "/guide/fr/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "ja",
+      "path": "/guide/ja/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "ja",
+      "path": "/guide/ja/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "ko",
+      "path": "/guide/ko/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "ko",
+      "path": "/guide/ko/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "tr",
+      "path": "/guide/tr/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "tr",
+      "path": "/guide/tr/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "zh",
+      "path": "/guide/zh/integration-canva",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    },
+    {
+      "locale": "zh",
+      "path": "/guide/zh/integration-adobe-express",
+      "httpSucceeded": true,
+      "nativeImagePresent": true
+    }
+  ]
+}

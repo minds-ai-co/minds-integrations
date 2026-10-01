@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-10-01T18:25:18.323840+00:00",
+  "ownerAuthorization": "User explicitly authorized necessary reviewer credits and public publishing",
+  "reviewers": {
+    "canva": {
+      "principal": "723f9526-22d7-4f14-a461-8923c699f775",
+      "studyId": "98828865-09ce-4e94-9330-0ab68af35364",
+      "draftId": "36187888-b031-4ece-ad44-2c03e59c4f3b",
+      "runId": "36187888-b031-4ece-ad44-2c03e59c4f3b",
+      "questions": 1,
+      "audienceSize": 20,
+      "runStatus": "completed",
+      "failed": 0,
+      "partial": 0,
+      "currentUsage": {
+        "allowance": 100,
+        "granted": 100,
+        "used": 20,
+        "remaining": 180
+      }
+    },
+    "express": {
+      "principal": "4261ebbf-5215-4e52-94d3-85d5f87e55eb",
+      "studyId": "a1a4e125-2eb9-4d92-b807-e258c26fa4e1",
+      "draftId": "fee878a1-ab0a-44f8-bbd7-3c652a30e72a",
+      "runId": "fee878a1-ab0a-44f8-bbd7-3c652a30e72a",
+      "questions": 2,
+      "audienceSize": 20,
+      "runStatus": "completed",
+      "failed": 0,
+      "partial": 0,
+      "currentUsage": {
+        "allowance": 100,
+        "granted": 100,
+        "used": 40,
+        "remaining": 160
+      }
+    }
+  },
+  "grants": {
+    "manualCreditsPerAccount": 100,
+    "ledgerSource": "manual",
+    "sourceReferencePrefix": "creative-marketplace-review-2026-10-01:",
+    "trialPlan": "premium",
+    "monthlyResponsesPerAccount": 100,
+    "durationDays": 31,
+    "expires": "2026-11-01",
+    "source": "canonical company-knowledge subscription_grants.py",
+    "paymentMethodPresent": false,
+    "missingPaymentMethodEndBehavior": "cancel",
+    "bothStripeAndProductionCacheVerified": true
+  },
+  "canvaInitialSubmission": {
+    "version": 1,
+    "received": true,
+    "initialFeedback": "Short description must not end with punctuation",
+    "correction": "Version 2 corrected and submitted; native receipt confirms In review"
+  },
+  "expressSubmitted": true,
+  "public": false,
+  "canvaCurrentSubmission": {
+    "version": 2,
+    "status": "in_review",
+    "public": false
+  },
+  "expressCurrentSubmission": {
+    "version": "0.1.11",
+    "status": "in_review",
+    "public": false
+  }
+}

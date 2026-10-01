@@ -1,0 +1,117 @@
+{
+  "capturedOn": "2026-10-01",
+  "captures": [
+    {
+      "file": "canva-native-in-review.png",
+      "capturedAt": "2026-10-01T18:24:35.728971+00:00",
+      "dimensions": {
+        "width": 1420,
+        "height": 740
+      },
+      "clip": {
+        "x": 340,
+        "y": 240,
+        "width": 1420,
+        "height": 740
+      },
+      "sha256": "7d3da8de0f1a49f89962eda469029e9c9daccbade8fd674aa338a51dde01e1c9",
+      "backend": "Native Playwright/CDP screenshot with clip; no compositing",
+      "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
+      "visuallyChecked": true
+    },
+    {
+      "file": "express-native-in-review.png",
+      "capturedAt": "2026-10-01T18:29:40.659565+00:00",
+      "dimensions": {
+        "width": 1840,
+        "height": 945
+      },
+      "clip": {
+        "x": 70,
+        "y": 110,
+        "width": 1840,
+        "height": 945
+      },
+      "sha256": "4eed44e5db22327c642dd7de62f441b98999d8dacb4ebf46392f87a7e5d391ba",
+      "backend": "Native Playwright/CDP screenshot with clip; no compositing",
+      "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
+      "visuallyChecked": true
+    },
+    {
+      "file": "canva-reviewer-image-completed.png",
+      "capturedAt": "2026-10-01T18:22:58.176061+00:00",
+      "dimensions": {
+        "width": 768,
+        "height": 1080
+      },
+      "clip": {
+        "x": 751,
+        "y": 0,
+        "width": 768,
+        "height": 1080
+      },
+      "sha256": "13d53b49ab96b5c534686644e54d1fcfb56d84b4508897a1dac547277dd39c8d",
+      "backend": "Native Playwright/CDP screenshot with clip; no compositing",
+      "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
+      "visuallyChecked": true
+    },
+    {
+      "file": "express-reviewer-image-completed.png",
+      "capturedAt": "2026-10-01T18:22:59.110050+00:00",
+      "dimensions": {
+        "width": 768,
+        "height": 1080
+      },
+      "clip": {
+        "x": 751,
+        "y": 0,
+        "width": 768,
+        "height": 1080
+      },
+      "sha256": "0df01068bfadfbcadc35d62fb302bb10bb46ecfeb7f30e1ea374cbd7a51486a3",
+      "backend": "Native Playwright/CDP screenshot with clip; no compositing",
+      "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
+      "visuallyChecked": true
+    },
+    {
+      "file": "canva-reviewer-study-results.png",
+      "capturedAt": "2026-10-01T18:29:40.707565+00:00",
+      "dimensions": {
+        "width": 910,
+        "height": 680
+      },
+      "clip": {
+        "x": 680,
+        "y": 110,
+        "width": 910,
+        "height": 680
+      },
+      "sha256": "a58dbd00167c6b5435409186edf8525a46eac24090b2694284d5860c75546348",
+      "backend": "Native Playwright/CDP screenshot with clip; no compositing",
+      "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
+      "visuallyChecked": true
+    },
+    {
+      "file": "express-reviewer-study-results.png",
+      "capturedAt": "2026-10-01T18:28:25.593404+00:00",
+      "dimensions": {
+        "width": 910,
+        "height": 710
+      },
+      "clip": {
+        "x": 680,
+        "y": 100,
+        "width": 910,
+        "height": 710
+      },
+      "sha256": "2d73fdbe021df0dea883cdf785f868e2460dca4da2a46c2b0a03755fef72464d",
+      "backend": "Native Playwright/CDP screenshot with clip; no compositing",
+      "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
+      "visuallyChecked": true
+    }
+  ],
+  "limitations": [
+    "Owned synthetic reviewer findings verify the integration workflow and are not empirical customer research claims.",
+    "Completed-plan screenshots retain the pre-run cached usage display; current billing usage is independently recorded in reviewer-release-acceptance.json."
+  ]
+}

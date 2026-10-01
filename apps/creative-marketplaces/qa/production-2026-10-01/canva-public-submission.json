@@ -1,0 +1,10 @@
+{
+  "appId": "AAHOGK2l5Z4",
+  "version": 2,
+  "submittedAt": "2026-10-01T18:23:15.275Z",
+  "writeHttpStatuses": [
+    200
+  ],
+  "state": "\nIn review\nGrow\nAnalytics\nManage\nDeveloper profile\nYour details\nMessage preferences\nCollaborators\nApp settings\nWe’ve received your app\n\nYour app is now being evaluated by our specialist teams. You can track progress of each review type below.\n\nReview\n\nEstimated completion: 5-15 days\n\nOur team is actively reviewing your app across multiple areas.\n\nCancel submission\n\nApproval\n\nWe’ll finalize your app review and let you know the outcome. Approved apps can be published in the Apps Marketplace.\n\nTranslation\n\nYour app will be translated into multiple languages.\n\nRelease\n\nYour app will be live in the Apps Marketplace once approved and released.\n\n",
+  "public": false
+}
