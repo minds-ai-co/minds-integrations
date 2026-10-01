@@ -1,0 +1,47 @@
+[
+  {
+    "name": "studyId",
+    "type": "text",
+    "label": "Study ID"
+  },
+  {
+    "name": "hasSummary",
+    "type": "boolean",
+    "label": "Has summary"
+  },
+  {
+    "name": "summary",
+    "type": "any",
+    "label": "Summary"
+  },
+  {
+    "name": "revision",
+    "type": "uinteger",
+    "label": "Revision"
+  },
+  {
+    "name": "isGenerating",
+    "type": "boolean",
+    "label": "Is generating"
+  },
+  {
+    "name": "isStale",
+    "type": "boolean",
+    "label": "Is stale"
+  },
+  {
+    "name": "hasEnoughContent",
+    "type": "boolean",
+    "label": "Has enough content"
+  },
+  {
+    "name": "messageCount",
+    "type": "uinteger",
+    "label": "Message count"
+  },
+  {
+    "name": "newMessageCount",
+    "type": "uinteger",
+    "label": "New messages since summary"
+  }
+]

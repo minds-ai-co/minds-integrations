@@ -1,0 +1,10 @@
+[
+  {
+    "name": "limit",
+    "type": "uinteger",
+    "label": "Limit",
+    "default": 10,
+    "required": false,
+    "help": "Maximum number of Studies to return. Studies are ordered by last update, newest first."
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "name",
+    "type": "text",
+    "label": "Name",
+    "help": "Name shown for the Study in Minds.",
+    "required": true
+  },
+  {
+    "name": "audienceIds",
+    "type": "select",
+    "multiple": true,
+    "label": "Audience IDs",
+    "options": "rpc://listAudiences",
+    "required": false,
+    "help": "Optional existing Minds Audiences whose Minds answer this Study."
+  },
+  {
+    "name": "isLinkSharingEnabled",
+    "type": "boolean",
+    "label": "Enable link sharing",
+    "default": false,
+    "required": false,
+    "help": "If enabled, anyone with the link can view the Study and its attached Audiences and Minds."
+  }
+]

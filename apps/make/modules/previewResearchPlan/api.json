@@ -1,0 +1,85 @@
+[
+  {
+    "condition": "{{parameters.material == 'url'}}",
+    "url": "/studies/{{parameters.studyId}}/research-plans/preview",
+    "method": "POST",
+    "type": "json",
+    "headers": {
+      "Idempotency-Key": "{{parameters.idempotencyKey}}"
+    },
+    "body": {
+      "request": "{{parameters.request}}",
+      "studyLocale": "{{ifempty(parameters.studyLocale, 'en')}}",
+      "source": {
+        "kind": "{{ifempty(parameters.sourceKind, 'image')}}",
+        "label": "{{ifempty(parameters.sourceLabel, 'Make material')}}",
+        "url": "{{parameters.sourceUrl}}"
+      }
+    },
+    "response": {
+      "temp": {
+        "preview": "{{body.data}}"
+      }
+    }
+  },
+  {
+    "condition": "{{parameters.material == 'text'}}",
+    "url": "/studies/{{parameters.studyId}}/research-plans/preview",
+    "method": "POST",
+    "type": "json",
+    "headers": {
+      "Idempotency-Key": "{{parameters.idempotencyKey}}"
+    },
+    "body": {
+      "request": "{{parameters.request}}",
+      "studyLocale": "{{ifempty(parameters.studyLocale, 'en')}}",
+      "source": {
+        "kind": "prompt",
+        "label": "{{ifempty(parameters.sourceLabel, 'Make input')}}",
+        "content": "{{parameters.sourceContent}}"
+      }
+    },
+    "response": {
+      "temp": {
+        "preview": "{{body.data}}"
+      }
+    }
+  },
+  {
+    "condition": "{{parameters.material != 'url' && parameters.material != 'text'}}",
+    "url": "/studies/{{parameters.studyId}}/research-plans/preview",
+    "method": "POST",
+    "type": "json",
+    "headers": {
+      "Idempotency-Key": "{{parameters.idempotencyKey}}"
+    },
+    "body": {
+      "request": "{{parameters.request}}",
+      "studyLocale": "{{ifempty(parameters.studyLocale, 'en')}}"
+    },
+    "response": {
+      "temp": {
+        "preview": "{{body.data}}"
+      }
+    }
+  },
+  {
+    "response": {
+      "output": {
+        "studyId": "{{parameters.studyId}}",
+        "draftPlanId": "{{temp.preview.draftPlanId}}",
+        "revision": "{{temp.preview.revision}}",
+        "draftStatus": "{{temp.preview.draftStatus}}",
+        "status": "{{temp.preview.status}}",
+        "planningMode": "{{temp.preview.planningMode}}",
+        "replayed": "{{ifempty(temp.preview.replayed, false)}}",
+        "nextAction": "{{temp.preview.nextAction}}",
+        "reviewUrl": "https://getminds.ai/?studyId={{encodeURL(parameters.studyId)}}&draftPlanId={{encodeURL(temp.preview.draftPlanId)}}",
+        "objective": "{{temp.preview.plan.objective}}",
+        "confirmationQuestions": "{{temp.preview.confirmationQuestions}}",
+        "warnings": "{{temp.preview.warnings}}",
+        "plan": "{{temp.preview.plan}}"
+      }
+    }
+  }
+]

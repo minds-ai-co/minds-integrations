@@ -1,9 +1,10 @@
 {
-  "url": "/panels",
+  "url": "/studies",
   "method": "POST",
   "type": "json",
   "body": {
     "name": "{{parameters.name}}",
+    "audienceIds": "{{ifempty(parameters.audienceIds, emptyarray)}}",
     "isLinkSharingEnabled": "{{ifempty(parameters.isLinkSharingEnabled, false)}}"
   },
   "response": {

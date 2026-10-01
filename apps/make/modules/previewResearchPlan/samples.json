@@ -1,0 +1,15 @@
+{
+  "studyId": "943f9d7c-aab6-4a78-ab67-a7827e1358c9",
+  "draftPlanId": "75e10cab-cf1a-4dd2-8470-c71b8c450d90",
+  "revision": 1,
+  "draftStatus": "draft",
+  "status": "needs_confirmation",
+  "planningMode": "planner",
+  "replayed": false,
+  "nextAction": "Explain the proposed plan and ask the user to confirm it before execution.",
+  "reviewUrl": "https://getminds.ai/?studyId=943f9d7c-aab6-4a78-ab67-a7827e1358c9&draftPlanId=75e10cab-cf1a-4dd2-8470-c71b8c450d90",
+  "objective": "Find out which homepage headline is clearer to German online shoppers.",
+  "confirmationQuestions": [],
+  "warnings": [],
+  "plan": {}
+}

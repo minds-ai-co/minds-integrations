@@ -18,7 +18,7 @@ workflow without creating a second research contract.
 | Looker Studio | Read Panel analytics into a report data source | Review package in progress |
 | Microsoft Power Platform | Curated REST connector for Panel workflows (OAuth 2.0 with PKCE) | Validated package, OAuth client and certification gates pending |
 | Zapier | Trigger on Studies, create and find Studies, preview text/creative plans, and retrieve summaries | App 246865; private releases; public promotion needs 3 users with live Zaps |
-| Make | List, create, and read Panels, preview plans, and retrieve results | Source-controlled custom app prototype |
+| Make | Watch, create, get and search Studies, preview research plans for review, read summaries | App minds-0q4qep v1.0.0 published on eu1.make.com (developers@getminds.ai); public app review requested 2026-10-01 |
 | Canva | Export design, review and confirm research, return and insert exact-run findings | Complete native production workflow verified; public marketplace review pending |
 | Figma | Selected-node creative review and findings import | Development plugin; registration, host testing and review pending |
 | Adobe Express | Approved current-page creative review and completed findings | Private 0.1.10 complete native production workflow verified; public 0.1.11 draft validated, review pending |
