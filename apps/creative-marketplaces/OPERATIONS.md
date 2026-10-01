@@ -202,3 +202,7 @@ Native diagnosis then confirmed: the current Canva PDF exported and downloaded a
 The existing gateway deployment `75f3aecd-4d32-412b-a443-16cd40587741` is ACTIVE at source `09bbb52b14a40811eacfadbebade96be853ff0fd`; its health route returned HTTP 200. Native Canva acceptance passed OAuth, owned QA Study selection, current coffee-design PDF export, explicit transfer consent, canonical draft creation and the provider-confirmed external navigation. An authenticated read of the exact saved draft returned HTTP 200, document source under owner-authenticated `/api/uploads/chat/`, draft status and exactly one intended headline question. No research execution was triggered. The Minds review-screen release and completed-run return remain pending.
 
 The updated Figma development handoff is `minds-figma-complete-workflow-v2.tgz`, containing the current built plugin and matching Desktop instructions. It retains the requirement for a genuine generated plugin ID and verified sandbox access; delivery is not registration or public approval.
+
+## Adobe Express saved public candidate — 2026-10-01
+
+The existing registered Express add-on accepted and validated package 0.1.9, and its public listing draft was saved with matching asynchronous preparation and exact-draft findings copy. The corresponding native private acceptance used 0.1.8. Release notes explicitly retain the pending Minds frontend release and complete-run acceptance. No public review submission or approval is claimed.
