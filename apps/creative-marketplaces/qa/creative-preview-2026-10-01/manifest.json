@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-01T07:50:02Z",
+  "backend": "Playwright CDP attached to owned native Canva browser; Page.captureScreenshot",
+  "host": "https://www.canva.com",
+  "appId": "AAHOGK2l5Z4",
+  "gatewayRevision": "09bbb52b14a40811eacfadbebade96be853ff0fd",
+  "panelRevision": "aa6d16c6f3679108c6bb860991b5a8d43b326e24",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "selector": "actual native app iframe with #connect, clipped to frame bounds; top and bottom scroll states",
+  "fixture": "Owned synthetic coffee design and private QA Study",
+  "readiness": {
+    "fontsReady": true,
+    "connected": true,
+    "questionsVisible": true,
+    "nativeSourceExported": true,
+    "ownedSourceVerified": true,
+    "exactDraftNavigationVerified": true,
+    "researchExecuted": false,
+    "visuallyInspected": true
+  },
+  "artifacts": [
+    "canva-source-consent.png",
+    "canva-saved-draft.png",
+    "guides-live.json"
+  ]
+}

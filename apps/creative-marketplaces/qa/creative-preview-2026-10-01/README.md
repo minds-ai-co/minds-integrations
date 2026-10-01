@@ -1,0 +1,7 @@
+# Creative native preview acceptance — 2026-10-01
+
+The Canva crops show the real app’s approved material, transfer consent, generated headline question and provider-confirmed external navigation. The exact draft was read through the authenticated Minds API: one intended question, draft status, document source in owned chat storage. No new research was executed. These images establish pre-execution acceptance, not the full customer workflow or public marketplace approval.
+
+`guides-live.json` records HTTP 200 and non-empty content for all five guides across nine locales after production deployment of minds-content commit 1b0a75752a2b760f9c5fd57b4ef5cb3edca0955a. Content deploy run 36830981434 passed build, staging deployment and smoke, and production promotion.
+
+Express private candidate 0.1.8 saved an owned PNG research draft and opened its exact review URL. Public candidate 0.1.9 was validated and saved without review submission. The Minds review screen, completed-run findings return, Figma registration/host identity and GenStudio entitlement remain separate acceptance gates.
