@@ -1,18 +1,28 @@
 # Creative marketplace integrations
 
-Owner: developers@getminds.ai. Audit and build date: 2026-09-30.
+Owner: developers@getminds.ai. Initial audit: 2026-09-30. Current candidate update: 2026-10-01.
 
 Detailed architecture, API contracts, security, acceptance, troubleshooting and maintenance: [OPERATIONS.md](OPERATIONS.md). Cross-repository documentation work is tracked in [webapp #7983](https://github.com/minds-ai-co/webapp/issues/7983) and [minds-content #378](https://github.com/minds-ai-co/minds-content/issues/378). The content repository owns five extensive nine-locale setup guides, sanitized real screenshots and their provenance. The webapp registry records these pilots as documentation-only Coming next entries; the existing Figma account connection and Zapier registration remain separate and unchanged in identity.
 
 These are development bundles, not public marketplace releases. The shared gateway is live at https://getminds.ai/integrations/creative. Adobe accepted the private Express package; Canva's uploaded bundle renders in its editor. Live OAuth, export, consent, durable source, draft creation and existing-summary return pass. Saved-draft confirmation/run and the remaining host/provider acceptance gates are pending. Do not submit until the host-specific acceptance tests pass.
 
-## Existing integrations checked
+## Current candidate receipts — 2026-10-01
+
+- Gateway source `09bbb52b14a40811eacfadbebade96be853ff0fd` is active, including bounded asynchronous preparation, exact-draft completed-run retrieval and Canva PDF owned import.
+- Canva’s current uploaded bundle passed native PDF export, consent, owned upload, draft creation and navigation to that exact draft. No new research execution is claimed yet.
+- Adobe Express private 0.1.8 passed native PNG-to-draft acceptance. Public 0.1.9 was validated and saved, but not submitted for review.
+- Zapier 1.2.0 is privately uploaded; the public three-genuine-user eligibility requirement remains unmet.
+- Figma’s current built development handoff is `minds-figma-complete-workflow-v2.tgz`; genuine Desktop plugin registration and sandbox verification remain required.
+- The paired webapp PR #8006 is still awaiting final hosted acceptance and production release. All 45 customer guides from minds-content PR #386 are verified live.
+- Sanitized native pre-execution screenshots and public guide verification are in [qa/creative-preview-2026-10-01](qa/creative-preview-2026-10-01/README.md).
+
+## Existing integrations checked (initial inventory)
 
 The inventory was checked against origin/main at 259b70e and the current Zapier API, rather than starting duplicate registrations.
 
 | Integration | Existing implementation / release state |
 | --- | --- |
-| Zapier | Existing Minds app 246865, owned by developers@getminds.ai. 1.0.0 is private with one Zap user. This change extends that app with 1.1.0. |
+| Zapier | Existing Minds app 246865, owned by developers@getminds.ai. 1.0.0 is private with one Zap user. The current privately uploaded candidate is 1.2.0. |
 | Canva | Existing architecture/workflow document; no executable app before this change. |
 | Adobe Express, Figma, GenStudio | No existing app packages or registrations found in this repository. |
 | Slack | Existing OAuth, research agent, worker and marketplace preparation; separate open security-documentation PR. |
@@ -30,7 +40,7 @@ No existing Slack or Shopify worktree was modified.
 1. Connect a Minds account through a browser consent flow. OAuth tokens remain in the gateway; the panel keeps an opaque session capability in memory only.
 2. Select an existing Study with an Audience. The first 100 Studies are available in the development panel.
 3. Explicitly select the material: Canva export-dialog PDF (multi-page safe), one selected Figma node as PNG, the current approved Adobe Express page as PNG, or one chosen GenStudio email experience's copy.
-4. Review the selection and approve sending it to Minds. PNGs use the authenticated owned-upload endpoint. Export URLs use the canonical research preview source importer, which copies readable material into Minds storage.
+4. Review the selection and approve sending it to Minds. PNGs use the authenticated owned-upload endpoint. Canva PDF exports use a restricted vendor-download helper and the same authenticated owned-upload endpoint; readable external sources otherwise use the canonical source importer.
 5. Draft a plan through the canonical Study research-plan preview endpoint, with a stable idempotency key for retries. Changed Study/request/material gets a new key. This does not confirm or execute research.
 6. Open the exact saved draft in Minds using its Study and draft IDs. The paired webapp handoff shows the instrument and current allowance, resolves missing inputs, saves reviewed revisions and requires explicit confirmation before running. Follow durable status and open the existing Study results.
 7. Return to the panel and load the saved draft’s own completed run findings. Partial, failed or mismatched runs cannot supply findings. Canva and Figma can explicitly insert the resulting text; Express and GenStudio display it in the panel. This branch behavior still requires deployment and actual new-run acceptance in each host.
@@ -74,13 +84,15 @@ The gateway is a **single-process pilot**. Session capabilities expire after one
 - Public checks: health 200, unknown origin 403, Canva-origin session creation 201, PKCE authorization redirect 302 with browser-bound HttpOnly cookie, disconnect 200. Docker smoke and seven gateway/ingress/proxy tests pass.
 - Figma's opaque origin and GenStudio origins are not enabled yet. Production research has not been executed through these new host panels. Demo login is verified and its credential is stored only in the encrypted vault.
 
-### Demo acceptance evidence — 2026-09-30
+### Initial demo acceptance evidence — 2026-09-30 (historical)
 
 The user supplied a demo login, which was saved encrypted and used through the native Minds browser sign-in. A separate private canonical QA Study with an existing Audience was created; no existing Study was modified and no research was executed. Canva copied the approved PDF into owned Minds chat storage. Adobe copied the approved PNG through the authenticated upload proxy. Both saved `needs_confirmation` drafts. Canva retry returned the same draft ID. Existing-summary return was tested separately from the new QA drafts; it is not evidence that research on those QA designs ran.
 
 Live testing found and fixed the Adobe fetch receiver error and false loaded-state for null summaries. The latest Canva bundle passed the empty-summary guard and added an actual existing summary to the QA design. The open-Study link selects the right Study, but its UI only shows the empty Study, not the external draft. This confirmation/run gap is a public-release blocker. Latest development UI and both listing drafts state the limitation; do not describe this pilot as an end-to-end execution integration.
 
 ## Acceptance and submission gates
+
+The detailed registration history below is retained from the initial pilot. The current candidate receipts above supersede its package versions and source-to-draft status; complete execution and public submission remain pending.
 
 For each host: connect/cancel/revoke OAuth; export/cancel; verify no upload before approval; verify correct source in the saved draft; check retry deduplication; confirm/run in Minds; reload findings; test expired sessions and provider export permissions. Do this in the actual host, not just a mocked browser. Capture real screenshots only after it passes. Never label mock outputs as completed research.
 

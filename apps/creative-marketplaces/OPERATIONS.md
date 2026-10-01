@@ -1,6 +1,6 @@
 # Creative marketplace integration engineering and operations
 
-Owner: Minds developer account. Verified implementation and native acceptance record: 2026-09-30. Source of truth for provider status: [LAUNCH.md](LAUNCH.md). Local desktop handoff: [FIGMA-DESKTOP.md](FIGMA-DESKTOP.md).
+Owner: Minds developer account. Updated implementation and native acceptance record: 2026-10-01. Source of truth for provider status: [LAUNCH.md](LAUNCH.md). Local desktop handoff: [FIGMA-DESKTOP.md](FIGMA-DESKTOP.md).
 
 ## Complete-workflow implementation (release in progress)
 
@@ -8,13 +8,13 @@ The current branch adds the missing saved-draft review and completed-run return.
 
 Creative panels now retain both Study and draft IDs, open their exact `reviewUrl`, and read the draft's own run through authenticated `GET /run?studyId=…&draftPlanId=…`. The gateway first reads the creator-owned draft through canonical preview `loadLatest`, resolves its confirmed run ID, then reads the canonical run status. It remains read-only: confirmation and execution happen in Minds. Findings require completed response artifacts with real summaries or key findings; partial, failed, missing or mismatched runs do not enable insertion. Changing source, request, language or Study resets consent, draft identity and results. All input controls are disabled during operations to prevent selection races.
 
-Zapier source version 1.2.0 adds `reviewUrl` to Preview Research Plan and a Get Completed Research Results search taking the same Study and draft IDs. It returns run artifacts/calculations only after that exact run completes. The legacy aggregate-summary search remains available separately. Express source package 0.1.6 contains the new panel flow. These versions are prepared, not yet demonstrated as installed provider releases.
+Zapier source version 1.2.0 adds `reviewUrl` to Preview Research Plan and a Get Completed Research Results search taking the same Study and draft IDs. It returns run artifacts/calculations only after that exact run completes. The legacy aggregate-summary search remains available separately. Zapier 1.2.0 has been uploaded privately. Express private 0.1.8 passed native source-to-draft acceptance; its public 0.1.9 package was validated and saved as a listing draft. These are private candidates, with complete-run acceptance and marketplace review still pending.
 
 Code validation passed: the full integration repository `npm run check`, 30 focused creative/Zapier tests, bundle build and Zapier validation. Zapier's D004 general warning records that the draft ID is mapped from the preview output rather than selected from a dynamic dropdown; there is no draft-list API. Public publishing still needs genuine-user eligibility. Native full execution acceptance, current package upload and gateway/edge deployment must be verified separately before the release record changes to shipped.
 
-The remainder below records the previously deployed pilot boundary and its acceptance. Its existing-summary tests do not establish acceptance of this new run-specific workflow.
+The initial pilot acceptance is retained below as historical evidence. Current native candidate receipts are appended with dates. Existing-summary tests do not establish acceptance of the new run-specific workflow.
 
-## Supported boundary and release state
+## Initial pilot boundary — historical acceptance of 2026-09-30
 
 The four native creative adapters share material selection, transfer consent, Minds authorization, Study draft preview and existing-summary retrieval. They do not execute research. The current Minds navigation handoff does not expose their external saved drafts for confirmation or execution, so public release remains blocked. A successful source import, preview or existing-summary read must not be described as a completed run on newly selected artwork.
 
@@ -47,7 +47,7 @@ Existing Minds Figma connected-account OAuth is a different integration from the
 
 Webapp owns the Settings registry and canonical research APIs. Minds Content owns the integration directory projection, nine-locale guides and sanitized screenshot artifacts. Provider bundles and the gateway remain in this repository. Link those records instead of creating a second provider or credential source.
 
-## Data flow
+## Current candidate data flow
 
 ```mermaid
 sequenceDiagram
@@ -69,13 +69,16 @@ sequenceDiagram
     Host->>Bridge: Preview with Study, source and retry ID
     Bridge->>Minds: Canonical research-plan preview
     Minds-->>Host: Saved needs_confirmation draft through gateway
-    Note over Host,Minds: Native saved-draft confirmation/execution handoff pending
-    Host->>Bridge: Read a previously generated Study summary
-    Bridge->>Minds: Canonical summary read
-    Minds-->>Host: Existing aggregate findings through gateway
+    Host->>Browser: Open exact saved draft review URL
+    Browser->>Minds: Review, refine and explicitly confirm saved revision
+    Minds-->>Browser: Durable run status and Study results
+    Host->>Bridge: Read completed run for the same Study and draft
+    Bridge->>Minds: Resolve creator-owned confirmed draft and canonical run
+    Minds-->>Host: Completed run findings through gateway
+    Note over Host,Minds: New run acceptance awaits paired webapp deployment
 ```
 
-Canva uses a vendor export URL that the canonical preview importer copies into owned Minds storage. Figma and Express use an explicit authenticated PNG upload. GenStudio sends exact selected text as a prompt source. A PNG preview stays local until consent and the draft action; the separate host export is not a Minds upload.
+Canva exports a PDF from its native dialog. After approval, the gateway downloads only the exact permitted Canva export host, verifies the PDF signature and size, and imports it through the authenticated owned-upload endpoint before saving the draft. Figma and Express use an explicit authenticated PNG upload. GenStudio sends exact selected text as a prompt source. A PNG preview stays local until consent and the draft action; the separate host export is not a Minds upload.
 
 ## Gateway contract
 
@@ -91,10 +94,11 @@ Base URL for the live private pilot: `https://getminds.ai/integrations/creative`
 | `DELETE /session` | Disconnect | Remove session/tickets/states; attempt upstream revocation |
 | `GET /studies` | Accessible Study list | First 100, offset zero; no panel pagination in this version |
 | `POST /upload` | Import selected PNG | `image/png`, valid PNG signature, maximum 25 MiB; authenticated upload proxy |
-| `POST /preview` | Save research draft | JSON maximum 1 MiB; valid Study/source/language; required Idempotency-Key |
+| `POST /preview` | Prepare and poll a saved research draft | JSON maximum 1 MiB; valid Study/source/language; required Idempotency-Key. Pending preparation returns 202; identical retries retrieve the same job/result |
+| `GET /run` | Read the saved draft’s completed findings | Exact Study and draft IDs; creator ownership, confirmed matching run and complete responses required |
 | `GET /summary` | Read generated summary | Study selected by query; empty summary is not findings |
 
-The bridge forwards Study operations to `/api/v1/studies`, `/api/v1/studies/{id}/research-plans/preview` and `/api/v1/studies/{id}/summary`. Owned image import uses `/api/uploads/proxy` with the `chat` folder. It exposes no execute, confirm, arbitrary URL proxy, provider token or arbitrary upstream method endpoint.
+The bridge forwards Study operations to `/api/v1/studies`, `/api/v1/studies/{id}/research-plans/preview` and `/api/v1/studies/{id}/summary`; exact-draft findings use canonical `/api/v1/studies/{id}/research-runs/{runId}` after ownership and identity verification. Owned image import uses `/api/uploads/proxy` with the `chat` folder. It exposes no execute, confirm, arbitrary URL proxy, provider token or arbitrary upstream method endpoint.
 
 The client validates request text up to 20,000 characters, material labels up to 500, the nine supported Study language codes, and source kinds. Exact text requires nonempty prompt content. Other sources require readable HTTPS without embedded credentials, or a recognized Minds-owned upload path. These input checks do not replace server ownership and import checks.
 
