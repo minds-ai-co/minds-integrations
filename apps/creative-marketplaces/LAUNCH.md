@@ -12,7 +12,7 @@ These are development bundles, not public marketplace releases. The shared gatew
 - Canva’s client at a359406 passed the complete native workflow, including one confirmed question with 20 Minds, completed findings returned to the panel and native insertion. Reload resumed the same confirmed run.
 - Adobe Express private 0.1.10 and public 0.1.11 validated and saved after fixing expired-session reconnection. Private 0.1.10 passed the complete native production workflow, with one confirmed question and 20 Minds, completed findings displayed in the panel, and the same run resumed on reload. The public candidate has not been submitted for review.
 - Zapier 1.2.0 is privately uploaded. Official hosted remote invocations passed authentication, owned Study creation, saved-plan preview and empty results before confirmation. A full native Zap editor workflow is not accepted; the three-genuine-user public eligibility requirement remains unmet (1 actual user).
-- Figma’s current built development handoff is `minds-figma-complete-workflow-v3.tgz`; genuine Desktop plugin registration and sandbox verification remain required.
+- Figma Desktop on Alexander's MacBook generated genuine plugin ID `1687580744489834770`; the installed current bundle renders its native panel. The sandbox's literal `null` origin was verified directly. The deliberate gateway authorization review is in [FIGMA-SECURITY.md](FIGMA-SECURITY.md); the tracked deployment now opts into this origin. Deployment, native complete-workflow acceptance and Community submission are separate remaining gates.
 - Webapp staging PR #8006 and production PR #8030 are merged. Production source 053f4358a795228e6a9cf2cc7d2edf5c07e46a4f is active at deployment 093ed5b0-b694-4d77-856e-3e7d984cf9a5; canonical deploy 36842991211 passed all smoke and release verification gates. The existing 45 guides are live; final production screenshots are being published separately.
 - Sanitized native pre-execution screenshots and public guide verification are in [qa/creative-preview-2026-10-01](qa/creative-preview-2026-10-01/README.md).
 
@@ -82,7 +82,7 @@ The gateway is a **single-process pilot**. Session capabilities expire after one
 - App deployment `75f3aecd-4d32-412b-a443-16cd40587741` is active at source commit `09bbb52b14a40811eacfadbebade96be853ff0fd` (verified 2026-10-01). Automatic deployment is disabled.
 - Cloudflare Worker `minds-creative-review-proxy`, version `f61ffefb-f121-4c29-836e-9a6c3a523359`, serves only `getminds.ai/integrations/creative/*`. Deployment specs are in `apps/creative-bridge/deploy`.
 - Public checks: health 200, unknown origin 403, Canva-origin session creation 201, PKCE authorization redirect 302 with browser-bound HttpOnly cookie, disconnect 200. Docker smoke and seven gateway/ingress/proxy tests pass.
-- Figma's opaque origin and GenStudio origins are not enabled yet. Production research has not been executed through these new host panels. Demo login is verified and its credential is stored only in the encrypted vault.
+- The tracked configuration enables Figma's verified opaque origin under the capability/OAuth design review; apply both Node and Worker configuration before native acceptance. GenStudio remains disabled. No completed Figma/GenStudio native research is claimed. Demo credentials remain only in the encrypted vault. The Node deployment now tracks `main` with automatic deployment disabled; the historical feature branch is retained.
 
 ### Initial demo acceptance evidence — 2026-09-30 (historical)
 

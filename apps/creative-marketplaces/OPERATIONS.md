@@ -118,7 +118,7 @@ Account passwords, deploy keys and provider API credentials remain with the encr
 
 The current gateway is a single process with in-memory token/session storage, a one-hour session lifetime and a 1,000-session capacity. Restart disconnects panels. Do not increase instance count without implementing and validating shared encrypted session ownership, refresh serialization and revoke semantics.
 
-Allowed origins are exactly the registered Canva and Express host origins in the deployment files. No wildcards are used. Figma's literal opaque `null` origin and GenStudio hosts remain disabled. Allowing `null` cannot prove a plugin's identity, so origin expansion is a security/design acceptance gate rather than an incidental CORS fix.
+Allowed origins are the registered Canva and Express host origins plus the literal opaque `null` origin verified in the native Figma Desktop plugin. No wildcards or credentialed CORS are used. The deliberate Figma design review and required isolation tests are documented in [FIGMA-SECURITY.md](FIGMA-SECURITY.md). An opaque origin is not provider identity; account authorization comes from the session capability and explicit browser-bound OAuth. GenStudio hosts remain disabled.
 
 The Node ingress bounds upstream work to 300 requests/minute and eight concurrent handlers. The edge Worker has its own per-IP limiter. Request logging is disabled. The proxy forwards only explicit bridge headers and its own creative OAuth cookie; ordinary Minds login cookies must not reach the gateway. Paths outside the fixed creative route and its endpoint allowlist are not forwarded.
 

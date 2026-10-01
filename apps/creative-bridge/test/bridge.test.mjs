@@ -22,16 +22,40 @@ async function setup(t, config = {}) {
   const call = (path, options = {}) => fetch(`${origin}/integrations/creative${path}`, { redirect: 'manual', ...options });
   return { origin, call, upstreamCalls };
 }
-async function authorize(env) {
-  const created = await env.call('/sessions', { method: 'POST', headers: { Origin: 'https://app.example' } });
+async function authorize(env, origin = 'https://app.example') {
+  const created = await env.call('/sessions', { method: 'POST', headers: { Origin: origin } });
   const session = await created.json();
   const start = await fetch(session.connectUrl, { redirect: 'manual' });
   const params = new URL(start.headers.get('location')).searchParams;
   const cookie = start.headers.get('set-cookie').split(';')[0];
   const callback = `/callback?state=${params.get('state')}&code=code`;
   assert.equal((await env.call(callback, { headers: { Cookie: cookie } })).status, 200);
-  return { headers: { Origin: 'https://app.example', Authorization: `Bearer ${session.session}` }, callback, cookie };
+  return { headers: { Origin: origin, Authorization: `Bearer ${session.session}` }, callback, cookie };
 }
+test('opaque Figma origins require independent capabilities and browser-approved OAuth', async t => {
+  const env = await setup(t);
+  const created = await env.call('/sessions', { method: 'POST', headers: { Origin: 'null' } });
+  assert.equal(created.headers.get('access-control-allow-origin'), 'null');
+  assert.equal(created.headers.get('access-control-allow-credentials'), null);
+  const session = await created.json();
+  const headers = { Origin: 'null', Authorization: `Bearer ${session.session}` };
+  assert.equal((await env.call('/studies', { headers })).status, 401);
+  assert.equal((await env.call('/studies', { headers: { Origin: 'null', Cookie: 'app_login=existing' } })).status, 401);
+  const start = await fetch(session.connectUrl, { redirect: 'manual' });
+  const state = new URL(start.headers.get('location')).searchParams.get('state');
+  assert.equal((await env.call(`/callback?state=${state}&code=code`, { headers: { Cookie: `minds_creative_oauth=${'x'.repeat(43)}` } })).status, 400);
+  assert.equal((await env.call(`/callback?state=${state}&code=code`, { headers: { Cookie: start.headers.get('set-cookie').split(';')[0] } })).status, 200);
+  assert.equal((await env.call('/studies', { headers })).status, 200);
+  assert.equal((await env.call('/studies', { headers: { ...headers, Origin: 'https://app.example' } })).status, 403);
+  const preview = { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': 'figma-preview' }, body: JSON.stringify({ studyId: 'study-1', request: 'Review', source: { kind: 'prompt', label: 'Copy', content: 'Coffee' } }) };
+  assert.equal((await env.call('/preview', preview)).status, 202);
+  const second = await authorize(env, 'null');
+  assert.equal((await env.call('/preview?studyId=study-1&requestId=figma-preview', { headers: second.headers })).status, 404);
+  assert.equal((await env.call('/execute', { method: 'POST', headers })).status, 404);
+  assert.equal((await env.call('/session', { method: 'DELETE', headers })).status, 200);
+  assert.equal((await env.call('/studies', { headers })).status, 401);
+  assert.equal((await env.call('/studies', { headers: second.headers })).status, 200);
+});
 test('OAuth is cookie-bound, uses PKCE and never returns Minds tokens to the adapter', async t => {
   const env = await setup(t);
   const created = await env.call('/sessions', { method: 'POST', headers: { Origin: 'https://app.example' } });
