@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-01",
+  "captures": [
+    {
+      "file": "canva-native-image-workflow.png",
+      "platform": "canva",
+      "width": 1920,
+      "height": 1023,
+      "sha256": "f29f1100f974bbe7523a779434b70b9be338eada68e5464003d718c8fd24bdda",
+      "source": "Real native platform editor, native stock coffee photograph, approved source transfer and reviewer-owned saved draft",
+      "backend": "Native browser/CDP; account toolbar excluded",
+      "visuallyChecked": true,
+      "completedImageResearch": false,
+      "remaining": "Reviewer allowance approval before execution and public submission"
+    },
+    {
+      "file": "express-native-image-workflow.png",
+      "platform": "express",
+      "width": 1920,
+      "height": 1020,
+      "sha256": "42b8fc2640cd2d4b961adba777af509c9a556177dcaec02e082fe3d896f8f8a0",
+      "source": "Real native platform editor, native stock coffee photograph, approved source transfer and reviewer-owned saved draft",
+      "backend": "Native browser/CDP; account toolbar excluded",
+      "visuallyChecked": true,
+      "completedImageResearch": false,
+      "remaining": "Reviewer allowance approval before execution and public submission"
+    }
+  ]
+}
