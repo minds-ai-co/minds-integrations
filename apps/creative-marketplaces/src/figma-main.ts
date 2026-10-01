@@ -1,3 +1,5 @@
+import { mindsExternalLink } from './figma-host.js';
+
 figma.showUI(__html__, { width: 380, height: 680, themeColors: true });
 figma.ui.onmessage = async (message: { type: string; requestId: string; text?: string }) => {
   if (!message || !['export', 'import-findings', 'open'].includes(message.type)) return;
@@ -18,9 +20,7 @@ figma.ui.onmessage = async (message: { type: string; requestId: string; text?: s
       figma.currentPage.appendChild(text); figma.currentPage.selection = [text]; figma.viewport.scrollAndZoomIntoView([text]);
       figma.ui.postMessage({ requestId: message.requestId, result: true });
     } else {
-      const url = new URL(message.text || '');
-      if (url.protocol !== 'https:' || url.hostname !== 'getminds.ai' || url.username || url.password) throw new Error('Unsupported Minds link.');
-      figma.openExternal(url.toString());
+      figma.openExternal(mindsExternalLink(message.text));
       figma.ui.postMessage({ requestId: message.requestId, result: true });
     }
   } catch (error) { figma.ui.postMessage({ requestId: message.requestId, error: error instanceof Error ? error.message : 'Selection could not be exported.' }); }

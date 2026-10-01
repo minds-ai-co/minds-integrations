@@ -1,5 +1,5 @@
 import { panelMessages, defaultText } from './messages.js';
-import { CreativeReviewClient, reviewUrl, formatRunFindings } from '@minds/creative-review';
+import { randomRequestId, CreativeReviewClient, reviewUrl, formatRunFindings } from '@minds/creative-review';
 
 export const styles = `body{margin:0;padding:16px;font:14px/1.5 system-ui;color:#18202a;background:#fff}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}button,input,select,textarea{font:inherit;box-sizing:border-box;border:1px solid #b6bdc7;border-radius:6px;padding:8px}button{cursor:pointer;background:#f3f4f6;margin:8px 4px 0 0}button:disabled{cursor:wait;opacity:.5}textarea,input,select{width:100%}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f7f9;padding:10px}img{max-width:100%;max-height:180px}a{color:#3646ac}#status{min-height:24px}[hidden]{display:none!important}`;
 
@@ -85,7 +85,7 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     const source = { kind: material.kind, label: material.label, url: material.url, content: material.content, mimeType: material.blob?.type || material.mimeType };
     const input = { request: el('request').value, studyLocale: el('locale').value, source };
     const nextFingerprint = JSON.stringify({ id, input });
-    if (nextFingerprint !== fingerprint) { previewKey = crypto.randomUUID(); fingerprint = nextFingerprint; }
+    if (nextFingerprint !== fingerprint) { previewKey = randomRequestId(); fingerprint = nextFingerprint; }
     const result = await client.preview(id, input, previewKey);
     const draft = result.data || result;
     if (!draft.draftPlanId) throw new Error(text('Minds did not return a saved draft. Try again.'));

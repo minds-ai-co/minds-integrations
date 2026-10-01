@@ -14,7 +14,7 @@ The tracked deployment opts into that exact string on both the edge proxy and No
 - Authenticated calls require the capability **and** its matching stored origin. This origin check keeps named Canva/Express sessions separate, but cannot distinguish two opaque-origin documents. Independent opaque sessions are isolated by their capabilities and separate preview maps.
 - The edge forwards only bridge headers and the dedicated creative OAuth cookie. CORS never permits credentials. Panel fetches omit cookies and refuse redirects.
 - Minds enforces Study/source/draft ownership with the authenticated user's token. The fixed gateway has no arbitrary proxy, confirmation or execution endpoint. Research still requires review and explicit confirmation in Minds.
-- The UI accepts host messages only from its direct parent and matches outstanding request IDs. Capabilities and OAuth tokens are not sent through host messages. The main plugin permits only HTTPS links on getminds.ai.
+- The UI accepts host messages only from its parent or top frame with the exact official `https://www.figma.com` origin and matches outstanding random request IDs. Native Desktop replies were verified to come from the top-frame relay rather than the immediate UI wrapper. Capabilities and OAuth tokens are not sent through host messages. The main plugin permits only HTTPS links on getminds.ai.
 - Disconnect deletes the session and its OAuth tickets/states, then attempts upstream revocation. Refresh rotations are serialized. Restart disconnects all panels.
 
 ## Residual risks and operational decision
