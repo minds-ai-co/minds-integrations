@@ -68,6 +68,10 @@
     },
     "express-completed-findings.png": {
       "sha256": "640709b5bbde9b92e01dfd9db585c655255cfb4de109eb959070bd543b8c31dd"
+    },
+    "canva-source-consent.png": {
+      "sha256": "f6ce8697e2b0a0c67540350ba36490cc4093e41865b71bbcc5c8f5e588526faa",
+      "scope": "Native selected-source/transfer-consent panel from owned synthetic QA design, captured before execution"
     }
   },
   "zapier": {
