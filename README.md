@@ -19,9 +19,9 @@ workflow without creating a second research contract.
 | Microsoft Power Platform | Curated REST connector for Panel workflows (OAuth 2.0 with PKCE) | Validated package, OAuth client and certification gates pending |
 | Zapier | Trigger on Studies, create and find Studies, preview text/creative plans, and retrieve summaries | App 246865; private releases; public promotion needs 3 users with live Zaps |
 | Make | List, create, and read Panels, preview plans, and retrieve results | Source-controlled custom app prototype |
-| Canva | Export selected design, draft research, return findings | Development bundle; host testing and marketplace review pending |
+| Canva | Export design, review and confirm research, return and insert exact-run findings | Complete native production workflow verified; public marketplace review pending |
 | Figma | Selected-node creative review and findings import | Development plugin; registration, host testing and review pending |
-| Adobe Express | Approved current-page creative review | Development add-on; registration, host testing and review pending |
+| Adobe Express | Approved current-page creative review and completed findings | Private 0.1.10 complete native production workflow verified; public 0.1.11 draft validated, review pending |
 | Adobe GenStudio | Selected email experience copy review | Development validation extension; Adobe entitlement/deployment and review pending |
 | Atlassian Forge | Review Jira or Confluence content | Architecture gate |
 | HubSpot | Research CRM segments and attach summaries | Pilot gate |
