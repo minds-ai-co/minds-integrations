@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-10-01T20:35:38.534574+00:00",
+  "machine": "lexbook-pro",
+  "pluginId": "1687580744489834770",
+  "pluginName": "Minds Creative Review",
+  "nativeRegistration": true,
+  "builtPluginInstalled": true,
+  "nativePanelRendered": true,
+  "nativeOrigin": "null",
+  "screenCaptureAllowed": true,
+  "accessibilityTrusted": true,
+  "productionConnection": "Gateway enabled; live allocation/isolation/disconnect checks pass; native OAuth awaiting unlocked MacBook",
+  "nativeWorkflowAccepted": false,
+  "publicSubmitted": false,
+  "macMiniRetired": true,
+  "nativeFigmaAccount": "alexander@getminds.ai",
+  "originDiagnosticRemoved": true,
+  "gatewayPullRequest": "https://github.com/minds-ai-co/minds-integrations/pull/51",
+  "gatewayDeployment": "e4e058de-0a6a-46c2-b39a-3a0d3298916f",
+  "macBookLocked": true,
+  "nextStep": "Unlock MacBook to complete native workflow"
+}
