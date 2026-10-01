@@ -1,6 +1,15 @@
 export const MINDS_ORIGIN = 'https://getminds.ai';
 export const LOCALES = ['en', 'es', 'fr', 'de', 'zh', 'tr', 'ar', 'ja', 'ko'];
 
+/** Figma's opaque sandbox exposes getRandomValues, but not randomUUID. */
+export function randomRequestId(crypto = globalThis.crypto) {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 export function previewBody(input) {
   if (!input || typeof input.request !== 'string' || !input.request.trim() || input.request.length > 20000) {
     throw new Error('Describe what you want to learn (up to 20,000 characters).');

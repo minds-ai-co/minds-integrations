@@ -1,10 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
+import { webcrypto } from 'node:crypto';
 import { mountPanel } from '../src/panel.js';
 
 test('the panel sends only explicitly selected and approved material; retries reuse request identity', async t => {
   const dom = new JSDOM('<main></main>');
+  const cryptoDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'crypto');
+  Object.defineProperty(globalThis, 'crypto', { configurable: true, value: { getRandomValues: values => webcrypto.getRandomValues(values) } });
+  t.after(() => Object.defineProperty(globalThis, 'crypto', cryptoDescriptor));
   const original = { document: globalThis.document, Option: globalThis.Option, fetch: globalThis.fetch };
   globalThis.document = dom.window.document; globalThis.Option = dom.window.Option;
   const calls = [], opened = [], imported = [];
