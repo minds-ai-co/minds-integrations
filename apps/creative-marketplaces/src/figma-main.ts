@@ -10,7 +10,7 @@ figma.ui.onmessage = async (message: { type: string; requestId: string; text?: s
       const node = selection[0];
       const bytes = await node.exportAsync({ format: 'PNG', constraint: { type: 'SCALE', value: 1 } });
       if (bytes.length > 25 * 1024 * 1024) throw new Error('Selected artwork is too large. Export a smaller frame.');
-      figma.ui.postMessage({ requestId: message.requestId, result: { bytes, label: node.name } });
+      figma.ui.postMessage({ requestId: message.requestId, result: { bytes, label: node.name, nodeId: node.id, nodeType: node.type } });
     } else if (message.type === 'import-findings') {
       if (!message.text || message.text.length > 100000) throw new Error('Findings are empty or too large.');
       await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });

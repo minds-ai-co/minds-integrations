@@ -1,11 +1,11 @@
 import { panelMessages, defaultText } from './messages.js';
 import { randomRequestId, CreativeReviewClient, reviewUrl, formatRunFindings } from '@minds/creative-review';
 
-export const styles = `body{margin:0;padding:16px;font:14px/1.5 system-ui;color:#18202a;background:#fff}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}button,input,select,textarea{font:inherit;box-sizing:border-box;border:1px solid #b6bdc7;border-radius:6px;padding:8px}button{cursor:pointer;background:#f3f4f6;margin:8px 4px 0 0}button:disabled{cursor:wait;opacity:.5}textarea,input,select{width:100%}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f7f9;padding:10px}img{max-width:100%;max-height:180px}a{color:#3646ac}#status{min-height:24px}[hidden]{display:none!important}`;
+export const styles = `body{padding:16px;font-size:14px}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}input,select,textarea{font:inherit;box-sizing:border-box;border:var(--stroke-hairline) solid var(--line-structural);border-radius:var(--radius);padding:8px;background:hsl(var(--background));color:hsl(var(--foreground))}.minds-control{display:inline-block;margin:8px 4px 0 0}button:disabled{cursor:wait}textarea,input,select{width:100%}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:hsl(var(--secondary));padding:10px}img{max-width:100%;max-height:180px}#status{min-height:24px}[hidden]{display:none!important}`;
 
 // Each host supplies only explicit export/open/import operations.
 /** @param {any} options */
-export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFindings = undefined, hostName, formatMessage = defaultText }) {
+export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFindings = undefined, openComments = undefined, hostName, mountControls = () => {}, formatMessage = defaultText }) {
   const client = new CreativeReviewClient(gatewayUrl);
   const text = (source, values = {}) => formatMessage(panelMessages[source], values);
   // Translated strings are data, including attribute values.
@@ -19,11 +19,12 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     <label><input id="consent" type="checkbox" style="width:auto"> ${html("Send this selected material to Minds to draft a research plan.")}</label>
     <button id="preview">${html("Draft research plan")}</button><button id="open">${html("Open Study in Minds")}</button>
     <p>${html("Review and run the saved plan in Minds, then return here to load its findings.")}</p>
-    <button id="summary">${html("Load findings")}</button><button id="import" hidden>${html("Add findings to design")}</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
+    <button id="summary">${html("Load findings")}</button><button id="import" hidden>${html("Add findings to design")}</button><button id="comments" hidden>${html("Review Figma comments")}</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
+  mountControls(root);
   const el = id => root.querySelector(`#${id}`);
   let material, imageUrl, summary, previewKey, fingerprint, busy = false;
-  let savedDraft;
-  const resetDraft = () => { savedDraft = summary = undefined; el('import').hidden = true; el('result').hidden = true; };
+  let savedDraft, completedRun;
+  const resetDraft = () => { savedDraft = summary = undefined; el('import').hidden = true; el('comments').hidden = true; completedRun = undefined; el('result').hidden = true; };
   const clearSelection = () => {
     el('study').replaceChildren(new Option(text("Connect and refresh Studies"), ''));
     material = previewKey = fingerprint = undefined; resetDraft();
@@ -90,7 +91,7 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     const draft = result.data || result;
     if (!draft.draftPlanId) throw new Error(text('Minds did not return a saved draft. Try again.'));
     savedDraft = { studyId: id, draftPlanId: draft.draftPlanId };
-    summary = undefined; el('import').hidden = true;
+    summary = undefined; el('import').hidden = true; el('comments').hidden = true; completedRun = undefined;
     el('result').hidden = false; el('result').textContent = [draft.plan?.intent?.objective,
       ...(draft.plan?.modules || []).flatMap(module => module.questions.map((question, index) => `${index + 1}. ${question.text}`)),
       ...(draft.plan?.confirmation?.missingInputs || [])].filter(Boolean).join('\n\n');
@@ -102,7 +103,7 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   });
   el('summary').onclick = operation(async () => {
     requireConnection();
-    summary = undefined; el('import').hidden = true;
+    summary = undefined; el('import').hidden = true; el('comments').hidden = true; completedRun = undefined;
     if (!savedDraft) throw new Error(text('Draft a research plan first.'));
     const value = await client.run(savedDraft.studyId, savedDraft.draftPlanId);
     const report = value.data || value;
@@ -111,7 +112,14 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     if (!summary) throw new Error(text('Findings are not ready. Open this draft in Minds to check its research status, then try again.'));
     el('result').hidden = false; el('result').textContent = summary;
     el('import').hidden = !importFindings;
+    completedRun = { studyId: savedDraft.studyId, runId: report.runId };
+    el('comments').hidden = !openComments;
     el('status').textContent = text("Aggregate findings loaded.");
+  });
+  el('comments').onclick = operation(async () => {
+    if (!completedRun || !summary) throw new Error(text('Load findings first.'));
+    await openComments(completedRun, material);
+    el('status').textContent = text('Review the comment preview in Minds before posting to Figma.');
   });
   el('study').onchange = resetDraft;
   el('request').oninput = resetDraft;

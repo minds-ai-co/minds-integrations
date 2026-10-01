@@ -1,3 +1,4 @@
+import { mountMindsControls } from './minds-ui.js';
 import { mountPanel } from './panel.js';
 import { randomRequestId } from '@minds/creative-review';
 import { isFigmaHostReply } from './figma-host.js';
@@ -17,8 +18,12 @@ function host(type, text) {
     parent.postMessage({ pluginMessage: { type, requestId, text } }, '*');
   });
 }
-mountPanel({ root: document.querySelector('main'), gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Figma',
+mountPanel({ mountControls: mountMindsControls, root: document.querySelector('main'), gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Figma',
   openUrl: url => host('open', url),
-  exportMaterial: async () => { const result = await host('export'); return { kind: 'image', label: result.label, blob: new Blob([result.bytes], { type: 'image/png' }) }; },
+  exportMaterial: async () => { const result = await host('export'); return { kind: 'image', label: result.label, nodeId: result.nodeType === 'FRAME' ? result.nodeId : undefined, blob: new Blob([result.bytes], { type: 'image/png' }) }; },
+  openComments: (run, material) => {
+    if (!material?.nodeId) throw new Error('Select a Figma frame to return comments.');
+    return host('open', `https://getminds.ai/integrations/figma-feedback?${new URLSearchParams({ studyId: run.studyId, runId: run.runId, nodeId: material.nodeId })}`);
+  },
   importFindings: text => host('import-findings', text),
 });

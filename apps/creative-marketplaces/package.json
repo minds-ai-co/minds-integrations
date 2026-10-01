@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "node --test test/*.test.mjs"
+    "test": "npm run build && node --test test/*.test.mjs"
   },
   "dependencies": {
     "@adobe/genstudio-extensibility-sdk": "4.8.0",
@@ -16,15 +16,25 @@
     "@canva/intents": "2.7.1",
     "@canva/platform": "2.2.3",
     "@formatjs/intl": "3.1.8",
+    "@iconify/vue": "5.0.0",
+    "@minds-ai-co/ui": "1.0.0-staging.139",
     "@minds/creative-review": "0.1.0",
+    "@vueuse/core": "14.4.0",
     "intl-messageformat": "10.7.18",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "react-intl": "7.1.14"
+    "react-intl": "7.1.14",
+    "reka-ui": "2.9.5",
+    "vue": "3.5.41",
+    "vue-i18n": "10.0.8"
   },
   "devDependencies": {
     "@figma/plugin-typings": "1.139.0",
+    "@vue/compiler-sfc": "3.5.41",
     "esbuild": "0.28.2",
-    "jsdom": "^26.1.0"
+    "jsdom": "^26.1.0",
+    "postcss": "8.5.28",
+    "postcss-import": "16.1.1",
+    "tailwindcss": "3.4.19"
   }
 }

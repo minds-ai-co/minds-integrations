@@ -11,7 +11,7 @@ test('the panel sends only explicitly selected and approved material; retries re
   t.after(() => Object.defineProperty(globalThis, 'crypto', cryptoDescriptor));
   const original = { document: globalThis.document, Option: globalThis.Option, fetch: globalThis.fetch };
   globalThis.document = dom.window.document; globalThis.Option = dom.window.Option;
-  const calls = [], opened = [], imported = [];
+  const calls = [], opened = [], imported = [], comments = [];
   globalThis.fetch = async (url, options) => {
     calls.push({ url, options });
     const value = url.endsWith('/sessions') ? { session: 'session', connectUrl: 'https://getminds.ai/connect' }
@@ -26,7 +26,7 @@ test('the panel sends only explicitly selected and approved material; retries re
   let exportCount = 0;
   mountPanel({ root: document.querySelector('main'), gatewayUrl: 'https://getminds.ai/integrations/creative', hostName: 'Test',
     exportMaterial: async () => { exportCount++; return { kind: 'document', label: 'Selected PDF', url: 'https://assets.example/design.pdf' }; },
-    openUrl: async url => opened.push(url), importFindings: async text => imported.push(text),
+    openComments: async run => comments.push(run), openUrl: async url => opened.push(url), importFindings: async text => imported.push(text),
   });
   const el = id => document.querySelector(`#${id}`);
   async function click(id) { el(id).click(); for (let n = 0; n < 20 && el(id).disabled; n++) await new Promise(resolve => setImmediate(resolve)); assert.equal(el(id).disabled, false); }
@@ -45,13 +45,13 @@ test('the panel sends only explicitly selected and approved material; retries re
   previews = calls.filter(call => call.url.endsWith('/preview'));
   assert.notEqual(previews[0].options.headers['Idempotency-Key'], previews[2].options.headers['Idempotency-Key']);
   await click('open'); assert.equal(opened.at(-1), 'https://getminds.ai/?studyId=study-1&draftPlanId=draft-a');
-  await click('summary'); await click('import'); assert.ok(imported[0].includes('A clear message'));
+  await click('summary'); await click('comments'); assert.deepEqual(comments[0], { studyId: 'study-1', runId: 'draft-a' }); await click('import'); assert.ok(imported[0].includes('A clear message'));
   globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'draft-a', runId: 'draft-a', status: 'running', artifacts: [] } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   await click('summary');
-  assert.equal(el('import').hidden, true);
+  assert.equal(el('import').hidden, true); assert.equal(el('comments').hidden, true);
   assert.match(el('status').textContent, /Findings are not ready/);
   globalThis.fetch = async () => new Response(JSON.stringify({ data: { draftPlanId: 'older-draft', runId: 'older-run', status: 'completed', artifacts: [{ kind: 'responses', outputData: { summary: 'Old findings' } }] } }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-  await click('summary'); assert.equal(el('import').hidden, true);
+  await click('summary'); assert.equal(el('import').hidden, true); assert.equal(el('comments').hidden, true);
   assert.match(el('status').textContent, /do not match/);
   el('request').dispatchEvent(new dom.window.Event('input'));
   await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
