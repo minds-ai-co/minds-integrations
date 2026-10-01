@@ -81,13 +81,13 @@ export function activate(context: vscode.ExtensionContext): void {
       await context.secrets.delete(secretKey);
       void vscode.window.showInformationMessage("Minds API key removed from VS Code.");
     }),
-    vscode.commands.registerCommand("minds.listGroups", async () => {
+    vscode.commands.registerCommand("minds.listAudiences", async () => {
       await runCommand(async () => {
         await vscode.window.withProgress(
-          { location: vscode.ProgressLocation.Notification, title: "Loading Minds Groups" },
+          { location: vscode.ProgressLocation.Notification, title: "Loading Minds Audiences" },
           async () => {
-            const result = await (await client(context)).callTool("list_groups", {});
-            await showResult("Minds Groups", result);
+            const result = await (await client(context)).callTool("list_audiences", {});
+            await showResult("Minds Audiences", result);
           },
         );
       });
@@ -101,12 +101,12 @@ export function activate(context: vscode.ExtensionContext): void {
           throw new Error("Selection exceeds the 20,000 character limit");
         }
 
-        const panelName = await vscode.window.showInputBox({
-          title: "Panel name",
-          prompt: "Use an existing Minds Panel",
+        const studyName = await vscode.window.showInputBox({
+          title: "Study name",
+          prompt: "Use an existing Minds Study",
           ignoreFocusOut: true,
         });
-        if (!panelName?.trim()) return;
+        if (!studyName?.trim()) return;
         const request = await vscode.window.showInputBox({
           title: "Research goal",
           prompt: "What should the study learn from this material?",
@@ -117,13 +117,15 @@ export function activate(context: vscode.ExtensionContext): void {
         await vscode.window.withProgress(
           { location: vscode.ProgressLocation.Notification, title: "Planning Minds study" },
           async () => {
-            const result = await (await client(context)).callTool("plan_panel_study", {
-              panelName: panelName.trim(),
+            const result = await (await client(context)).callTool("plan_study_questions", {
+              study: { name: studyName.trim() },
               request: request.trim(),
-              source: {
-                kind: "prompt",
-                label: editor?.document.fileName.split(/[\\/]/).at(-1) || "VS Code selection",
-                content: selected,
+              stimulus: {
+                source: {
+                  kind: "prompt",
+                  label: editor?.document.fileName.split(/[\\/]/).at(-1) || "VS Code selection",
+                  content: selected,
+                },
               },
             });
             await showResult("Minds research plan", result);

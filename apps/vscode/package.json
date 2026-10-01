@@ -1,7 +1,7 @@
 {
   "name": "minds-research-vscode",
   "displayName": "Minds Research",
-  "description": "Plan reviewable synthetic market research from selected text and inspect your Minds Groups.",
+  "description": "Plan reviewable synthetic market research from selected text and inspect your Minds Audiences.",
   "version": "0.1.0",
   "private": true,
   "publisher": "minds-ai",
@@ -39,7 +39,7 @@
   "activationEvents": [
     "onCommand:minds.setApiKey",
     "onCommand:minds.clearApiKey",
-    "onCommand:minds.listGroups",
+    "onCommand:minds.listAudiences",
     "onCommand:minds.planSelectedText"
   ],
   "main": "dist/extension.js",
@@ -47,7 +47,7 @@
     "commands": [
       { "command": "minds.setApiKey", "title": "Minds: Set API Key" },
       { "command": "minds.clearApiKey", "title": "Minds: Clear API Key" },
-      { "command": "minds.listGroups", "title": "Minds: Browse Research Groups" },
+      { "command": "minds.listAudiences", "title": "Minds: Browse Audiences" },
       { "command": "minds.planSelectedText", "title": "Minds: Plan Research for Selected Text" }
     ],
     "menus": {

@@ -24,7 +24,7 @@ test("exposes credential removal and no consequential run command", () => {
   const commands = manifest.contributes.commands.map(({ command }) => command);
   assert.ok(commands.includes("minds.clearApiKey"));
   assert.equal(commands.some((command) => /delete|run|execute/i.test(command)), false);
-  assert.doesNotMatch(source, /run_panel_study|runPanelStudy|delete_panel/);
+  assert.doesNotMatch(source, /run_panel_study|run_study_questions|runPanelStudy|delete_panel/);
 });
 
 test("validates credentials before SecretStorage persistence", () => {
@@ -33,4 +33,10 @@ test("validates credentials before SecretStorage persistence", () => {
   assert.ok(validate >= 0);
   assert.ok(store > validate);
   assert.match(sharedClient, /https:\/\/getminds\.ai\/mcp/);
+});
+
+test("calls only canonical MCP tool names", () => {
+  const called = [...source.matchAll(/callTool\("([a-z_]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(called.sort(), ["list_audiences", "plan_study_questions"]);
+  assert.doesNotMatch(source, /list_groups|plan_panel_study|panelName|groupName/);
 });
