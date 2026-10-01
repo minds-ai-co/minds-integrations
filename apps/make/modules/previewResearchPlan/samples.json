@@ -8,8 +8,46 @@
   "replayed": false,
   "nextAction": "Explain the proposed plan and ask the user to confirm it before execution.",
   "reviewUrl": "https://getminds.ai/?studyId=943f9d7c-aab6-4a78-ab67-a7827e1358c9&draftPlanId=75e10cab-cf1a-4dd2-8470-c71b8c450d90",
-  "objective": "Find out which homepage headline is clearer to German online shoppers.",
+  "plan": {
+    "version": 1,
+    "path": "guided",
+    "studyLocale": "en",
+    "intent": {
+      "objective": "Determine which of two homepage headlines is clearer to the target audience.",
+      "primaryQuestion": "Which homepage headline is clearer?"
+    },
+    "modules": [
+      {
+        "id": "m1",
+        "title": "Headline clarity",
+        "questions": [
+          {
+            "id": "q1",
+            "text": "Which of the following homepage headlines is clearer?",
+            "response": {
+              "type": "categorical",
+              "categoricalOptions": [
+                "Research with Minds",
+                "Ask synthetic customers"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "confirmation": {
+      "required": true,
+      "missingInputs": [],
+      "questions": []
+    }
+  },
   "confirmationQuestions": [],
   "warnings": [],
-  "plan": {}
+  "attachments": [],
+  "audiences": [
+    {
+      "id": "07227280-435f-42fa-9949-3def1b6e17b0",
+      "name": "German online shoppers"
+    }
+  ]
 }

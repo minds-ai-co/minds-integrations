@@ -30,6 +30,11 @@
     "label": "Planning mode"
   },
   {
+    "name": "runId",
+    "type": "text",
+    "label": "Run ID"
+  },
+  {
     "name": "replayed",
     "type": "boolean",
     "label": "Replayed"
@@ -45,23 +50,330 @@
     "label": "Review and run in Minds"
   },
   {
-    "name": "objective",
-    "type": "text",
-    "label": "Objective"
+    "name": "plan",
+    "type": "collection",
+    "label": "Plan",
+    "spec": [
+      {
+        "name": "version",
+        "type": "uinteger",
+        "label": "Version"
+      },
+      {
+        "name": "path",
+        "type": "text",
+        "label": "Path"
+      },
+      {
+        "name": "studyLocale",
+        "type": "text",
+        "label": "Study language"
+      },
+      {
+        "name": "intent",
+        "type": "collection",
+        "label": "Intent",
+        "spec": [
+          {
+            "name": "objective",
+            "type": "text",
+            "label": "Objective"
+          },
+          {
+            "name": "chatSummary",
+            "type": "text",
+            "label": "Summary"
+          },
+          {
+            "name": "subject",
+            "type": "text",
+            "label": "Subject"
+          },
+          {
+            "name": "primaryQuestion",
+            "type": "text",
+            "label": "Primary question"
+          },
+          {
+            "name": "respondentStimulusExpected",
+            "type": "boolean",
+            "label": "Material expected"
+          },
+          {
+            "name": "source",
+            "type": "collection",
+            "label": "Main source",
+            "spec": [
+              {
+                "name": "kind",
+                "type": "text",
+                "label": "Kind"
+              },
+              {
+                "name": "label",
+                "type": "text",
+                "label": "Label"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "modules",
+        "type": "array",
+        "label": "Modules",
+        "spec": {
+          "type": "collection",
+          "spec": [
+            {
+              "name": "id",
+              "type": "text",
+              "label": "Module ID"
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "label": "Title"
+            },
+            {
+              "name": "templateId",
+              "type": "text",
+              "label": "Template ID"
+            },
+            {
+              "name": "method",
+              "type": "any",
+              "label": "Method"
+            },
+            {
+              "name": "questions",
+              "type": "array",
+              "label": "Questions",
+              "spec": {
+                "type": "collection",
+                "spec": [
+                  {
+                    "name": "id",
+                    "type": "text",
+                    "label": "Question ID"
+                  },
+                  {
+                    "name": "text",
+                    "type": "text",
+                    "label": "Text"
+                  },
+                  {
+                    "name": "category",
+                    "type": "text",
+                    "label": "Category"
+                  },
+                  {
+                    "name": "origin",
+                    "type": "text",
+                    "label": "Origin"
+                  },
+                  {
+                    "name": "response",
+                    "type": "any",
+                    "label": "Response format"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "outputs",
+              "type": "array",
+              "label": "Semantic outputs",
+              "spec": {
+                "type": "collection",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "text",
+                    "label": "Type"
+                  },
+                  {
+                    "name": "label",
+                    "type": "text",
+                    "label": "Label"
+                  },
+                  {
+                    "name": "rendererHint",
+                    "type": "text",
+                    "label": "Renderer hint"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "confirmation",
+        "type": "collection",
+        "label": "Confirmation",
+        "spec": [
+          {
+            "name": "required",
+            "type": "boolean",
+            "label": "Required"
+          },
+          {
+            "name": "missingInputs",
+            "type": "array",
+            "label": "Missing inputs",
+            "spec": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "requiredCapabilities",
+            "type": "array",
+            "label": "Required capabilities",
+            "spec": {
+              "type": "text"
+            }
+          },
+          {
+            "name": "questions",
+            "type": "array",
+            "label": "Questions",
+            "spec": {
+              "type": "collection",
+              "spec": [
+                {
+                  "name": "id",
+                  "type": "text",
+                  "label": "ID"
+                },
+                {
+                  "name": "capability",
+                  "type": "text",
+                  "label": "Capability"
+                },
+                {
+                  "name": "prompt",
+                  "type": "text",
+                  "label": "Prompt"
+                },
+                {
+                  "name": "suggestedAnswer",
+                  "type": "text",
+                  "label": "Suggested answer"
+                },
+                {
+                  "name": "required",
+                  "type": "boolean",
+                  "label": "Required"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "executionPolicy",
+        "type": "any",
+        "label": "Execution policy"
+      }
+    ]
+  },
+  {
+    "name": "executionPolicyAudit",
+    "type": "collection",
+    "label": "Execution policy audit",
+    "spec": [
+      {
+        "name": "sourcePolicy",
+        "type": "text",
+        "label": "Source policy"
+      },
+      {
+        "name": "webSearch",
+        "type": "boolean",
+        "label": "Web search"
+      },
+      {
+        "name": "videoAnalysisStyle",
+        "type": "text",
+        "label": "Video analysis style"
+      }
+    ]
   },
   {
     "name": "confirmationQuestions",
     "type": "array",
-    "label": "Confirmation questions"
+    "label": "Confirmation questions",
+    "spec": {
+      "type": "collection",
+      "spec": [
+        {
+          "name": "id",
+          "type": "text",
+          "label": "ID"
+        },
+        {
+          "name": "capability",
+          "type": "text",
+          "label": "Capability"
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "label": "Prompt"
+        },
+        {
+          "name": "suggestedAnswer",
+          "type": "text",
+          "label": "Suggested answer"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "label": "Required"
+        }
+      ]
+    }
+  },
+  {
+    "name": "attachments",
+    "type": "array",
+    "label": "Attachments",
+    "spec": {
+      "type": "any"
+    }
+  },
+  {
+    "name": "interactionReview",
+    "type": "any",
+    "label": "Interaction review"
   },
   {
     "name": "warnings",
     "type": "array",
-    "label": "Warnings"
+    "label": "Warnings",
+    "spec": {
+      "type": "any"
+    }
   },
   {
-    "name": "plan",
-    "type": "any",
-    "label": "Plan"
+    "name": "audiences",
+    "type": "array",
+    "label": "Audiences",
+    "spec": {
+      "type": "collection",
+      "spec": [
+        {
+          "name": "id",
+          "type": "text",
+          "label": "Audience ID"
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Name"
+        }
+      ]
+    }
   }
 ]

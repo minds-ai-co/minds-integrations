@@ -65,7 +65,7 @@ const fakeMinds = () => {
     if (path === `/api/v1/studies/${STUDY_ID}`) return reply(200, { data: { ...study(1), id: STUDY_ID } });
     if (path === `/api/v1/studies/${STUDY_ID}/summary`) return reply(200, { data: { summary: null, revision: 0, isGenerating: false, messageCount: 0, newMessageCount: 0, isStale: false, hasEnoughContent: false } });
     if (path === `/api/v1/studies/${STUDY_ID}/research-plans/preview`) {
-      return reply(200, { data: { draftPlanId: DRAFT_ID, revision: 1, draftStatus: "draft", planningMode: "planner", status: "needs_confirmation", plan: { objective: "Learn which headline is clearer." }, confirmationQuestions: [], warnings: [], nextAction: "Explain the proposed plan and ask the user to confirm it before execution." } });
+      return reply(200, { data: { draftPlanId: DRAFT_ID, revision: 1, draftStatus: "draft", planningMode: "planner", status: "needs_confirmation", plan: { intent: { objective: "Learn which headline is clearer." } }, confirmationQuestions: [], warnings: [], executionPolicyAudit: { sourcePolicy: "request_only" }, audiences: [], nextAction: "Explain the proposed plan and ask the user to confirm it before execution." } });
     }
     return reply(404, { error: true, statusCode: 404, statusMessage: "Study not found", message: "Study not found" });
   };
@@ -152,7 +152,8 @@ test("follows Make naming, structure and review rules", () => {
     assert.ok(rpc.pagination.condition);
   }
   // Get-style modules let users map the ID immediately.
-  for (const name of ["getStudy", "getStudySummary"]) assert.equal(module(name, "expect.json")[0].mode, "edit");
+  for (const name of ["getStudy", "getStudySummary", "previewResearchPlan"]) assert.equal(module(name, "expect.json")[0].mode, "edit");
+  assert.match(json("connection/parameters.json")[0].help, /https:\/\/getminds\.ai\/settings\/api-keys/);
   // The universal module only accepts paths on the Minds API host.
   const universal = module("makeApiCall");
   assert.equal(universal.url, "https://getminds.ai/api/{{parameters.url}}");
@@ -234,6 +235,7 @@ test("Preview a research plan drafts a plan and never runs research", async () =
     [{ material: "none" }, undefined],
     [{}, undefined],
     [{ material: "text", sourceContent: "New headline", sourceLabel: "Headline" }, { kind: "prompt", label: "Headline", content: "New headline" }],
+    [{ material: "text", sourceContent: "New headline" }, { kind: "prompt", label: "Make material", content: "New headline" }],
     [{ material: "url", sourceUrl: "https://getminds.ai/images/logo.png" }, { kind: "image", label: "Make material", url: "https://getminds.ai/images/logo.png" }],
     [{ material: "url", sourceUrl: "https://getminds.ai/", sourceKind: "website" }, { kind: "website", label: "Make material", url: "https://getminds.ai/" }],
   ];
@@ -243,16 +245,24 @@ test("Preview a research plan drafts a plan and never runs research", async () =
     assert.equal(calls.length, 1, "exactly one request");
     assert.equal(calls[0].path, `/studies/${STUDY_ID}/research-plans/preview`);
     assert.deepEqual(calls[0].body, { request: "Which headline is clearer?", studyLocale: "en", ...(source ? { source } : {}) });
+    assert.equal("idempotencyKey" in calls[0].body, false, "an empty identifier is not sent");
     assert.equal(calls[0].headers["Idempotency-Key"], undefined);
     assert.equal(output.draftPlanId, DRAFT_ID);
     assert.equal(output.status, "needs_confirmation");
     assert.equal(output.reviewUrl, `https://getminds.ai/?studyId=${STUDY_ID}&draftPlanId=${DRAFT_ID}`);
-    assert.equal(output.objective, "Learn which headline is clearer.");
+    // The whole preview response is passed through, plus studyId and reviewUrl.
+    assert.equal(output.plan.intent.objective, "Learn which headline is clearer.");
+    assert.equal(output.executionPolicyAudit.sourcePolicy, "request_only");
+    assert.equal(output.studyId, STUDY_ID);
   }
   const { fetch, calls } = fakeMinds();
   await run(module("previewResearchPlan"), { studyId: STUDY_ID, request: "Q", studyLocale: "de", idempotencyKey: "row-42" }, { fetch });
-  assert.equal(calls[0].headers["Idempotency-Key"], "row-42");
+  assert.equal(calls[0].body.idempotencyKey, "row-42");
   assert.equal(calls[0].body.studyLocale, "de");
+  const expect = module("previewResearchPlan", "expect.json");
+  assert.equal(expect.find(({ name }) => name === "studyId").mode, "edit");
+  assert.equal(expect.find(({ name }) => name === "idempotencyKey").advanced, true);
+  assert.equal(expect.some(({ name }) => name === "sourceLabel"), false, "the label is nested under Text and URL material");
   const source = JSON.stringify(module("previewResearchPlan"));
   assert.equal(/research-runs|confirm"|\/runs/.test(source), false, "never confirms or runs research");
 });

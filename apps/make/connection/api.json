@@ -8,7 +8,7 @@
   "response": {
     "metadata": {
       "type": "text",
-      "value": "Minds user {{substring(body.id, 0, 8)}}"
+      "value": "Minds user {{body.id}}"
     },
     "error": {
       "message": "[{{statusCode}}] {{ifempty(body.message, 'The Minds API key could not be verified.')}}"

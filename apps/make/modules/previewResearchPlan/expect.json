@@ -5,7 +5,8 @@
     "label": "Study ID",
     "options": "rpc://listStudies",
     "required": true,
-    "help": "Select a Study or map a Study ID from an earlier module."
+    "help": "Select a Study or map a Study ID from an earlier module.",
+    "mode": "edit"
   },
   {
     "name": "request",
@@ -84,6 +85,13 @@
             "label": "Text",
             "required": true,
             "help": "Exact text the Minds react to, such as ad copy or a landing page headline."
+          },
+          {
+            "name": "sourceLabel",
+            "type": "text",
+            "label": "Material label",
+            "required": false,
+            "help": "Optional short name for the material, such as \"Landing page copy\". Defaults to \"Make material\"."
           }
         ]
       },
@@ -122,26 +130,27 @@
                 "value": "website"
               }
             ]
+          },
+          {
+            "name": "sourceLabel",
+            "type": "text",
+            "label": "Material label",
+            "required": false,
+            "help": "Optional short name for the material, such as \"Landing page copy\". Defaults to \"Make material\"."
           }
         ]
       }
     ]
   },
   {
-    "name": "sourceLabel",
-    "type": "text",
-    "label": "Material label",
-    "required": false,
-    "help": "Optional short name for the material, such as \"Landing page copy\"."
-  },
-  {
     "name": "idempotencyKey",
     "type": "text",
     "label": "Preview request identifier",
     "required": false,
-    "help": "Optional stable ID from the source event, such as a row ID. Reusing it returns the saved draft instead of planning again. Use a new ID when the Study, request or material changes.",
+    "help": "Optional stable ID from the source event, such as a row ID. Minds stores it with the draft; repeating a preview with the same ID for the same Study returns the saved draft instead of planning again. Leave empty to always plan anew.",
     "validate": {
       "pattern": "^[A-Za-z0-9_-]{1,128}$"
-    }
+    },
+    "advanced": true
   }
 ]

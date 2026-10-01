@@ -3,7 +3,7 @@
     "name": "apiKey",
     "type": "password",
     "label": "API key",
-    "help": "Create or copy a key in [Minds API settings](https://getminds.ai/?settings=api). It starts with `minds_`.",
+    "help": "Create or copy a key in [Minds API settings](https://getminds.ai/settings/api-keys). It starts with `minds_`.",
     "required": true,
     "editable": true
   }
