@@ -1,0 +1,21 @@
+{
+  "url": "/studies",
+  "method": "GET",
+  "qs": {
+    "limit": 100
+  },
+  "response": {
+    "limit": "{{parameters.limit}}",
+    "iterate": {
+      "container": "{{body.data}}",
+      "condition": "{{if(parameters.name, contains(lower(item.name), lower(parameters.name)), true)}}"
+    },
+    "output": "{{item}}"
+  },
+  "pagination": {
+    "qs": {
+      "offset": "{{(pagination.page - 1) * 100}}"
+    },
+    "condition": "{{body.pagination.offset + body.pagination.limit < body.pagination.total}}"
+  }
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "name": "studyId",
+    "type": "select",
+    "label": "Study ID",
+    "options": "rpc://listStudies",
+    "required": true,
+    "help": "Select a Study or map a Study ID from an earlier module.",
+    "mode": "edit"
+  }
+]

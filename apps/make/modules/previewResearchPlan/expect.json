@@ -1,0 +1,147 @@
+[
+  {
+    "name": "studyId",
+    "type": "select",
+    "label": "Study ID",
+    "options": "rpc://listStudies",
+    "required": true,
+    "help": "Select a Study or map a Study ID from an earlier module."
+  },
+  {
+    "name": "request",
+    "type": "text",
+    "multiline": true,
+    "label": "Research request",
+    "required": true,
+    "help": "What you want to learn, in plain language. Minds turns it into questions for the Study’s Minds."
+  },
+  {
+    "name": "studyLocale",
+    "type": "select",
+    "label": "Study language",
+    "default": "en",
+    "required": false,
+    "help": "Language of the plan and of the eventual study output.",
+    "options": [
+      {
+        "label": "English",
+        "value": "en"
+      },
+      {
+        "label": "German",
+        "value": "de"
+      },
+      {
+        "label": "Spanish",
+        "value": "es"
+      },
+      {
+        "label": "French",
+        "value": "fr"
+      },
+      {
+        "label": "Chinese",
+        "value": "zh"
+      },
+      {
+        "label": "Turkish",
+        "value": "tr"
+      },
+      {
+        "label": "Arabic",
+        "value": "ar"
+      },
+      {
+        "label": "Japanese",
+        "value": "ja"
+      },
+      {
+        "label": "Korean",
+        "value": "ko"
+      }
+    ]
+  },
+  {
+    "name": "material",
+    "type": "select",
+    "label": "Material to review",
+    "default": "none",
+    "required": false,
+    "help": "Optional material the Minds react to, such as ad copy, an image or a webpage.",
+    "options": [
+      {
+        "label": "None",
+        "value": "none"
+      },
+      {
+        "label": "Text",
+        "value": "text",
+        "nested": [
+          {
+            "name": "sourceContent",
+            "type": "text",
+            "multiline": true,
+            "label": "Text",
+            "required": true,
+            "help": "Exact text the Minds react to, such as ad copy or a landing page headline."
+          }
+        ]
+      },
+      {
+        "label": "File or webpage URL",
+        "value": "url",
+        "nested": [
+          {
+            "name": "sourceUrl",
+            "type": "url",
+            "label": "URL",
+            "required": true,
+            "help": "A public HTTPS image, video, PDF or webpage URL. Links that require sign-in cannot be imported."
+          },
+          {
+            "name": "sourceKind",
+            "type": "select",
+            "label": "Material type",
+            "default": "image",
+            "required": true,
+            "options": [
+              {
+                "label": "Image",
+                "value": "image"
+              },
+              {
+                "label": "Video",
+                "value": "video"
+              },
+              {
+                "label": "Document or PDF",
+                "value": "document"
+              },
+              {
+                "label": "Webpage",
+                "value": "website"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sourceLabel",
+    "type": "text",
+    "label": "Material label",
+    "required": false,
+    "help": "Optional short name for the material, such as \"Landing page copy\"."
+  },
+  {
+    "name": "idempotencyKey",
+    "type": "text",
+    "label": "Preview request identifier",
+    "required": false,
+    "help": "Optional stable ID from the source event, such as a row ID. Reusing it returns the saved draft instead of planning again. Use a new ID when the Study, request or material changes.",
+    "validate": {
+      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+    }
+  }
+]

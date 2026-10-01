@@ -1,0 +1,4 @@
+[
+  { "name": "listAudiences", "label": "List Audiences" },
+  { "name": "listStudies", "label": "List Studies" }
+]

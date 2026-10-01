@@ -1,0 +1,67 @@
+[
+  {
+    "name": "studyId",
+    "type": "text",
+    "label": "Study ID"
+  },
+  {
+    "name": "draftPlanId",
+    "type": "text",
+    "label": "Draft plan ID"
+  },
+  {
+    "name": "revision",
+    "type": "uinteger",
+    "label": "Revision"
+  },
+  {
+    "name": "draftStatus",
+    "type": "text",
+    "label": "Draft status"
+  },
+  {
+    "name": "status",
+    "type": "text",
+    "label": "Plan status"
+  },
+  {
+    "name": "planningMode",
+    "type": "text",
+    "label": "Planning mode"
+  },
+  {
+    "name": "replayed",
+    "type": "boolean",
+    "label": "Replayed"
+  },
+  {
+    "name": "nextAction",
+    "type": "text",
+    "label": "Next action"
+  },
+  {
+    "name": "reviewUrl",
+    "type": "url",
+    "label": "Review and run in Minds"
+  },
+  {
+    "name": "objective",
+    "type": "text",
+    "label": "Objective"
+  },
+  {
+    "name": "confirmationQuestions",
+    "type": "array",
+    "label": "Confirmation questions"
+  },
+  {
+    "name": "warnings",
+    "type": "array",
+    "label": "Warnings"
+  },
+  {
+    "name": "plan",
+    "type": "any",
+    "label": "Plan"
+  }
+]

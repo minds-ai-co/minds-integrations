@@ -1,0 +1,87 @@
+[
+  {
+    "name": "id",
+    "type": "text",
+    "label": "Study ID"
+  },
+  {
+    "name": "name",
+    "type": "text",
+    "label": "Name"
+  },
+  {
+    "name": "studyMode",
+    "type": "text",
+    "label": "Study mode"
+  },
+  {
+    "name": "createdAt",
+    "type": "date",
+    "label": "Created at"
+  },
+  {
+    "name": "isLinkSharingEnabled",
+    "type": "boolean",
+    "label": "Link sharing enabled"
+  },
+  {
+    "name": "publicShareId",
+    "type": "text",
+    "label": "Public share ID"
+  },
+  {
+    "name": "audiences",
+    "type": "array",
+    "label": "Audiences",
+    "spec": {
+      "type": "collection",
+      "spec": [
+        {
+          "name": "id",
+          "type": "text",
+          "label": "Audience ID"
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Name"
+        },
+        {
+          "name": "mindCount",
+          "type": "uinteger",
+          "label": "Mind count"
+        },
+        {
+          "name": "minds",
+          "type": "array",
+          "label": "Minds",
+          "spec": {
+            "type": "collection",
+            "spec": [
+              {
+                "name": "id",
+                "type": "text",
+                "label": "Mind ID"
+              },
+              {
+                "name": "name",
+                "type": "text",
+                "label": "Name"
+              },
+              {
+                "name": "discipline",
+                "type": "text",
+                "label": "Discipline"
+              },
+              {
+                "name": "profileImageUrl",
+                "type": "url",
+                "label": "Profile image URL"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "name",
+    "type": "text",
+    "label": "Name",
+    "required": false,
+    "help": "Returns Studies whose name contains this text (case-insensitive). Leave empty to list all Studies."
+  },
+  {
+    "name": "limit",
+    "type": "uinteger",
+    "label": "Limit",
+    "default": 10,
+    "required": false,
+    "help": "Maximum number of Studies to return. Studies are ordered by last update, newest first."
+  }
+]

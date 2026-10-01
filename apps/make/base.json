@@ -6,23 +6,23 @@
   },
   "response": {
     "error": {
+      "message": "[{{statusCode}}] {{ifempty(body.message, ifempty(body.statusMessage, 'The Minds request failed.'))}}",
       "401": {
         "type": "InvalidAccessTokenError",
-        "message": "Your Minds API key is missing or invalid."
+        "message": "[401] Minds rejected the API key. Create a new key in Minds API settings and update the connection."
       },
       "403": {
         "type": "DataError",
-        "message": "Minds denied access to this resource."
+        "message": "[403] {{ifempty(body.message, 'Minds denied access to this resource.')}}"
       },
       "404": {
         "type": "DataError",
-        "message": "The requested Minds resource was not found."
+        "message": "[404] {{ifempty(body.message, 'The requested Minds resource was not found.')}}"
       },
       "429": {
         "type": "RateLimitError",
-        "message": "Minds rate limit reached. Retry later."
-      },
-      "message": "[{{statusCode}}] {{ifempty(body.error.message, ifempty(body.message, 'Minds request failed.'))}}"
+        "message": "[429] Minds rate limit reached. Retry later."
+      }
     }
   },
   "log": {

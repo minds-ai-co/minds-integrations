@@ -2,8 +2,8 @@
   {
     "name": "apiKey",
     "type": "password",
-    "label": "Minds API key",
-    "help": "Create or copy a key from [Minds API settings](https://getminds.ai/?settings=api).",
+    "label": "API key",
+    "help": "Create or copy a key in [Minds API settings](https://getminds.ai/?settings=api). It starts with `minds_`.",
     "required": true,
     "editable": true
   }

@@ -1,0 +1,17 @@
+{
+  "url": "/studies/{{parameters.studyId}}/summary",
+  "method": "GET",
+  "response": {
+    "output": {
+      "studyId": "{{parameters.studyId}}",
+      "hasSummary": "{{!!body.data.summary}}",
+      "summary": "{{body.data.summary}}",
+      "revision": "{{body.data.revision}}",
+      "isGenerating": "{{body.data.isGenerating}}",
+      "isStale": "{{body.data.isStale}}",
+      "hasEnoughContent": "{{body.data.hasEnoughContent}}",
+      "messageCount": "{{body.data.messageCount}}",
+      "newMessageCount": "{{body.data.newMessageCount}}"
+    }
+  }
+}

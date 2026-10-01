@@ -1,5 +1,5 @@
 {
-  "url": "/panels/{{parameters.panelId}}/summary",
+  "url": "/studies/{{parameters.studyId}}",
   "method": "GET",
   "response": {
     "output": "{{body.data}}"

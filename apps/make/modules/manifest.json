@@ -1,37 +1,48 @@
 [
   {
-    "name": "listPanels",
-    "label": "List Panels",
-    "description": "Lists Panels available to the connected Minds account.",
-    "type": "search",
-    "connection": "mindsApiKey"
+    "name": "watchNewStudies",
+    "typeId": 1,
+    "label": "Watch new studies",
+    "description": "Triggers when a new study is created."
   },
   {
-    "name": "createPanel",
-    "label": "Create a Panel",
-    "description": "Creates a Minds Panel without running a study.",
-    "type": "action",
-    "connection": "mindsApiKey"
+    "name": "createStudy",
+    "typeId": 4,
+    "crud": "create",
+    "label": "Create a study",
+    "description": "Creates a new study and optionally attaches existing audiences. Does not run research."
   },
   {
-    "name": "getPanel",
-    "label": "Get a Panel",
-    "description": "Retrieves a Minds Panel by ID.",
-    "type": "action",
-    "connection": "mindsApiKey"
+    "name": "getStudy",
+    "typeId": 4,
+    "crud": "read",
+    "label": "Get a study",
+    "description": "Returns information about a specific study by its ID."
+  },
+  {
+    "name": "searchStudies",
+    "typeId": 9,
+    "label": "Search studies",
+    "description": "Returns a list of studies filtered by name, most recently updated first."
+  },
+  {
+    "name": "getStudySummary",
+    "typeId": 4,
+    "crud": "read",
+    "label": "Get a study summary",
+    "description": "Returns the saved aggregate summary of a specific study by its ID. The summary is empty until one exists in Minds."
   },
   {
     "name": "previewResearchPlan",
-    "label": "Preview a Research Plan",
-    "description": "Creates or revises a reviewable research plan without running the study.",
-    "type": "action",
-    "connection": "mindsApiKey"
+    "typeId": 4,
+    "crud": "create",
+    "label": "Preview a research plan",
+    "description": "Drafts a reviewable research plan for a study. Research does not run until someone confirms the plan in Minds."
   },
   {
-    "name": "getPanelSummary",
-    "label": "Get a Panel Summary",
-    "description": "Retrieves the persisted aggregate summary for a Minds Panel.",
-    "type": "action",
-    "connection": "mindsApiKey"
+    "name": "makeApiCall",
+    "typeId": 12,
+    "label": "Make an API call",
+    "description": "Sends a custom API call to Minds. You can use this to call endpoints that aren’t covered by existing modules."
   }
 ]

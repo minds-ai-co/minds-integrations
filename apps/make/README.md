@@ -1,35 +1,56 @@
 # Minds for Make
 
-This directory is the source of truth for the first Minds custom app in Make.
-Make custom apps are configured in the web app editor, so each JSON file maps
-to a named Make component or component tab.
+Source of truth for the Minds custom app in Make. Every JSON file maps to a
+section of a Make app component, and `scripts/deploy.mjs` pushes them through
+the Make SDK Apps API.
 
-The package provides five bounded modules:
+The app uses the canonical Minds Study API (`https://getminds.ai/api/v1/studies`,
+`/audiences`, `/auth/me`). The deprecated `/api/v1/panels` aliases are not used.
 
-- List Panels
-- Create a Panel
-- Get a Panel
-- Preview a Research Plan
-- Get a Panel Summary
+| Module | Type | API |
+| --- | --- | --- |
+| Watch new studies (`watchNewStudies`) | Polling trigger | `GET /studies` |
+| Create a study (`createStudy`) | Action | `POST /studies` |
+| Get a study (`getStudy`) | Action | `GET /studies/{studyId}` |
+| Search studies (`searchStudies`) | Search | `GET /studies`, filtered by name |
+| Get a study summary (`getStudySummary`) | Action | `GET /studies/{studyId}/summary` |
+| Preview a research plan (`previewResearchPlan`) | Action | `POST /studies/{studyId}/research-plans/preview` |
+| Make an API call (`makeApiCall`) | Universal | any path under `https://getminds.ai/api` |
 
-It deliberately excludes deletion and study execution. Users review and
-confirm consequential research work in Minds.
+RPCs `listAudiences` and `listStudies` feed the Audience and Study dropdowns.
 
-## Installation order
+The app deliberately has no deletion, confirmation or execution module. Preview
+a research plan saves a draft and returns its review URL; a person confirms the
+exact draft in Minds before research runs.
 
-1. Create one custom app named Minds in a Minds-owned Make developer account.
-2. Copy `base.json` into the Base component.
-3. Create one API-key connection and copy the files in `connection/` into its
-   Parameters and Communication tabs.
-4. Create the five modules described by `modules/manifest.json`, then copy each
-   module's parameters and communication files into the matching tabs.
-5. Test the connection and all five modules with a dedicated reviewer API key.
-6. Keep the app private until error handling, output mapping, and a complete
-   scenario pass end-to-end testing.
+`GET /studies` is ordered by last update, so Watch new studies is an
+`unordered` date trigger keyed on `createdAt`: Make reads every page (100 per
+request) and emits only Studies created after the last run.
 
-The API key is a password field. Authorization is sanitized from Make logs, and
-all module requests inherit the canonical `https://getminds.ai/api/v1` base URL.
+## Layout
 
-API documentation: <https://getminds.ai/api>
+- `app.json`: app name, label, description and theme.
+- `base.json`: base URL, Bearer authorization, error handling, log sanitization.
+- `connection/`: API-key connection, verified against `GET /auth/me`.
+- `rpcs/`: dynamic dropdown sources.
+- `modules/manifest.json`: module names, types, labels and descriptions;
+  `modules/<name>/` holds the `api`, `parameters`, `expect`, `interface`,
+  `samples` (and `epoch`) sections.
+- `docs.md`: the user documentation shown in Make.
+- `assets/logo-512.png`: black mark on transparency; Make renders it white on the `#000000` theme.
 
-Support: <https://getminds.ai/contact>
+## Development
+
+```bash
+node --test apps/make/contract.test.mjs
+MINDS_API_KEY=... node apps/make/scripts/live-smoke.mjs --write
+MAKE_API_TOKEN=... MAKE_ZONE=eu1.make.com node apps/make/scripts/deploy.mjs
+```
+
+The contract tests execute every communication section with a small IML
+evaluator (`scripts/runner.mjs`) against a fake Minds API, and check Make's
+review rules (labels, limits, pagination, universal module, logo). The live
+smoke test runs the same sections against production; `--write` creates a
+throwaway Study, previews a plan on it and deletes the Study. Use a test
+account's key. Make remains the authority on IML; test changed modules in a
+real scenario after deploying.

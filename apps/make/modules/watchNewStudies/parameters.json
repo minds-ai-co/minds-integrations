@@ -1,0 +1,13 @@
+[
+  {
+    "name": "limit",
+    "type": "uinteger",
+    "label": "Limit",
+    "help": "Maximum number of new Studies returned during one execution cycle.",
+    "default": 10,
+    "required": true,
+    "validate": {
+      "min": 1
+    }
+  }
+]
