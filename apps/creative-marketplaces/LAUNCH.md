@@ -69,8 +69,8 @@ The gateway is a **single-process pilot**. Session capabilities expire after one
 ## Live pilot deployment
 
 - DigitalOcean app: `b0873cdc-59e6-4902-a321-1fb69b9e8c11`, Frankfurt, one basic-xxs instance. Origin: `https://minds-creative-review-yd7cf.ondigitalocean.app`.
-- App deployment `0c8c440c-ac76-4c1e-84b9-443fd052aa97` is active at source commit `bb2caf6`. Automatic deployment is disabled.
-- Cloudflare Worker `minds-creative-review-proxy`, version `6a10dbca-472f-4566-b0b9-6c1bf0d11df6`, serves only `getminds.ai/integrations/creative/*`. Deployment specs are in `apps/creative-bridge/deploy`.
+- App deployment `75f3aecd-4d32-412b-a443-16cd40587741` is active at source commit `09bbb52b14a40811eacfadbebade96be853ff0fd` (verified 2026-10-01). Automatic deployment is disabled.
+- Cloudflare Worker `minds-creative-review-proxy`, version `f61ffefb-f121-4c29-836e-9a6c3a523359`, serves only `getminds.ai/integrations/creative/*`. Deployment specs are in `apps/creative-bridge/deploy`.
 - Public checks: health 200, unknown origin 403, Canva-origin session creation 201, PKCE authorization redirect 302 with browser-bound HttpOnly cookie, disconnect 200. Docker smoke and seven gateway/ingress/proxy tests pass.
 - Figma's opaque origin and GenStudio origins are not enabled yet. Production research has not been executed through these new host panels. Demo login is verified and its credential is stored only in the encrypted vault.
 
