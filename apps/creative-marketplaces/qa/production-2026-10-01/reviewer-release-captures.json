@@ -17,7 +17,18 @@
       "sha256": "7d3da8de0f1a49f89962eda469029e9c9daccbade8fd674aa338a51dde01e1c9",
       "backend": "Native Playwright/CDP screenshot with clip; no compositing",
       "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
-      "visuallyChecked": true
+      "visuallyChecked": true,
+      "url": "https://www.canva.com/developers/app/AAHOGK2l5Z4/version/2/status",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "readinessChecks": {
+        "expectedAuthenticatedNativeView": true,
+        "expectedReceiptOrCompletedFindingsVisible": true,
+        "noLoadingOrErrorStateInCapture": true,
+        "noCredentialsOrAccountHeadersInCapture": true
+      }
     },
     {
       "file": "express-native-in-review.png",
@@ -35,7 +46,18 @@
       "sha256": "4eed44e5db22327c642dd7de62f441b98999d8dacb4ebf46392f87a7e5d391ba",
       "backend": "Native Playwright/CDP screenshot with clip; no compositing",
       "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
-      "visuallyChecked": true
+      "visuallyChecked": true,
+      "url": "https://express.adobe.com/add-ons",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "readinessChecks": {
+        "expectedAuthenticatedNativeView": true,
+        "expectedReceiptOrCompletedFindingsVisible": true,
+        "noLoadingOrErrorStateInCapture": true,
+        "noCredentialsOrAccountHeadersInCapture": true
+      }
     },
     {
       "file": "canva-reviewer-image-completed.png",
@@ -53,7 +75,18 @@
       "sha256": "13d53b49ab96b5c534686644e54d1fcfb56d84b4508897a1dac547277dd39c8d",
       "backend": "Native Playwright/CDP screenshot with clip; no compositing",
       "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
-      "visuallyChecked": true
+      "visuallyChecked": true,
+      "url": "https://getminds.ai/",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "readinessChecks": {
+        "expectedAuthenticatedNativeView": true,
+        "expectedReceiptOrCompletedFindingsVisible": true,
+        "noLoadingOrErrorStateInCapture": true,
+        "noCredentialsOrAccountHeadersInCapture": true
+      }
     },
     {
       "file": "express-reviewer-image-completed.png",
@@ -71,7 +104,18 @@
       "sha256": "0df01068bfadfbcadc35d62fb302bb10bb46ecfeb7f30e1ea374cbd7a51486a3",
       "backend": "Native Playwright/CDP screenshot with clip; no compositing",
       "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
-      "visuallyChecked": true
+      "visuallyChecked": true,
+      "url": "https://getminds.ai/",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "readinessChecks": {
+        "expectedAuthenticatedNativeView": true,
+        "expectedReceiptOrCompletedFindingsVisible": true,
+        "noLoadingOrErrorStateInCapture": true,
+        "noCredentialsOrAccountHeadersInCapture": true
+      }
     },
     {
       "file": "canva-reviewer-study-results.png",
@@ -89,7 +133,18 @@
       "sha256": "a58dbd00167c6b5435409186edf8525a46eac24090b2694284d5860c75546348",
       "backend": "Native Playwright/CDP screenshot with clip; no compositing",
       "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
-      "visuallyChecked": true
+      "visuallyChecked": true,
+      "url": "https://getminds.ai/",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "readinessChecks": {
+        "expectedAuthenticatedNativeView": true,
+        "expectedReceiptOrCompletedFindingsVisible": true,
+        "noLoadingOrErrorStateInCapture": true,
+        "noCredentialsOrAccountHeadersInCapture": true
+      }
     },
     {
       "file": "express-reviewer-study-results.png",
@@ -107,7 +162,18 @@
       "sha256": "2d73fdbe021df0dea883cdf785f868e2460dca4da2a46c2b0a03755fef72464d",
       "backend": "Native Playwright/CDP screenshot with clip; no compositing",
       "scope": "Native provider review receipt or owned synthetic reviewer research; account headers excluded",
-      "visuallyChecked": true
+      "visuallyChecked": true,
+      "url": "https://getminds.ai/",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "readinessChecks": {
+        "expectedAuthenticatedNativeView": true,
+        "expectedReceiptOrCompletedFindingsVisible": true,
+        "noLoadingOrErrorStateInCapture": true,
+        "noCredentialsOrAccountHeadersInCapture": true
+      }
     }
   ],
   "limitations": [
