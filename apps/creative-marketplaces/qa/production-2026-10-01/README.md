@@ -40,3 +40,10 @@ The six current captures and their dimensions, clip coordinates, SHA-256 hashes 
 ![Adobe Express 0.1.11 native In review receipt](express-native-in-review.png)
 
 Completed image execution: [Canva](canva-reviewer-image-completed.png), [Adobe Express](express-reviewer-image-completed.png). Native “View results in Study” opened the owning Studies and rendered their completed findings: [Canva Study results](canva-reviewer-study-results.png), [Adobe Express Study results](express-reviewer-study-results.png). These are synthetic QA fixtures, not marketplace approval or customer performance evidence.
+
+
+## Figma MacBook registration and live gateway
+
+The Mac mini is retired. The replacement MacBook generated genuine plugin ID `1687580744489834770` and rendered the built Minds Creative Review panel. Native origin `null` was verified and enabled after the explicit capability/OAuth security review. [The production deployment receipt](figma-gateway-deployment.json) records the exact Node source/deployment, Worker version, health and isolation checks for Figma, Canva and Express. [The native registration receipt](figma-macbook-registration-progress.json) records registration separately from end-to-end acceptance.
+
+The MacBook reached its lock screen before native OAuth and selected-image execution could be completed. Screen capture and Accessibility grants are already verified. Native complete-workflow screenshots and a public Community submission remain pending; no older blank-canvas capture is represented as acceptance evidence.

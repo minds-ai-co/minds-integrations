@@ -1,0 +1,41 @@
+{
+  "observedAt": "2026-10-01T20:43:04.768927+00:00",
+  "gatewaySourceCommit": "8764ca5a4637e8d5cfe00b960ce5c575ecac1386",
+  "nodeDeployment": "e4e058de-0a6a-46c2-b39a-3a0d3298916f",
+  "workerVersion": "5c0f2e4e-cb86-41b3-b56b-834d3612ea14",
+  "health": 200,
+  "checks": [
+    {
+      "origin": "null",
+      "sessionCreation": 201,
+      "preConsentStudies": 401,
+      "unknownOrigin": 403,
+      "disconnect": 200,
+      "removedSession": 401,
+      "allowedOrigin": "null",
+      "allowCredentials": null
+    },
+    {
+      "origin": "https://app-aahogk2l5z4.canva-apps.com",
+      "sessionCreation": 201,
+      "preConsentStudies": 401,
+      "unknownOrigin": 403,
+      "disconnect": 200,
+      "removedSession": 401,
+      "allowedOrigin": "https://app-aahogk2l5z4.canva-apps.com",
+      "allowCredentials": null
+    },
+    {
+      "origin": "https://wj4173926.wxp.adobe-addons.com",
+      "sessionCreation": 201,
+      "preConsentStudies": 401,
+      "unknownOrigin": 403,
+      "disconnect": 200,
+      "removedSession": 401,
+      "allowedOrigin": "https://wj4173926.wxp.adobe-addons.com",
+      "allowCredentials": null
+    }
+  ],
+  "researchExecuted": false,
+  "nativeFigmaCompleteWorkflow": false
+}
