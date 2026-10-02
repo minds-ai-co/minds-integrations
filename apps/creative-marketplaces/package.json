@@ -17,6 +17,7 @@
     "@canva/platform": "2.2.3",
     "@formatjs/intl": "3.1.8",
     "@iconify/vue": "5.0.0",
+    "@minds-ai-co/locales": "1.0.0-staging.126",
     "@minds-ai-co/ui": "1.0.0-staging.140",
     "@minds/creative-review": "0.1.0",
     "@vueuse/core": "14.4.0",

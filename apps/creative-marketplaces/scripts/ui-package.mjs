@@ -28,7 +28,7 @@ export async function sharedStyles(hostStyles) {
   const entry = resolve(uiRoot, 'src/styles/widget.css');
   const css = `${await readFile(entry, 'utf8')}\n${[...componentStyles.values()].join('\n')}\n${hostStyles}`;
   const result = await postcss([postcssImport(), tailwindcss({ presets: [require('@minds-ai-co/ui/tailwind-preset')],
-    content: [resolve(uiRoot, 'src/components/button/Button.vue'), resolve(uiRoot, 'src/components/common/Tooltip.vue'), resolve(uiRoot, 'src/components/input/TextInput.vue')],
+    content: [resolve(uiRoot, 'src/components/**/*.{vue,ts}'), resolve(dirname(new URL(import.meta.url).pathname), '../src/**/*.{vue,js,ts}')],
   })]).process(css, { from: entry });
   // Opaque Figma and offline host panels need self-contained fonts, not relative network requests.
   return result.css.replace(/url\(['"]?([^)'" ]+\.woff2)['"]?\)/g, (_, path) => `url("data:font/woff2;base64,${require('node:fs').readFileSync(resolve(dirname(entry), path)).toString('base64')}")`);

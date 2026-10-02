@@ -181,3 +181,21 @@ test('failed preparation is surfaced once and only a later explicit retry starts
   assert.equal((await env.call('/preview', options)).status, 202);
   assert.equal(plans, 2);
 });
+
+test('native input requests Audience read permission and rejects access before the browser approves OAuth', async t => {
+  const env = await setup(t);
+  const created = await env.call('/sessions', { method: 'POST', headers: { Origin: 'null', 'Content-Type': 'application/json' }, body: JSON.stringify({ nativeStudy: true }) });
+  const session = await created.json();
+  const headers = { Origin: 'null', Authorization: `Bearer ${session.session}` };
+  assert.equal((await env.call('/audiences', { headers })).status, 401);
+  assert.equal((await env.call('/study', { method: 'POST', headers, body: '{}' })).status, 401);
+  const start = await fetch(session.connectUrl, { redirect: 'manual' });
+  const params = new URL(start.headers.get('location')).searchParams;
+  assert.equal(params.get('scope'), 'openid sparks:read flows:read flows:write');
+  const callback = `/callback?state=${params.get('state')}&code=code`;
+  assert.equal((await env.call(callback, { headers: { Cookie: start.headers.get('set-cookie').split(';')[0] } })).status, 200);
+  assert.equal((await env.call('/audiences?offset=100', { headers })).status, 200);
+  assert.ok(env.upstreamCalls.some(call => call.url.endsWith('/api/v1/audiences?limit=100&offset=100')));
+  assert.equal((await env.call('/confirm', { method: 'POST', headers, body: '{}' })).status, 400);
+  assert.ok(!env.upstreamCalls.some(call => call.url.endsWith('/research-runs')));
+});

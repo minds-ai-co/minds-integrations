@@ -10,11 +10,13 @@ Install workspace dependencies with the existing GitHub Packages credential inje
 
 ## Figma native comments
 
-After an exact research run completes, “Review Figma comments” opens the Minds feedback review page with its Study ID, run ID and original exported frame ID. The action does not post comments automatically. The user connects their Figma account with comment permissions, supplies the frame link, reviews the proposed comments, and explicitly selects which comments to publish.
+The Figma candidate replaces the existing-Study picker and external review handoff with the published Minds `MessageComposer` and `StudyPlannerAudienceGrid`. Its main controls are “Describe what you want to learn in this Study…” and “Select Audiences”. Selecting a frame alone does not upload it or execute research. Sending the question creates a private Study, uploads that selected frame and previews the saved research draft. Inline confirmation starts the exact revision and authorizes posting its completed answers as native comments on that frame.
 
-The webapp owns OAuth credentials, research authorization, heatmap projection and delivery receipts. The plugin does not receive the Figma OAuth token. Native comments identify the connected Figma account as author; the body identifies Minds AI feedback and links to its research. Image reactions require genuine saved heatmap coordinates. Frame summaries are identified separately.
+First use requires Minds OAuth and separate Figma comment authorization. Public Figma plugins cannot read `figma.fileKey`, so board setup requests the actual Figma design/file link. The exported frame supplies the node ID automatically. Reopening restores non-secret Study/draft identifiers from private per-user Figma client storage and requires the original board link and selected frame before resuming. Existing runs are read before confirmation so reconnecting does not start another paid run.
 
-This adapter requires the companion webapp change for the review route. The code is not evidence of a production release or marketplace approval. Existing provider submissions must remain intact while updated bundles are reviewed.
+The webapp owns research authorization, provider credentials, preview hashes, frame validation and durable comment delivery. Failed, partial and mismatched research cannot post comments. Completed summaries are posted at frame level and attributed to Minds in the body, with the connected Figma account as author. These summaries do not claim individual heatmap coordinates. The separate canonical comments capability also supports verified saved heatmap reactions.
+
+This adapter requires [webapp PR #8099](https://github.com/minds-ai-co/webapp/pull/8099), gateway and edge releases, and Figma approval of the updated comment scopes. Local builds and tests are not evidence of production delivery or marketplace approval. Native board delivery remains an acceptance gate.
 
 ## Other integration surfaces
 

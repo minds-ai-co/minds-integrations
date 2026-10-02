@@ -1,5 +1,8 @@
-import { mountMindsControls } from './minds-ui.js';
-import { mountPanel } from './panel.js';
+import { createApp } from 'vue';
+import { createI18n } from 'vue-i18n';
+import Icon from '@minds-ai-co/ui/components/display/Icon.vue';
+import en from '@minds-ai-co/locales/en.json';
+import FigmaStudyApp from './FigmaStudyApp.vue';
 import { randomRequestId } from '@minds/creative-review';
 import { isFigmaHostReply } from './figma-host.js';
 const pending = new Map();
@@ -18,12 +21,5 @@ function host(type, text) {
     parent.postMessage({ pluginMessage: { type, requestId, text } }, '*');
   });
 }
-mountPanel({ mountControls: mountMindsControls, root: document.querySelector('main'), gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Figma',
-  openUrl: url => host('open', url),
-  exportMaterial: async () => { const result = await host('export'); return { kind: 'image', label: result.label, nodeId: result.nodeType === 'FRAME' ? result.nodeId : undefined, blob: new Blob([result.bytes], { type: 'image/png' }) }; },
-  openComments: (run, material) => {
-    if (!material?.nodeId) throw new Error('Select a Figma frame to return comments.');
-    return host('open', `https://getminds.ai/integrations/figma-feedback?${new URLSearchParams({ studyId: run.studyId, runId: run.runId, nodeId: material.nodeId })}`);
-  },
-  importFindings: text => host('import-findings', text),
-});
+document.querySelector('main').classList.add('figma-native');
+createApp(FigmaStudyApp, { gatewayUrl: CREATIVE_GATEWAY_URL, host }).component('Icon', Icon).use(createI18n({ legacy: false, locale: 'en', messages: { en } })).mount(document.querySelector('main'));

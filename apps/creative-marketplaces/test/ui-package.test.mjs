@@ -10,8 +10,10 @@ test('the actual Figma bundle renders package-owned controls with self-contained
   const dom = new JSDOM(html, { runScripts: 'dangerously', virtualConsole });
   try {
     assert.equal(dom.window.document.querySelector('#connect')?.tagName, 'BUTTON');
-    assert.equal(dom.window.document.querySelector('#preview')?.textContent, 'Draft research plan');
-    assert.ok(dom.window.document.querySelector('#preview')?.classList.contains('bg-foreground'));
+    assert.ok(dom.window.document.querySelector('textarea[placeholder="Describe what you want to learn in this Study…"]'));
+    assert.ok([...dom.window.document.querySelectorAll('button')].some(button => button.textContent.trim() === 'Select Audiences'));
+    assert.equal(dom.window.document.querySelector('#study'), null);
+    assert.equal(dom.window.document.querySelector('#open'), null);
     assert.ok(html.includes('data:font/woff2;base64,'));
     assert.ok(html.includes('--brand-gradient'));
     assert.deepEqual(errors.map(error => error.message), []);
