@@ -4,8 +4,6 @@ import { useI18n } from 'vue-i18n'
 import MessageComposer from '@minds-ai-co/ui/components/input/MessageComposer.vue'
 import Button from '@minds-ai-co/ui/components/button/Button.vue'
 import TextInput from '@minds-ai-co/ui/components/input/TextInput.vue'
-import SidebarMindItem from '@minds-ai-co/ui/components/sidebar/SidebarMindItem.vue'
-import SelectableItemShell from '@minds-ai-co/ui/components/sidebar/SelectableItemShell.vue'
 import StudyPlannerAudienceGrid from '@minds-ai-co/ui/components/research/planner/StudyPlannerAudienceGrid.vue'
 import { createFigmaStudy } from './figma-study.js'
 const props = defineProps<{ gatewayUrl: string; host: (type: string, text?: string) => Promise<unknown> }>()
@@ -26,28 +24,20 @@ const missing = computed(() => state.draft?.plan?.confirmation?.missingInputs ??
     <MessageComposer :model-value="state.question" :placeholder="t('messageInput.placeholderHintAuto')"
         :disabled="!state.connected || state.busy || !!state.run" :sending="state.busy" @update:model-value="flow.changeQuestion" @submit="flow.prepare" @file="flow.selectMaterial" />
       <Button variant="secondary" :disabled="!state.connected || state.busy || !!state.run" @click="state.pickerOpen = !state.pickerOpen">
-        {{ t('chat.selectMinds') }}<span v-if="state.audienceIds.length || state.mindIds.length"> · {{ state.audienceIds.length + state.mindIds.length }}</span>
+        {{ t('chat.selectAudiences') }}
       </Button>
+    <p v-if="state.audienceIds.length" role="status">{{ t('chat.guidedStudy.selectedAudiencesCount', { count: state.audienceIds.length }) }}</p>
     <template v-if="state.connected">
       <p v-if="state.material">{{ state.material.label }}</p>
-      <section v-if="state.pickerOpen" aria-label="Select research participants" class="flex flex-col gap-2">
-      <p>Minds</p>
-      <TextInput v-model="state.mindSearch" :label="t('common.search')" :disabled="state.busy" />
-      <Button variant="secondary" :disabled="state.busy" @click="flow.searchMinds">{{ t('common.search') }}</Button>
-      <SelectableItemShell v-for="mind in state.minds" :key="mind.id" as="button" class="text-left" :aria-label="mind.name" :aria-pressed="state.mindIds.includes(mind.id)"
-        :disabled="state.busy || !!state.run" :highlighted="state.mindIds.includes(mind.id)" @click="flow.toggleMind(mind)">
-        <SidebarMindItem :id="mind.id" :name="mind.name" :subtitle="mind.discipline" :image-url="mind.profileImageUrl"
-          :no-drag="true" :hide-drag="true" :hide-message="true" :select-minds-mode="true" :select-minds-accepts="{ mind: true }" :select-minds-selected-ids="state.mindIds" />
-      </SelectableItemShell>
-      <Button v-if="state.minds.length < state.mindTotal" variant="secondary" :disabled="state.busy" @click="flow.moreMinds">{{ t('common.loadMore') }} Minds</Button>
-      <p>Audiences</p>
+      <section v-if="state.pickerOpen" aria-label="Select Audiences" class="flex flex-col gap-2">
       <StudyPlannerAudienceGrid :audiences="state.audiences" :selected-ids="state.audienceIds"
         display-mode="rows" :readonly="state.busy || !!state.run" @select="flow.toggleAudience" />
       <Button v-if="state.audiences.length < state.audienceTotal" variant="secondary" :disabled="state.busy" @click="flow.moreAudiences">{{ t('common.loadMore') }} Audiences</Button>
       </section>
       <details :open="state.boardSetupOpen" @toggle="state.boardSetupOpen = $event.target.open">
-        <summary>Connect this Figma board</summary>
-        <TextInput :model-value="state.boardUrl" @update:model-value="flow.changeBoardUrl" :label="t('figmaFeedback.frameLink')" :placeholder="t('figmaFeedback.framePlaceholder')" :disabled="state.busy || !!state.run" />
+        <summary>Enable comments on this board</summary>
+        <p>The selected frame is used directly. This does not import your board into Minds.</p>
+        <TextInput :model-value="state.boardUrl" @update:model-value="flow.changeBoardUrl" :label="'Figma board link (for comments)'" :placeholder="'Copy the board link from Figma’s Share menu'" :disabled="state.busy || !!state.run" />
         <Button variant="secondary" :disabled="state.busy" @click="flow.connectComments">{{ t('figmaFeedback.connect') }}</Button>
         <p>{{ t('figmaFeedback.authorship') }}</p>
         <Button variant="secondary" :disabled="state.busy" @click="flow.disconnect">Disconnect Minds</Button>
