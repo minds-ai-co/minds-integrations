@@ -6,7 +6,7 @@ const unwrap = result => result.data || result;
 export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(resolve => setTimeout(resolve, ms)), now = Date.now }) {
   const client = new CreativeReviewClient(gatewayUrl);
   const state = reactive({ connected: false, busy: false, question: '', audienceIds: [], audiences: [], mindIds: [], minds: [], executionAudienceIds: [], pickerOpen: false,
-    boardUrl: '', material: null, draft: null, studyId: '', run: null, status: '', findings: '', accepted: false, advanced: false });
+    boardUrl: '', boardSetupOpen: false, mindSearch: '', mindTotal: 0, audienceTotal: 0, material: null, draft: null, studyId: '', run: null, status: '', findings: '', accepted: false, advanced: false });
   let requestId = randomRequestId();
   let fingerprint = '';
   let restoringBoard = false;
@@ -25,29 +25,34 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
     try { await fn(); } catch (error) { state.status = error.message || 'Unable to complete this action.'; }
     finally { state.busy = false; }
   }
-  async function audiences() {
-    const items = []; let offset = 0;
-    for (;;) {
-      const result = await client.audiences(offset);
-      if (!Array.isArray(result.data)) throw new Error('Minds returned an unexpected Audience list.');
-      items.push(...result.data); offset += result.data.length;
-      if (offset >= (result.pagination?.total ?? offset)) break;
-      if (!result.data.length) throw new Error('Unable to load the remaining Audiences.');
-    }
-    state.audiences = items.map(item => ({ ...item, imageUrl: item.imageUrl || null, canSelect: item.mindCount > 0 }));
+  async function audiences(append = false) {
+    const result = await client.audiences(append ? state.audiences.length : 0);
+    if (!Array.isArray(result.data)) throw new Error('Minds returned an unexpected Audience list.');
+    const items = result.data.map(item => ({ ...item, imageUrl: item.imageUrl || null, canSelect: item.mindCount > 0 }));
+    state.audiences = append ? [...state.audiences, ...items] : items;
+    state.audienceTotal = result.pagination?.total ?? state.audiences.length;
   }
-  async function minds() {
-    const items = []; let offset = 0;
-    for (;;) {
-      const result = await client.minds(offset);
-      if (!Array.isArray(result.data)) throw new Error('Minds returned an unexpected Mind list.');
-      items.push(...result.data); offset += result.data.length;
-      if (offset >= (result.pagination?.total ?? offset)) break;
-      if (!result.data.length) throw new Error('Unable to load the remaining Minds.');
-    }
-    state.minds = items;
+  async function minds(append = false) {
+    const result = await client.minds(append ? state.minds.length : 0, state.mindSearch);
+    if (!Array.isArray(result.data)) throw new Error('Minds returned an unexpected Mind list.');
+    state.minds = append ? [...state.minds, ...result.data] : result.data;
+    state.mindTotal = result.pagination?.total ?? state.minds.length;
   }
-  async function loadParticipants() { await Promise.all([audiences(), minds()]); }
+  async function loadParticipants() { state.status = 'Loading Minds and Audiences…'; await Promise.all([audiences(), minds()]); }
+  async function moreMinds() { return operation(async () => { if (state.minds.length < state.mindTotal) await minds(true); }); }
+  async function moreAudiences() { return operation(async () => { if (state.audiences.length < state.audienceTotal) await audiences(true); }); }
+  async function searchMinds() { return operation(async () => { await minds(); }); }
+  function boardLink() {
+    try {
+      const board = new URL(state.boardUrl.trim());
+      if (!['www.figma.com', 'figma.com'].includes(board.hostname) || board.protocol !== 'https:' || board.username || board.password
+        || !/^\/(design|file)\/[A-Za-z0-9]+(?:\/|$)/.test(board.pathname)) throw new Error();
+      return board;
+    } catch {
+      state.boardSetupOpen = true;
+      throw new Error('Paste this board’s Figma design link in “Connect this Figma board”, then send your question again.');
+    }
+  }
   function toggleMind(item) {
     if (state.busy || state.run) return;
     state.mindIds = state.mindIds.includes(item.id) ? state.mindIds.filter(id => id !== item.id) : [...state.mindIds, item.id];
@@ -80,11 +85,9 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
   async function prepare() { return operation(async () => {
     if (!state.connected) throw new Error('Connect Minds first.');
     if (!state.question.trim() || state.question.length > 20000 || (!state.audienceIds.length && !state.mindIds.length)) throw new Error('Describe what you want to learn and select Minds or Audiences.');
+    const board = boardLink();
     const exported = await host('export');
     if (exported.nodeType !== 'FRAME') throw new Error('Select one Figma frame to receive comments.');
-    const board = new URL(state.boardUrl);
-    if (!['www.figma.com', 'figma.com'].includes(board.hostname) || board.protocol !== 'https:' || board.username || board.password
-      || !/^\/(design|file)\/[A-Za-z0-9]+(?:\/|$)/.test(board.pathname)) throw new Error('Connect this board with its Figma link first.');
     const frameUrl = `https://www.figma.com${board.pathname}?node-id=${encodeURIComponent(exported.nodeId.replace(':', '-'))}`;
     // A changed export cannot reuse an earlier source/draft, even when the prompt is unchanged.
     const bytes = new Uint8Array(exported.bytes);
@@ -116,7 +119,7 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
   }
   async function run() { return operation(async () => {
     if (!state.draft || !state.accepted || !state.material) throw new Error('Review the research and confirm running it and posting answers to this frame.');
-    const board = new URL(state.boardUrl);
+    const board = boardLink();
     const savedBoard = new URL(state.material.frameUrl);
     if (board.protocol !== 'https:' || board.username || board.password || !['www.figma.com', 'figma.com'].includes(board.hostname) || !/^\/(design|file)\/[A-Za-z0-9]+(?:\/|$)/.test(board.pathname) || board.pathname.split('/')[2] !== savedBoard.pathname.split('/')[2]) throw new Error('Connect the original board before resuming this research.');
     if (state.draft.plan?.confirmation?.missingInputs?.length) throw new Error('This research still has missing inputs. Update the question first.');
@@ -145,5 +148,5 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
   async function reset() { if (state.busy) return; await host('clear-state'); invalidate(); state.question = ''; state.material = null; state.status = ''; }
   async function disconnect() { return operation(async () => { await client.disconnect(); state.connected = false; state.accepted = state.advanced = false; state.status = 'Disconnected from Minds.'; }); }
   async function connectComments() { await host('open', 'https://getminds.ai/api/integrations/figma/authorize?purpose=figma-comments'); }
-  return { state, changeQuestion, changeBoardUrl, selectMaterial, toggleAudience, toggleMind, connect, refresh, prepare, run, retryComments, connectComments, disconnect, reset };
+  return { state, changeQuestion, changeBoardUrl, selectMaterial, toggleAudience, toggleMind, moreMinds, moreAudiences, searchMinds, connect, refresh, prepare, run, retryComments, connectComments, disconnect, reset };
 }

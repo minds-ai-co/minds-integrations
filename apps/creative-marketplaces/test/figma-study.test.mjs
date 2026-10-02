@@ -13,8 +13,8 @@ const make = (t, config = {}) => {
     if (url.endsWith('/confirm')) confirmed = true;
     const value = url.endsWith('/sessions') ? { session: 'test-capability', connectUrl: 'https://getminds.ai/connect' }
       : url.endsWith('/session') ? { connected: true }
-      : url.includes('/minds?') ? { data: [{ id: '44444444-4444-4444-8444-444444444444', name: 'Browser test Mind' }], pagination: { total: 1 } }
-      : url.includes('/audiences?') ? { data: [{ id: audienceId, name: 'Parents', mindCount: 20 }], pagination: { total: 1 } }
+      : url.includes('/minds?') ? { data: [{ id: '44444444-4444-4444-8444-444444444444', name: 'Browser test Mind' }], pagination: { total: config.total || 1 } }
+      : url.includes('/audiences?') ? { data: [{ id: audienceId, name: 'Parents', mindCount: 20 }], pagination: { total: config.total || 1 } }
       : url.endsWith('/study') ? { data: { id: studyId, audiences: [{ id: audienceId }] } }
       : url.endsWith('/upload') ? { url: '/api/uploads/chat/owner/design.png' }
       : (url.endsWith('/preview') || url.includes('/draft?')) ? { data: { draftPlanId: draftId, revision: 2, plan: { modules: [{ questions: [{ text: 'Is the offer clear?' }] }], confirmation: { missingInputs: [] } } } }
@@ -115,4 +115,30 @@ test('individual Minds create the research population through canonical composit
   flow.state.accepted = true; await flow.run();
   assert.deepEqual(calls.find(call => call.url.endsWith('/confirm')).body.audienceIds, [audienceId]);
   assert.equal(flow.state.status, 'Comments published in Figma.');
+});
+
+test('large accounts fetch only the first page; additional pages and Mind search are explicit', async t => {
+  const { flow, calls } = make(t, { total: 10000 });
+  await flow.connect();
+  assert.equal(calls.filter(call => call.url.includes('/minds?')).length, 1);
+  assert.equal(calls.filter(call => call.url.includes('/audiences?')).length, 1);
+  assert.equal(flow.state.busy, false);
+  flow.toggleMind(flow.state.minds[0]);
+  await flow.moreMinds();
+  assert.ok(calls.some(call => call.url.includes('/minds?offset=1')));
+  flow.state.mindSearch = 'Design & parents'; await flow.searchMinds();
+  const search = new URL(calls.filter(call => call.url.includes('/minds?')).at(-1).url);
+  assert.equal(search.searchParams.get('search'), 'Design & parents');
+  assert.equal(search.searchParams.get('offset'), '0');
+  assert.equal(flow.state.mindIds.length, 1);
+});
+test('empty and malformed board links open setup and do not upload or create a Study', async t => {
+  const { flow, calls } = make(t); await flow.connect(); flow.toggleMind(flow.state.minds[0]); flow.changeQuestion('Question');
+  for (const link of ['', 'not a URL', 'https://example.com/design/Other']) {
+    flow.changeBoardUrl(link); await flow.prepare();
+    assert.equal(flow.state.boardSetupOpen, true);
+    assert.match(flow.state.status, /Paste this board/);
+    assert.ok(!flow.state.status.includes('Invalid URL'));
+  }
+  assert.ok(!calls.some(call => call.url.endsWith('/study') || call.url.endsWith('/upload')));
 });

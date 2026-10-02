@@ -32,16 +32,20 @@ const missing = computed(() => state.draft?.plan?.confirmation?.missingInputs ??
       <p v-if="state.material">{{ state.material.label }}</p>
       <section v-if="state.pickerOpen" aria-label="Select research participants" class="flex flex-col gap-2">
       <p>Minds</p>
+      <TextInput v-model="state.mindSearch" :label="t('common.search')" :disabled="state.busy" />
+      <Button variant="secondary" :disabled="state.busy" @click="flow.searchMinds">{{ t('common.search') }}</Button>
       <SelectableItemShell v-for="mind in state.minds" :key="mind.id" as="button" class="text-left" :aria-label="mind.name" :aria-pressed="state.mindIds.includes(mind.id)"
         :disabled="state.busy || !!state.run" :highlighted="state.mindIds.includes(mind.id)" @click="flow.toggleMind(mind)">
         <SidebarMindItem :id="mind.id" :name="mind.name" :subtitle="mind.discipline" :image-url="mind.profileImageUrl"
           :no-drag="true" :hide-drag="true" :hide-message="true" :select-minds-mode="true" :select-minds-accepts="{ mind: true }" :select-minds-selected-ids="state.mindIds" />
       </SelectableItemShell>
+      <Button v-if="state.minds.length < state.mindTotal" variant="secondary" :disabled="state.busy" @click="flow.moreMinds">{{ t('common.loadMore') }} Minds</Button>
       <p>Audiences</p>
       <StudyPlannerAudienceGrid :audiences="state.audiences" :selected-ids="state.audienceIds"
         display-mode="rows" :readonly="state.busy || !!state.run" @select="flow.toggleAudience" />
+      <Button v-if="state.audiences.length < state.audienceTotal" variant="secondary" :disabled="state.busy" @click="flow.moreAudiences">{{ t('common.loadMore') }} Audiences</Button>
       </section>
-      <details>
+      <details :open="state.boardSetupOpen" @toggle="state.boardSetupOpen = $event.target.open">
         <summary>Connect this Figma board</summary>
         <TextInput :model-value="state.boardUrl" @update:model-value="flow.changeBoardUrl" :label="t('figmaFeedback.frameLink')" :placeholder="t('figmaFeedback.framePlaceholder')" :disabled="state.busy || !!state.run" />
         <Button variant="secondary" :disabled="state.busy" @click="flow.connectComments">{{ t('figmaFeedback.connect') }}</Button>

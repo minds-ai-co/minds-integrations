@@ -98,7 +98,7 @@ export class CreativeReviewClient {
   studies() { return this.call('/studies'); }
   draft(studyId, draftPlanId) { return this.call(`/draft?${new URLSearchParams({ studyId, draftPlanId })}`); }
   audiences(offset = 0) { return this.call(`/audiences?offset=${offset}`); }
-  minds(offset = 0) { return this.call(`/minds?offset=${offset}`); }
+  minds(offset = 0, search = '') { return this.call(`/minds?${new URLSearchParams({ offset: String(offset), search })}`); }
   createStudy(name, audienceIds, idempotencyKey, mindIds = []) {
     return this.call('/study', { method: 'POST', body: JSON.stringify({ name, audienceIds, ...(mindIds.length ? { mindIds } : {}) }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
   }

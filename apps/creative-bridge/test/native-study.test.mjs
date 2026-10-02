@@ -53,3 +53,9 @@ test('individual Minds use canonical atomic Audience configuration and retain th
   assert.deepEqual(JSON.parse(calls[0].request.body), { name: 'Selected frame', audienceIds: [], isLinkSharingEnabled: false, audienceConfigs: [{ name: 'Selected frame', mindIds: [audienceId] }] });
   assert.equal(calls[0].request.headers['Idempotency-Key'], 'stable-request');
 });
+
+test('Mind search is encoded on its fixed read route without accepting caller URLs', async () => {
+  const { result, calls } = route('/minds', null, { req: { method: 'GET' }, url: new URL('https://getminds.ai/minds?offset=100&search=Design%20%26%20parents') });
+  await result;
+  assert.equal(calls[0].url, '/api/v1/minds?limit=100&offset=100&search=Design+%26+parents');
+});

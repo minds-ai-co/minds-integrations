@@ -25,3 +25,7 @@ This migration covers the four shared creative panels. Provider-rendered Slack B
 ## Browser interaction checks
 
 Run `npm run test:browser --workspace minds-creative-marketplaces` after installing Playwright Chromium. The test executes the actual generated plugin HTML in a sandboxed iframe with the validated Figma parent origin. It selects an individual Mind and then a whole Audience, enters a question, confirms the saved draft and checks the completed-result delivery payload. API, OAuth and provider responses are explicit fixtures; this verifies browser interaction without claiming live account or native-comment acceptance. Captures are named `*-browser-fixture.png` and must not be published as Figma-host delivery evidence.
+
+## Live-account fixes
+
+The picker loads one page of Minds and Audiences after connection, rather than traversing the full account library before enabling input. More pages require the shared Load more action, and Mind search uses the canonical list endpoint’s encoded search parameter. This avoids the gateway rate limit observed on the actual account. Blank or malformed board links open board setup with a specific instruction before any export, upload or Study creation; they no longer expose a browser URL-constructor exception. Chromium covers the empty-link recovery path.
