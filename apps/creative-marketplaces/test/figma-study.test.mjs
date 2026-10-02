@@ -106,7 +106,7 @@ for (const runStatus of ['failed', 'partial', 'cancelled', 'plan_limited']) {
 
 test('individual Minds create the research population through canonical composite Study creation', async t => {
   const { flow, calls } = make(t);
-  await flow.connect(); flow.toggleMind(flow.state.minds[0]);
+  await flow.connect(); await flow.searchMinds(); flow.toggleMind(flow.state.minds[0]);
   flow.changeQuestion('Is the offer clear?'); flow.changeBoardUrl('https://www.figma.com/design/FileKey12345/QA');
   await flow.prepare();
   assert.deepEqual(calls.find(call => call.url.endsWith('/study')).body, { name: 'Coffee campaign', audienceIds: [], mindIds: [flow.state.minds[0].id] });
@@ -120,9 +120,10 @@ test('individual Minds create the research population through canonical composit
 test('large accounts fetch only the first page; additional pages and Mind search are explicit', async t => {
   const { flow, calls } = make(t, { total: 10000 });
   await flow.connect();
-  assert.equal(calls.filter(call => call.url.includes('/minds?')).length, 1);
+  assert.equal(calls.filter(call => call.url.includes('/minds?')).length, 0);
   assert.equal(calls.filter(call => call.url.includes('/audiences?')).length, 1);
   assert.equal(flow.state.busy, false);
+  await flow.searchMinds();
   flow.toggleMind(flow.state.minds[0]);
   await flow.moreMinds();
   assert.ok(calls.some(call => call.url.includes('/minds?offset=1')));
@@ -133,12 +134,18 @@ test('large accounts fetch only the first page; additional pages and Mind search
   assert.equal(flow.state.mindIds.length, 1);
 });
 test('empty and malformed board links open setup and do not upload or create a Study', async t => {
-  const { flow, calls } = make(t); await flow.connect(); flow.toggleMind(flow.state.minds[0]); flow.changeQuestion('Question');
+  const { flow, calls } = make(t); await flow.connect(); await flow.searchMinds(); flow.toggleMind(flow.state.minds[0]); flow.changeQuestion('Question');
   for (const link of ['', 'not a URL', 'https://example.com/design/Other']) {
     flow.changeBoardUrl(link); await flow.prepare();
     assert.equal(flow.state.boardSetupOpen, true);
-    assert.match(flow.state.status, /Paste this board/);
+    assert.match(flow.state.status, /Enable comments on this board/);
     assert.ok(!flow.state.status.includes('Invalid URL'));
   }
   assert.ok(!calls.some(call => call.url.endsWith('/study') || call.url.endsWith('/upload')));
+});
+
+test('comment authorization is independent from board import', async t => {
+  const { flow, opened } = make(t);
+  await flow.connectComments();
+  assert.deepEqual(opened, ['https://getminds.ai/api/integrations/figma/authorize?purpose=figma-comments']);
 });

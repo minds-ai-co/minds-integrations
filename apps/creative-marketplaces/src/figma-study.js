@@ -38,7 +38,7 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
     state.minds = append ? [...state.minds, ...result.data] : result.data;
     state.mindTotal = result.pagination?.total ?? state.minds.length;
   }
-  async function loadParticipants() { state.status = 'Loading Minds and Audiences…'; await Promise.all([audiences(), minds()]); }
+  async function loadParticipants() { state.status = 'Loading Audiences…'; await audiences(); }
   async function moreMinds() { return operation(async () => { if (state.minds.length < state.mindTotal) await minds(true); }); }
   async function moreAudiences() { return operation(async () => { if (state.audiences.length < state.audienceTotal) await audiences(true); }); }
   async function searchMinds() { return operation(async () => { await minds(); }); }
@@ -50,7 +50,7 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
       return board;
     } catch {
       state.boardSetupOpen = true;
-      throw new Error('Paste this board’s Figma design link in “Connect this Figma board”, then send your question again.');
+      throw new Error('Enable comments on this board: copy its link from Figma’s Share menu and paste it in comment setup.');
     }
   }
   function toggleMind(item) {
@@ -84,7 +84,7 @@ export function createFigmaStudy({ gatewayUrl, host, wait = ms => new Promise(re
   async function refresh() { return operation(async () => { state.connected = (await client.status()).connected; if (state.connected) { await loadParticipants(); if (!state.draft) await restoreDraft(); state.status = ''; } }); }
   async function prepare() { return operation(async () => {
     if (!state.connected) throw new Error('Connect Minds first.');
-    if (!state.question.trim() || state.question.length > 20000 || (!state.audienceIds.length && !state.mindIds.length)) throw new Error('Describe what you want to learn and select Minds or Audiences.');
+    if (!state.question.trim() || state.question.length > 20000 || (!state.audienceIds.length && !state.mindIds.length)) throw new Error('Describe what you want to learn and select Audiences.');
     const board = boardLink();
     const exported = await host('export');
     if (exported.nodeType !== 'FRAME') throw new Error('Select one Figma frame to receive comments.');

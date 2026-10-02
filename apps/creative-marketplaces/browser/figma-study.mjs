@@ -11,7 +11,7 @@ const browser = await chromium.launch({ headless: true });
 const directory = resolve(process.env.FIGMA_BROWSER_ARTIFACT_DIR || '/tmp/minds-figma-browser-test');
 await mkdir(directory, { recursive: true });
 try {
-  for (const selection of ['Mind', 'Audience']) {
+  for (const selection of ['Audience']) {
     const page = await browser.newPage({ viewport: { width: 440, height: 950 }, deviceScaleFactor: 2 });
     const errors = [], calls = []; let confirmed = false;
     page.on('pageerror', error => errors.push(error.message));
@@ -40,13 +40,11 @@ try {
     await page.goto('https://www.figma.com/__minds-browser-test__/host');
     const panel = page.frameLocator('iframe');
     await panel.getByRole('button', { name: 'Connect Minds', exact: true }).click();
-    await panel.getByRole('button', { name: 'Select Minds', exact: true }).click();
-    if (selection === 'Mind') {
-      const row = panel.getByRole('button', { name: 'Test Mind', exact: true });
-      await row.click(); assert.equal(await row.getAttribute('aria-pressed'), 'true');
-    } else {
-      await panel.getByText('Test Audience', { exact: true }).click();
-    }
+    await panel.getByRole('button', { name: 'Select Audiences', exact: true }).click();
+    await panel.getByText('Test Audience', { exact: true }).click();
+    await panel.getByRole('status').filter({ hasText: '1 Audiences selected' }).waitFor();
+    assert.equal(await panel.getByText('Test Mind', { exact: true }).count(), 0);
+    assert.ok(!calls.some(call => call.path.endsWith('/minds')));
     await panel.getByRole('textbox', { name: 'Message', exact: true }).fill('Is the design clear?');
     await panel.getByRole('button', { name: 'Send message', exact: true }).waitFor({ state: 'visible' });
     const panelFrame = page.frames().find(frame => frame.url().endsWith('/panel'));
@@ -55,7 +53,7 @@ try {
     assert.ok(textbox.height < 60, 'Shared composer keeps its one-line input height');
     await panel.locator('section[aria-label="Minds Study"]').screenshot({ path: resolve(directory, `${selection.toLowerCase()}-selection-browser-fixture.png`) });
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
-    await panel.getByRole('status').filter({ hasText: 'Paste this board' }).waitFor();
+    await panel.getByRole('status').filter({ hasText: 'Enable comments on this board' }).waitFor();
     assert.notEqual(await panel.locator('details').getAttribute('open'), null);
     assert.ok(!calls.some(call => call.path.endsWith('/study') || call.path.endsWith('/upload')));
     await panel.locator('details input[type="text"]').fill('https://www.figma.com/design/BrowserTestKey/QA');
