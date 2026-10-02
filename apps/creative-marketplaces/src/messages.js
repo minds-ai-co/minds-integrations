@@ -274,7 +274,18 @@ export const panelMessages = {
     "id": "minds.creative.f74e5579b51161fe",
     "defaultMessage": "Review and run the saved plan in Minds, then return here to load its findings.",
     "description": "Creative research panel text. Preserve Minds, Study and Audience product names."
+  },
+  "Review Figma comments": {
+    "id": "minds.creative.a0545e2a54b89eed",
+    "defaultMessage": "Review Figma comments",
+    "description": "Figma feedback return action. Native posting requires explicit preview review in Minds."
+  },
+  "Review the comment preview in Minds before posting to Figma.": {
+    "id": "minds.creative.ec0c04dde67fae5e",
+    "defaultMessage": "Review the comment preview in Minds before posting to Figma.",
+    "description": "Figma feedback return action. Native posting requires explicit preview review in Minds."
   }
+
 };
 export function defaultText(message, values = {}) {
   return message.defaultMessage.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? `{${key}}`));

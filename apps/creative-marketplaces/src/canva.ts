@@ -1,3 +1,4 @@
+import { mountMindsControls } from './minds-ui.js';
 import { initIntl } from '@canva/app-i18n-kit';
 import { panelMessages } from './messages.js';
 import { requestExport, addElementAtPoint } from '@canva/design';
@@ -11,7 +12,7 @@ prepareDesignEditor({
   render: async () => {
     const style = document.createElement('style'); style.textContent = styles; document.head.append(style);
     const root = document.createElement('main'); document.body.append(root);
-    mountPanel({ root, gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Canva', formatMessage: (message: any, values: any) => intl.formatMessage(message, values),
+    mountPanel({ mountControls: mountMindsControls, root, gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Canva', formatMessage: (message: any, values: any) => intl.formatMessage(message, values),
       openUrl: async (url: string) => { await requestOpenExternalUrl({ url }); },
       exportMaterial: async () => {
         // PDF preserves multi-page exports. PNG multi-page exports are ZIPs.

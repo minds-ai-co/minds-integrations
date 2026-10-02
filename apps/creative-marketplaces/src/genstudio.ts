@@ -1,3 +1,4 @@
+import { mountMindsControls } from './minds-ui.js';
 import { register, attach } from '@adobe/uix-guest';
 import { ValidationExtensionService, type AppMetadata, type Experience } from '@adobe/genstudio-extensibility-sdk';
 import { mountPanel } from './panel.js';
@@ -17,7 +18,7 @@ if (location.hash !== '#/review') {
   root.textContent = 'Minds audience review is available in the validation panel.';
 } else {
   const connection = await attach({ id: extensionId });
-  mountPanel({ root, gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Adobe GenStudio',
+  mountPanel({ mountControls: mountMindsControls, root, gatewayUrl: CREATIVE_GATEWAY_URL, hostName: 'Adobe GenStudio',
     openUrl: async (url: string) => { window.open(url, '_blank', 'noopener,noreferrer'); },
     exportMaterial: async () => {
       const experiences: Experience[] = await ValidationExtensionService.getExperiences(connection);

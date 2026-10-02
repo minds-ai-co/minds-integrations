@@ -89,13 +89,27 @@ export class CreativeReviewClient {
     }
     return value;
   }
-  async connect() {
-    const value = await this.call('/sessions', { method: 'POST' });
+  async connect(nativeStudy = false) {
+    const value = await this.call('/sessions', { method: 'POST', ...(nativeStudy ? { body: JSON.stringify({ nativeStudy: true }), headers: { 'Content-Type': 'application/json' } } : {}) });
     this.session = value.session;
     return value.connectUrl;
   }
   status() { return this.call('/session'); }
   studies() { return this.call('/studies'); }
+  draft(studyId, draftPlanId) { return this.call(`/draft?${new URLSearchParams({ studyId, draftPlanId })}`); }
+  audiences(offset = 0) { return this.call(`/audiences?offset=${offset}`); }
+  minds(offset = 0) { return this.call(`/minds?offset=${offset}`); }
+  createStudy(name, audienceIds, idempotencyKey, mindIds = []) {
+    return this.call('/study', { method: 'POST', body: JSON.stringify({ name, audienceIds, ...(mindIds.length ? { mindIds } : {}) }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
+  }
+  confirm(studyId, draft, audienceIds, advancedMethodOptIn = false) {
+    return this.call('/confirm', { method: 'POST', body: JSON.stringify({ studyId, draftPlanId: draft.draftPlanId, revision: draft.revision,
+      confirmation: { accepted: true, advancedMethodOptIn }, audienceIds }), headers: { 'Content-Type': 'application/json' } });
+  }
+  figmaFeedback(input) {
+    return this.call('/figma-feedback', { method: 'POST', body: JSON.stringify(input), headers: { 'Content-Type': 'application/json' } });
+  }
+
   async upload(blob, name = 'creative.png') {
     return this.call('/upload', { method: 'POST', body: blob, headers: { 'Content-Type': blob.type, 'X-Creative-Name': encodeURIComponent(name) } });
   }

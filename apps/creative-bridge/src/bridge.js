@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { nativeStudyRoute } from './native-study.js';
 import { importCanvaPdf } from './canva-export.js';
 import { MINDS_ORIGIN, previewBody, studyPath } from '@minds/creative-review';
 
@@ -35,8 +36,16 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
     const response = await request(`${MINDS_ORIGIN}${path}`, { ...options, redirect: 'error', signal: AbortSignal.timeout(85000) });
     if (!response.ok) {
       // Do not pass provider errors through: they can contain URLs/tokens/material.
-      throw fail(response.status === 401 ? 401 : response.status === 429 ? 429 : 502,
-        response.status === 401 ? 'Reconnect your Minds account.' : response.status === 429 ? 'Minds is busy. Try again shortly.' : 'Minds could not complete this request.');
+      const messages = {
+        400: 'Minds could not accept this request. Check the question and selected Audiences.',
+        401: 'Reconnect your Minds account.',
+        403: 'Your Minds account does not have permission for this request.',
+        404: 'This saved Study or research run is no longer available.',
+        409: 'This request needs attention. Check the saved research and Figma comments connection before retrying.',
+        422: 'Minds could not use this design or research request.',
+        429: 'Minds is busy. Try again shortly.',
+      };
+      throw fail(messages[response.status] ? response.status : 502, messages[response.status] || 'Minds could not complete this request.');
     }
     return response.json();
   }
@@ -93,9 +102,12 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
       if (path === '/sessions' && req.method === 'POST') {
         if (!origin) throw fail(403, 'Open this from an enabled creative app.');
         if (sessions.size >= capacity) throw fail(429, 'Too many connections. Try again later.');
+        const data = await bytes(req, 1024);
+        const input = data.length ? JSON.parse(data.toString('utf8')) : {};
+        if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => key !== 'nativeStudy') || (input.nativeStudy !== undefined && input.nativeStudy !== true)) throw fail(400, 'Invalid connection request.');
         const capability = random(), ticket = random();
         const key = digest(capability);
-        sessions.set(key, { expiresAt: now() + expiry, origin, previews: new Map() });
+        sessions.set(key, { expiresAt: now() + expiry, origin, nativeStudy: input.nativeStudy === true, previews: new Map() });
         tickets.set(digest(ticket), { key, expiresAt: now() + 600000 });
         json(res, 201, { session: capability, connectUrl: `${publicUrl.replace(/\/$/, '')}/connect?ticket=${ticket}` }); return;
       }
@@ -108,7 +120,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         states.set(digest(state), { key: ticket.key, verifier, cookie: digest(cookie), expiresAt: now() + 600000 });
         res.setHeader('Set-Cookie', `${cookieName}=${cookie}; ${cookieFlags}`);
         const params = new URLSearchParams({ response_type: 'code', client_id: id, redirect_uri: callback,
-          scope: 'openid flows:read flows:write', state, code_challenge: digest(verifier), code_challenge_method: 'S256', resource: `${MINDS_ORIGIN}/mcp` });
+          scope: sessions.get(ticket.key).nativeStudy ? 'openid sparks:read flows:read flows:write' : 'openid flows:read flows:write', state, code_challenge: digest(verifier), code_challenge_method: 'S256', resource: `${MINDS_ORIGIN}/mcp` });
         res.writeHead(302, { Location: `${MINDS_ORIGIN}/oauth/authorize?${params}` }).end(); return;
       }
       if (path === '/callback' && req.method === 'GET') {
@@ -140,6 +152,8 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         json(res, 200, { connected: false }); return;
       }
       const headers = { Authorization: `Bearer ${await access(session)}` };
+      const native = await nativeStudyRoute({ path, req, url, headers, bytes, upstream });
+      if (native) { json(res, 200, native.value); return; }
       if (path === '/studies' && req.method === 'GET') {
         json(res, 200, await upstream('/api/v1/studies?limit=100&offset=0', { headers })); return;
       }

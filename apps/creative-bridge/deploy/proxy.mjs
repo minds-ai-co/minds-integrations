@@ -1,5 +1,5 @@
 const prefix = '/integrations/creative/';
-const paths = new Set(['health', 'sessions', 'connect', 'callback', 'session', 'studies', 'summary', 'run', 'upload', 'preview']);
+const paths = new Set(['health', 'sessions', 'connect', 'callback', 'session', 'studies', 'summary', 'run', 'upload', 'preview', 'audiences', 'minds', 'study', 'draft', 'confirm', 'figma-feedback']);
 const headersToForward = ['origin', 'authorization', 'content-type', 'idempotency-key', 'x-creative-name'];
 
 /** The fixed upstream receives only bridge headers and its own OAuth cookie. */

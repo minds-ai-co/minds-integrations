@@ -43,5 +43,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run check
+      - name: Install Chromium for native Figma UI interaction tests
+        run: npm exec --workspace minds-creative-marketplaces -- playwright install --with-deps chromium
+      - name: Exercise Figma Mind and Audience selection in Chromium
+        run: npm run test:browser --workspace minds-creative-marketplaces
       - run: npm run validate:json
       - run: npm run build --workspace minds-shopify-integration

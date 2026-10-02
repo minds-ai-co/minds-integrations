@@ -40,3 +40,18 @@ test('proxy bounds its route, rejects other origins and rate-limits before upstr
   assert.equal(response.status, 429);
   assert.equal(response.headers.get('access-control-allow-origin'), 'https://app.example');
 });
+
+test('native Study endpoints pass the same isolated proxy boundary', async () => {
+  const figma = { ...env, ALLOWED_ORIGINS: `${env.ALLOWED_ORIGINS},null` };
+  for (const path of ['audiences', 'minds', 'study', 'draft', 'confirm', 'figma-feedback']) {
+    const request = new Request(`https://getminds.ai/integrations/creative/${path}`, { headers: { Origin: 'null', Authorization: `Bearer ${'b'.repeat(43)}`, Cookie: 'app_login=private' } });
+    let called = false;
+    const response = await proxy(request, figma, async (url, options) => {
+      called = true; assert.equal(url.pathname, `/integrations/creative/${path}`);
+      assert.equal(options.headers.get('cookie'), null);
+      return new Response('{}');
+    });
+    assert.equal(response.status, 200); assert.equal(called, true);
+  }
+}
+);
