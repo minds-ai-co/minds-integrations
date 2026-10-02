@@ -11,7 +11,10 @@ export async function nativeStudyRoute({ path, req, url, headers, bytes, upstrea
   if (['/audiences', '/minds'].includes(path) && req.method === 'GET') {
     const offset = Number(url.searchParams.get('offset') || 0);
     if (!Number.isSafeInteger(offset) || offset < 0) throw invalid('Invalid Audience offset.');
-    return { value: await upstream(`/api/v1${path}?limit=100&offset=${offset}`, { headers }) };
+    const search = path === '/minds' ? url.searchParams.get('search') || '' : '';
+    if (search.length > 500) throw invalid('Search is too long.');
+    const query = new URLSearchParams({ limit: '100', offset: String(offset), ...(search ? { search } : {}) });
+    return { value: await upstream(`/api/v1${path}?${query}`, { headers }) };
   }
   if (path === '/draft' && req.method === 'GET') {
     const studyId = url.searchParams.get('studyId'), draftPlanId = url.searchParams.get('draftPlanId');

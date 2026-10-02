@@ -54,8 +54,11 @@ try {
     const textbox = await panel.getByRole('textbox', { name: 'Message', exact: true }).boundingBox();
     assert.ok(textbox.height < 60, 'Shared composer keeps its one-line input height');
     await panel.locator('section[aria-label="Minds Study"]').screenshot({ path: resolve(directory, `${selection.toLowerCase()}-selection-browser-fixture.png`) });
-    await panel.getByText('Connect this Figma board', { exact: true }).click();
-    await panel.locator('input[type="text"]').fill('https://www.figma.com/design/BrowserTestKey/QA');
+    await panel.getByRole('button', { name: 'Send message', exact: true }).click();
+    await panel.getByRole('status').filter({ hasText: 'Paste this board' }).waitFor();
+    assert.notEqual(await panel.locator('details').getAttribute('open'), null);
+    assert.ok(!calls.some(call => call.path.endsWith('/study') || call.path.endsWith('/upload')));
+    await panel.locator('details input[type="text"]').fill('https://www.figma.com/design/BrowserTestKey/QA');
     await panel.getByRole('button', { name: 'Send message', exact: true }).click();
     await panel.getByRole('region', { name: 'Confirm research' }).waitFor();
     assert.ok(!calls.some(call => call.path.endsWith('/confirm') || call.path.endsWith('/figma-feedback')));
