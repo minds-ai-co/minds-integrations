@@ -10,7 +10,7 @@ Install workspace dependencies with the existing GitHub Packages credential inje
 
 ## Figma native comments
 
-The Figma candidate replaces the existing-Study picker and external review handoff with the published Minds `MessageComposer` and `StudyPlannerAudienceGrid`. Its main controls are “Describe what you want to learn in this Study…” and “Select Audiences”. Selecting a frame alone does not upload it or execute research. Sending the question creates a private Study, uploads that selected frame and previews the saved research draft. Inline confirmation starts the exact revision and authorizes posting its completed answers as native comments on that frame.
+The Figma candidate replaces the existing-Study picker and external review handoff with the published Minds `MessageComposer` and `StudyPlannerAudienceGrid`. Its main controls are “Describe what you want to learn in this Study…” and “Select Minds”. The single participant picker supports individual Minds and whole Audiences using package-owned SidebarMindItem, SelectableItemShell and StudyPlannerAudienceGrid. Selecting a frame alone does not upload it or execute research. Individual selections use the canonical atomic Study/Audience creation operation to retain the exact participant set; existing quota and ownership checks apply. Sending the question creates a private Study, uploads that selected frame and previews the saved research draft. Inline confirmation starts the exact revision and authorizes posting its completed answers as native comments on that frame.
 
 First use requires Minds OAuth and separate Figma comment authorization. Public Figma plugins cannot read `figma.fileKey`, so board setup requests the actual Figma design/file link. The exported frame supplies the node ID automatically. Reopening restores non-secret Study/draft identifiers from private per-user Figma client storage and requires the original board link and selected frame before resuming. Existing runs are read before confirmation so reconnecting does not start another paid run.
 
@@ -21,3 +21,7 @@ This adapter requires [webapp PR #8099](https://github.com/minds-ai-co/webapp/pu
 ## Other integration surfaces
 
 This migration covers the four shared creative panels. Provider-rendered Slack Block Kit, Zapier and Make interfaces use their platform controls. The repository also contains other custom interfaces; these require their own package compatibility audit before claiming every integration has migrated.
+
+## Browser interaction checks
+
+Run `npm run test:browser --workspace minds-creative-marketplaces` after installing Playwright Chromium. The test executes the actual generated plugin HTML in a sandboxed iframe with the validated Figma parent origin. It selects an individual Mind and then a whole Audience, enters a question, confirms the saved draft and checks the completed-result delivery payload. API, OAuth and provider responses are explicit fixtures; this verifies browser interaction without claiming live account or native-comment acceptance. Captures are named `*-browser-fixture.png` and must not be published as Figma-host delivery evidence.

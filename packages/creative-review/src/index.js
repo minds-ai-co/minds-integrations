@@ -98,8 +98,9 @@ export class CreativeReviewClient {
   studies() { return this.call('/studies'); }
   draft(studyId, draftPlanId) { return this.call(`/draft?${new URLSearchParams({ studyId, draftPlanId })}`); }
   audiences(offset = 0) { return this.call(`/audiences?offset=${offset}`); }
-  createStudy(name, audienceIds, idempotencyKey) {
-    return this.call('/study', { method: 'POST', body: JSON.stringify({ name, audienceIds }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
+  minds(offset = 0) { return this.call(`/minds?offset=${offset}`); }
+  createStudy(name, audienceIds, idempotencyKey, mindIds = []) {
+    return this.call('/study', { method: 'POST', body: JSON.stringify({ name, audienceIds, ...(mindIds.length ? { mindIds } : {}) }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } });
   }
   confirm(studyId, draft, audienceIds, advancedMethodOptIn = false) {
     return this.call('/confirm', { method: 'POST', body: JSON.stringify({ studyId, draftPlanId: draft.draftPlanId, revision: draft.revision,

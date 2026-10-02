@@ -8,10 +8,10 @@ const ids = value => Array.isArray(value) && value.length > 0 && value.length <=
 
 /** Fixed authenticated upstream routes; no adapter-supplied URLs or credentials. */
 export async function nativeStudyRoute({ path, req, url, headers, bytes, upstream }) {
-  if (path === '/audiences' && req.method === 'GET') {
+  if (['/audiences', '/minds'].includes(path) && req.method === 'GET') {
     const offset = Number(url.searchParams.get('offset') || 0);
     if (!Number.isSafeInteger(offset) || offset < 0) throw invalid('Invalid Audience offset.');
-    return { value: await upstream(`/api/v1/audiences?limit=100&offset=${offset}`, { headers }) };
+    return { value: await upstream(`/api/v1${path}?limit=100&offset=${offset}`, { headers }) };
   }
   if (path === '/draft' && req.method === 'GET') {
     const studyId = url.searchParams.get('studyId'), draftPlanId = url.searchParams.get('draftPlanId');
@@ -24,12 +24,13 @@ export async function nativeStudyRoute({ path, req, url, headers, bytes, upstrea
   catch (error) { if (error.status) throw error; throw invalid('Invalid native research request.'); }
   const jsonHeaders = { ...headers, 'Content-Type': 'application/json' };
   if (path === '/study') {
-    fields(input, ['name', 'audienceIds']);
+    fields(input, ['name', 'audienceIds', 'mindIds']);
     const key = req.headers['idempotency-key'];
-    if (typeof input.name !== 'string' || !input.name.trim() || input.name.length > 500 || !ids(input.audienceIds)
+    if (typeof input.name !== 'string' || !input.name.trim() || input.name.length > 500 || !(ids(input.audienceIds) || (Array.isArray(input.audienceIds) && !input.audienceIds.length && ids(input.mindIds)))
+      || (input.mindIds !== undefined && !ids(input.mindIds))
       || typeof key !== 'string' || !/^[\w-]{1,128}$/.test(key)) throw invalid('Choose Audiences and name the research request.');
     return { value: await upstream('/api/v1/studies', { method: 'POST', headers: { ...jsonHeaders, 'Idempotency-Key': key },
-      body: JSON.stringify({ name: input.name.trim(), audienceIds: input.audienceIds, isLinkSharingEnabled: false }) }) };
+      body: JSON.stringify({ name: input.name.trim(), audienceIds: input.audienceIds, isLinkSharingEnabled: false, ...(input.mindIds ? { audienceConfigs: [{ name: input.name.trim(), mindIds: input.mindIds }] } : {}) }) }) };
   }
   if (path === '/confirm') {
     fields(input, ['studyId', 'draftPlanId', 'revision', 'confirmation', 'audienceIds']);

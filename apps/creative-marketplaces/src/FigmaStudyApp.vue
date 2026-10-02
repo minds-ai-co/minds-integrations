@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import MessageComposer from '@minds-ai-co/ui/components/input/MessageComposer.vue'
 import Button from '@minds-ai-co/ui/components/button/Button.vue'
 import TextInput from '@minds-ai-co/ui/components/input/TextInput.vue'
+import SidebarMindItem from '@minds-ai-co/ui/components/sidebar/SidebarMindItem.vue'
+import SelectableItemShell from '@minds-ai-co/ui/components/sidebar/SelectableItemShell.vue'
 import StudyPlannerAudienceGrid from '@minds-ai-co/ui/components/research/planner/StudyPlannerAudienceGrid.vue'
 import { createFigmaStudy } from './figma-study.js'
 const props = defineProps<{ gatewayUrl: string; host: (type: string, text?: string) => Promise<unknown> }>()
@@ -24,12 +26,21 @@ const missing = computed(() => state.draft?.plan?.confirmation?.missingInputs ??
     <MessageComposer :model-value="state.question" :placeholder="t('messageInput.placeholderHintAuto')"
         :disabled="!state.connected || state.busy || !!state.run" :sending="state.busy" @update:model-value="flow.changeQuestion" @submit="flow.prepare" @file="flow.selectMaterial" />
       <Button variant="secondary" :disabled="!state.connected || state.busy || !!state.run" @click="state.pickerOpen = !state.pickerOpen">
-        {{ t('chat.selectAudiences') }}<span v-if="state.audienceIds.length"> · {{ state.audienceIds.length }}</span>
+        {{ t('chat.selectMinds') }}<span v-if="state.audienceIds.length || state.mindIds.length"> · {{ state.audienceIds.length + state.mindIds.length }}</span>
       </Button>
     <template v-if="state.connected">
       <p v-if="state.material">{{ state.material.label }}</p>
-      <StudyPlannerAudienceGrid v-if="state.pickerOpen" :audiences="state.audiences" :selected-ids="state.audienceIds"
+      <section v-if="state.pickerOpen" aria-label="Select research participants" class="flex flex-col gap-2">
+      <p>Minds</p>
+      <SelectableItemShell v-for="mind in state.minds" :key="mind.id" as="button" class="text-left" :aria-label="mind.name" :aria-pressed="state.mindIds.includes(mind.id)"
+        :disabled="state.busy || !!state.run" :highlighted="state.mindIds.includes(mind.id)" @click="flow.toggleMind(mind)">
+        <SidebarMindItem :id="mind.id" :name="mind.name" :subtitle="mind.discipline" :image-url="mind.profileImageUrl"
+          :no-drag="true" :hide-drag="true" :hide-message="true" :select-minds-mode="true" :select-minds-accepts="{ mind: true }" :select-minds-selected-ids="state.mindIds" />
+      </SelectableItemShell>
+      <p>Audiences</p>
+      <StudyPlannerAudienceGrid :audiences="state.audiences" :selected-ids="state.audienceIds"
         display-mode="rows" :readonly="state.busy || !!state.run" @select="flow.toggleAudience" />
+      </section>
       <details>
         <summary>Connect this Figma board</summary>
         <TextInput :model-value="state.boardUrl" @update:model-value="flow.changeBoardUrl" :label="t('figmaFeedback.frameLink')" :placeholder="t('figmaFeedback.framePlaceholder')" :disabled="state.busy || !!state.run" />

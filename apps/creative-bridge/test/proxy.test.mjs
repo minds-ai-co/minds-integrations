@@ -43,7 +43,7 @@ test('proxy bounds its route, rejects other origins and rate-limits before upstr
 
 test('native Study endpoints pass the same isolated proxy boundary', async () => {
   const figma = { ...env, ALLOWED_ORIGINS: `${env.ALLOWED_ORIGINS},null` };
-  for (const path of ['audiences', 'study', 'draft', 'confirm', 'figma-feedback']) {
+  for (const path of ['audiences', 'minds', 'study', 'draft', 'confirm', 'figma-feedback']) {
     const request = new Request(`https://getminds.ai/integrations/creative/${path}`, { headers: { Origin: 'null', Authorization: `Bearer ${'b'.repeat(43)}`, Cookie: 'app_login=private' } });
     let called = false;
     const response = await proxy(request, figma, async (url, options) => {

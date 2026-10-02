@@ -13,8 +13,9 @@ const make = (t, config = {}) => {
     if (url.endsWith('/confirm')) confirmed = true;
     const value = url.endsWith('/sessions') ? { session: 'test-capability', connectUrl: 'https://getminds.ai/connect' }
       : url.endsWith('/session') ? { connected: true }
+      : url.includes('/minds?') ? { data: [{ id: '44444444-4444-4444-8444-444444444444', name: 'Browser test Mind' }], pagination: { total: 1 } }
       : url.includes('/audiences?') ? { data: [{ id: audienceId, name: 'Parents', mindCount: 20 }], pagination: { total: 1 } }
-      : url.endsWith('/study') ? { data: { id: studyId } }
+      : url.endsWith('/study') ? { data: { id: studyId, audiences: [{ id: audienceId }] } }
       : url.endsWith('/upload') ? { url: '/api/uploads/chat/owner/design.png' }
       : (url.endsWith('/preview') || url.includes('/draft?')) ? { data: { draftPlanId: draftId, revision: 2, plan: { modules: [{ questions: [{ text: 'Is the offer clear?' }] }], confirmation: { missingInputs: [] } } } }
       : url.endsWith('/confirm') ? { data: { runId: draftId, status: 'queued' } }
@@ -102,3 +103,16 @@ for (const runStatus of ['failed', 'partial', 'cancelled', 'plan_limited']) {
     assert.ok(!calls.some(call => call.url.endsWith('/figma-feedback') || call.url.endsWith('/confirm')));
   });
 }
+
+test('individual Minds create the research population through canonical composite Study creation', async t => {
+  const { flow, calls } = make(t);
+  await flow.connect(); flow.toggleMind(flow.state.minds[0]);
+  flow.changeQuestion('Is the offer clear?'); flow.changeBoardUrl('https://www.figma.com/design/FileKey12345/QA');
+  await flow.prepare();
+  assert.deepEqual(calls.find(call => call.url.endsWith('/study')).body, { name: 'Coffee campaign', audienceIds: [], mindIds: [flow.state.minds[0].id] });
+  assert.deepEqual(flow.state.executionAudienceIds, [audienceId]);
+  assert.ok(!calls.some(call => call.url.endsWith('/confirm')));
+  flow.state.accepted = true; await flow.run();
+  assert.deepEqual(calls.find(call => call.url.endsWith('/confirm')).body.audienceIds, [audienceId]);
+  assert.equal(flow.state.status, 'Comments published in Figma.');
+});

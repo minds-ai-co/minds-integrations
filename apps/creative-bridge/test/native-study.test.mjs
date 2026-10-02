@@ -46,3 +46,10 @@ test('comment delivery uses the canonical service and passes its exact run/frame
   assert.equal(calls[0].url, '/api/v1/integrations/figma/comments');
   assert.deepEqual(JSON.parse(calls[0].request.body), input);
 });
+
+test('individual Minds use canonical atomic Audience configuration and retain the Study replay key', async () => {
+  const { result, calls } = route('/study', { name: 'Selected frame', audienceIds: [], mindIds: [audienceId] });
+  await result;
+  assert.deepEqual(JSON.parse(calls[0].request.body), { name: 'Selected frame', audienceIds: [], isLinkSharingEnabled: false, audienceConfigs: [{ name: 'Selected frame', mindIds: [audienceId] }] });
+  assert.equal(calls[0].request.headers['Idempotency-Key'], 'stable-request');
+});
