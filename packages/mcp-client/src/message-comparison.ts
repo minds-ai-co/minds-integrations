@@ -1,5 +1,5 @@
 import { MindsToolError, type JsonObject, type McpToolResult } from "./index.js";
-import type { CheckoutInput, CheckoutSession } from "./billing.js";
+import { validateCheckoutInput, type CheckoutInput, type CheckoutSession } from "./billing.js";
 import { comparisonRequest, type ComparisonCheckpoint } from "./comparison-state.js";
 export { newComparison } from "./comparison-state.js";
 export type { ComparisonBrief, ComparisonCheckpoint } from "./comparison-state.js";
@@ -114,6 +114,7 @@ export class MessageComparisonJourney {
   async purchase(input: CheckoutInput, approved: boolean): Promise<{ url?: string; checkpoint: ComparisonCheckpoint }> {
     return this.operation(async () => {
       if (approved !== true) throw new Error("Explicit buyer approval is required before checkout");
+      validateCheckoutInput(input);
       if (!this.state.confirmation) throw new Error("Review and confirm the research before purchasing");
       if (this.state.purchase && JSON.stringify(input) !== JSON.stringify(this.state.purchase.input)) {
         throw new Error("The saved purchase cannot be changed; reconcile it before choosing another purchase");

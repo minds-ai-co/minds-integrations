@@ -2,13 +2,14 @@
   "observed_at": "2026-10-03T12:00:02.253700+00:00",
   "workflow": "message-comparison-with-hosted-checkout-and-resume",
   "automated_checks": {
-    "shared_client_tests": 27,
+    "shared_client_tests": 30,
     "shared_client_tests_passed": true,
     "cli_cross_process_journey": "passed_with_simulated_transport",
     "slack_regression_tests": 20,
     "slack_regression_tests_passed": true,
     "typescript_build": "passed",
-    "cli_syntax": "passed"
+    "cli_syntax": "passed",
+    "subscription_purchase_intent": "Trials and immediate purchase require explicit selection; Team checkout requires approved seat quantity. Missing selections are refused before persisting or sending checkout."
   },
   "production_read_only": {
     "authenticated_account_identification": "passed",

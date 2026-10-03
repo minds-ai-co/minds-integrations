@@ -91,7 +91,11 @@ price ID. For a credit pack:
 For a subscription, input uses `kind: "subscription"`, the returned `priceId`,
 `planType: "premium"` or `"team"`, and the buyer's explicit
 `legalAcceptance: { "termsAccepted": true, "withdrawalConsent": true }`.
-Team purchases may include the approved `quantity`. Preserve the approved input.
+Also supply the explicit choice `startTrial: false` for immediate purchase, or
+`startTrial: true` only for a buyer-selected eligible Individual trial. Omission
+is refused before any checkout request; the existing API otherwise may offer a trial.
+Team purchases require the buyer-approved `quantity` and `startTrial: false`.
+Minds validates the current seat minimum. Preserve the approved input.
 
 ```sh
 node examples/message-comparison.mjs checkout /private/comparison.json /private/purchase.json

@@ -10,7 +10,7 @@ export type CheckoutInput = {
   quantity?: number;
   billingCountry?: string;
   currency?: "usd" | "eur";
-  startTrial?: boolean;
+  startTrial: boolean;
   legalAcceptance: { termsAccepted: true; withdrawalConsent: true };
 };
 
@@ -18,6 +18,21 @@ export interface CheckoutSession {
   id: string;
   status: "requires_escalation" | "in_progress" | "completed" | "canceled";
   continue_url?: string;
+}
+
+export function validateCheckoutInput(input: CheckoutInput): void {
+  if (!input || !["subscription", "response_credits"].includes(input.kind) || !input.priceId?.trim()) {
+    throw new Error("An explicit purchase kind and catalog price are required");
+  }
+  if (input.kind === "subscription") {
+    if (input.legalAcceptance?.termsAccepted !== true || input.legalAcceptance?.withdrawalConsent !== true) {
+      throw new Error("Explicit subscription legal acceptance is required");
+    }
+    if (typeof input.startTrial !== "boolean") throw new Error("Explicit trial or immediate-purchase selection is required");
+    if (input.planType === "team" && (!Number.isInteger(input.quantity) || Number(input.quantity) < 1 || input.startTrial)) {
+      throw new Error("An explicit Team seat quantity and immediate-purchase selection are required");
+    }
+  }
 }
 
 /** Uses the existing hosted Checkout adapter; fulfillment stays in Minds. */
@@ -56,10 +71,7 @@ export class MindsBillingClient {
 
   async checkout(input: CheckoutInput, key: string): Promise<{ checkoutSessionId: string; url: string }> {
     if (!/^[a-zA-Z0-9_-]{1,128}$/.test(key)) throw new Error("A stable purchase key is required");
-    if (input.kind === "subscription" &&
-      (input.legalAcceptance?.termsAccepted !== true || input.legalAcceptance?.withdrawalConsent !== true)) {
-      throw new Error("Explicit subscription legal acceptance is required");
-    }
+    validateCheckoutInput(input);
     return (await this.request<{ data: { checkoutSessionId: string; url: string } }>(
       "/api/v1/billing/checkout", input, key,
     )).data;
