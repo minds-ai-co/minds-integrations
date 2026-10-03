@@ -1,0 +1,39 @@
+{
+  "observed_at": "2026-10-03T12:00:02.253700+00:00",
+  "workflow": "message-comparison-with-hosted-checkout-and-resume",
+  "automated_checks": {
+    "shared_client_tests": 27,
+    "shared_client_tests_passed": true,
+    "cli_cross_process_journey": "passed_with_simulated_transport",
+    "slack_regression_tests": 20,
+    "slack_regression_tests_passed": true,
+    "typescript_build": "passed",
+    "cli_syntax": "passed"
+  },
+  "production_read_only": {
+    "authenticated_account_identification": "passed",
+    "billing_catalog": "passed",
+    "mcp_tool_discovery": "passed",
+    "advertised_tool_count": 31,
+    "required_tools_present": [
+      "create_study",
+      "plan_study_questions",
+      "run_study_questions",
+      "get_study_status",
+      "get_study_summary"
+    ],
+    "mutations_performed": 0
+  },
+  "external_acceptance": {
+    "real_card_payment": "not_verified_in_this_change",
+    "signed_webhook_access_activation": "not_verified_in_this_change",
+    "actual_research_run_and_report": "not_executed_in_this_change",
+    "assistant_host_acceptance": "not_verified_in_this_change"
+  },
+  "scope": "Client orchestration over existing hosted services; no new price, allowance, payment protocol, entitlement policy or runtime deployment.",
+  "sources": [
+    "https://getminds.ai/.well-known/mcp/server-card.json",
+    "https://getminds.ai/openapi.json",
+    "https://getminds.ai/docs/api/agents"
+  ]
+}

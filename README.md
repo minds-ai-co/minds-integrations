@@ -48,3 +48,11 @@ npm run build
 ```
 
 Canonical MCP documentation: <https://getminds.ai/mcp/setup>
+
+## Message comparison with purchase and resume
+
+[Run the guided message-comparison workflow](docs/message-comparison.md) to prepare
+a private Study over an existing Audience, review and confirm its questions, and
+retrieve the results. If the account needs additional access, the workflow can start
+buyer-approved hosted Checkout and continue the same research after access activates.
+The runnable example preserves the draft, purchase and run across restarts.

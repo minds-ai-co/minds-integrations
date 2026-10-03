@@ -16,6 +16,13 @@ export interface McpToolResult {
   [key: string]: unknown;
 }
 
+export class MindsToolError extends Error {
+  constructor(message: string, readonly result: McpToolResult) {
+    super(message);
+    this.name = "MindsToolError";
+  }
+}
+
 interface JsonRpcResponse<T> {
   jsonrpc: "2.0";
   id?: number;
@@ -129,7 +136,7 @@ export class MindsMcpClient {
     if (!result) throw new Error(`${name} returned no result`);
     if (result.isError) {
       const message = result.content?.map((item) => item.text).filter(Boolean).join("\n");
-      throw new Error(message || `${name} returned a tool error`);
+      throw new MindsToolError(message || `${name} returned a tool error`, result);
     }
     return result;
   }
@@ -142,3 +149,6 @@ export function extractText(result: McpToolResult): string {
     .join("\n")
     .trim();
 }
+
+export * from "./billing.js";
+export * from "./message-comparison.js";
