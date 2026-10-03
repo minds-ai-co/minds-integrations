@@ -244,3 +244,35 @@ test("report generation requires full completion and uses the existing analysis 
   assert.ok((await f.journey.report()).structuredContent.summary.includes("evidence"));
   assert.deepEqual(f.calls.at(-1).args, { study: { id: "study-owned" }, refresh: true, force: false, length: "standard" });
 });
+
+test("subscription intent must be explicit before a purchase is persisted or sent", async () => {
+  const f = fixture(); await f.journey.prepare(); f.context.limit = true; await f.journey.run(approval);
+  const selection = { kind: "subscription", priceId: "price_existing", planType: "premium", legalAcceptance: { termsAccepted: true, withdrawalConsent: true } };
+  await assert.rejects(() => f.journey.purchase(selection, true), /trial or immediate-purchase/);
+  assert.equal(f.journey.checkpoint.purchase, undefined);
+  assert.ok(!f.calls.some(x => x.name === "checkout"));
+  await f.journey.purchase({ ...selection, startTrial: false }, true);
+  assert.equal(f.calls.find(x => x.name === "checkout").input.startTrial, false);
+});
+
+test("both explicit trial and immediate-purchase choices reach checkout unchanged", async () => {
+  for (const startTrial of [true, false]) {
+    let body;
+    const billing = new MindsBillingClient({ apiKey: "test-credential", fetchImpl: async (_url, init) => {
+      body = JSON.parse(init.body);
+      return Response.json({ data: { checkoutSessionId: "cs_test_existing", url: "https://checkout.stripe.com/test" } });
+    } });
+    const selection = { kind: "subscription", priceId: "price_existing", planType: "premium", startTrial, legalAcceptance: { termsAccepted: true, withdrawalConsent: true } };
+    await billing.checkout(selection, "stable_purchase");
+    assert.equal(body.startTrial, startTrial);
+  }
+});
+
+test("Team checkout requires the exact buyer-approved seat quantity", async () => {
+  const f = fixture(); await f.journey.prepare(); f.context.limit = true; await f.journey.run(approval);
+  const selection = { kind: "subscription", priceId: "price_existing", planType: "team", startTrial: false, legalAcceptance: { termsAccepted: true, withdrawalConsent: true } };
+  await assert.rejects(() => f.journey.purchase(selection, true), /Team seat quantity/);
+  assert.equal(f.journey.checkpoint.purchase, undefined);
+  await f.journey.purchase({ ...selection, quantity: 3 }, true);
+  assert.equal(f.calls.find(x => x.name === "checkout").input.quantity, 3);
+});
