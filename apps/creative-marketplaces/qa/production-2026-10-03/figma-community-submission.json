@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-10-03T10:07:48.202781+00:00",
+  "pluginName": "Minds",
+  "pluginId": "1687580744489834770",
+  "version": 1,
+  "communityUrl": "https://www.figma.com/community/plugin/1687580744489834770/minds",
+  "status": "in_review",
+  "submittedVia": "official Figma desktop app on authorized MacBook",
+  "providerEvidence": [
+    "This page is private for now",
+    "Only you can see it while your plugin is in review.",
+    "Version 1 on October 3, 2026",
+    "Support: developers@getminds.ai"
+  ],
+  "publisher": "Minds",
+  "category": "Design tools / Product and brand",
+  "thumbnail": "figma-native-summary-board-2026-10-02.png",
+  "icon": "official Minds icon, minds-icon-144.png",
+  "allowedDomains": [
+    "https://getminds.ai"
+  ],
+  "codeSha256": "57c92e79c6ae6bbc6088f0cc14f7fe350f7a6b3adf3c6af1e21bd9cbaf490e50",
+  "uiSha256": "ed3a700eb5a40c2f69b2874a36fc60a53de09dff03eff4ceb104b515f01c205c",
+  "pending": [
+    "Figma Community approval",
+    "public Figma OAuth scope-update approval",
+    "complete native plugin send-to-comments acceptance",
+    "positioned persona heatmap delivery"
+  ],
+  "ownMachineTest": {
+    "os": "Linux",
+    "method": "official Windows app through Wine 9",
+    "version": "126.9.11",
+    "result": "startup observed, window stayed unmapped; no usable GUI or submission from Wine"
+  }
+}
