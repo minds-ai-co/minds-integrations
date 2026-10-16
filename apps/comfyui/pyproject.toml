@@ -1,18 +1,35 @@
 [project]
 name = "comfyui-minds"
 version = "0.2.0"
-description = "Audience preference tests for image and video creatives through the Minds API."
+description = """
+Official Minds integration for ComfyUI: test image and video creative preferences with selected AI-powered Audiences in one node.
+
+Compare generated images, videos with audio, hosted media or text concepts. Review the question and draft, then see separate Audience preference rankings and findings in the embedded Minds results widget. Send selected original images or videos directly downstream, preserving ties and audio.
+
+Use it for ad creative testing, thumbnails, packaging designs, video concepts and original-versus-revision comparisons.
+
+Requires a Minds account, ready Audiences and a server-side API key. Compare 2–20 alternatives. Results estimate synthetic preferences, not actual clicks or sales.
+
+Install, examples and FAQs: https://github.com/minds-ai-co/ComfyUI-Minds/blob/main/docs/usage.md
+Minds: https://getminds.ai
+"""
 requires-python = ">=3.10"
 license = {text = "MIT"}
+keywords = ["comfyui", "creative-testing", "audience-preferences", "synthetic-research", "image-preferences", "video-preferences"]
 dependencies = ["requests>=2.32.5,<3", "Pillow>=11.3,<13"]
 
 [project.urls]
+Homepage = "https://getminds.ai"
+Registry = "https://registry.comfy.org/nodes/comfyui-minds"
+Issues = "https://github.com/minds-ai-co/ComfyUI-Minds/issues"
 Repository = "https://github.com/minds-ai-co/ComfyUI-Minds"
 Documentation = "https://github.com/minds-ai-co/ComfyUI-Minds/blob/main/docs/usage.md"
 
 [tool.comfy]
 PublisherId = "minds"
-DisplayName = "Minds — Audience Creative Tests"
+DisplayName = "Minds for ComfyUI — Image & Video Preference Testing"
+Icon = "https://getminds.ai/mcp-icon-light.png"
+Banner = "https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/workflow.png"
 
 [tool.ruff]
 line-length = 110

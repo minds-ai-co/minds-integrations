@@ -1,12 +1,15 @@
-# Minds creative tests for ComfyUI
+# Minds for ComfyUI: image and video preference testing
 
-**Minds · Audience Preferences** compares image, video and concept alternatives with your selected Minds Audiences. Its ordinary node fields collect your question and inputs; the embedded Minds response widget shows the completed research. Selected original media can continue directly to Save, upscaling or video nodes.
+The official [Minds](https://getminds.ai) integration adds audience preference testing to [ComfyUI](https://www.comfy.org/). **Minds · Audience Preferences** compares image, video and concept alternatives with your selected Minds Audiences. Its ordinary node fields collect your question and inputs; the embedded Minds response widget shows the completed research. Selected original media can continue directly to Save, upscaling or video nodes.
 
 ![One Minds node showing completed illustrative image preferences](images/workflow.png)
 
 This integration uses the existing Minds Study API and its current model routing. It does not select or deploy a Mosaic checkpoint.
 
 ## Install
+
+Find **comfyui-minds** by publisher **minds** in the [Comfy Registry](https://registry.comfy.org/nodes/comfyui-minds). Check the Registry version's verification status before installation. The [GitHub release](https://github.com/minds-ai-co/ComfyUI-Minds/releases/tag/v0.2.0) is available for direct installation.
+
 
 Clone `https://github.com/minds-ai-co/ComfyUI-Minds` into your ComfyUI `custom_nodes/ComfyUI-Minds` directory. Install `requirements.txt` using **the same Python interpreter ComfyUI uses**, then restart ComfyUI. The pack uses ComfyUI's existing PyTorch installation.
 
@@ -58,4 +61,39 @@ Private retry receipts under ComfyUI's user directory (`minds/receipts`) contain
 
 For headless use, queue `MindsPreference` with a UUID `request_id` and blank `reviewed_draft`. Inspect `outputs.<nodeId>.minds_review[0]` in Comfy history. After approval, set `reviewed_draft` to that review's exact `approval` and queue the same inputs/request again. Completed history contains `minds_response[0]` for the widget; graph outputs contain ranking JSON and native media.
 
-The older multi-node identifiers remain loadable as deprecated compatibility nodes. New workflows use the single node. Registry publication is separate from the GitHub release and requires publisher authorization.
+The older multi-node identifiers remain loadable as deprecated compatibility nodes. New workflows use the single node. Registry verification status and GitHub release availability are separate; check the Registry version status before assuming Manager verification.
+
+
+## Common questions
+
+### What does Minds add to a ComfyUI workflow?
+
+Minds estimates how your selected AI-powered Audiences prefer the alternatives you supply. Use it for ad creative testing, thumbnails, packaging designs, video concepts, or an original-versus-revision comparison. Each Audience receives its own result; the node does not combine different populations into one winner.
+
+### Can I test generated videos, including audio?
+
+Yes. Connect native ComfyUI VIDEO objects to the node, or supply labelled HTTPS video assets. Native videos are uploaded as MP4 with audio, and selected originals continue downstream with their audio. The published integration was tested end to end with two short video fixtures; long-video acceptance has not been established by those smoke tests.
+
+### Is it one ComfyUI node?
+
+Yes. Minds · Audience Preferences collects the inputs, prepares a reviewable Study draft, runs it after approval, displays the response widget, and returns native media and ranking outputs. Optional helper nodes remain available for Audience lookup and compatibility with older workflows.
+
+### Which inputs and results does the node support?
+
+Inputs include native IMAGE batches, native VIDEO objects, hosted image/video files and authored text concepts. Compare 2–20 uniquely labelled alternatives with one preference question. Results include a separate preference distribution for each selected Audience, findings and available Mind responses in the embedded widget, ranking JSON, and original selected native media.
+
+### Do these results predict actual ad clicks or sales?
+
+They estimate synthetic preference among the tested alternatives. Click-through rate, conversions, sales and real campaign performance are not measured by this node. The five-Mind demo runs verify the integration, rather than serving as model-accuracy or campaign-performance evidence.
+
+### Do I need to put my Minds API key in the workflow?
+
+No. The ComfyUI server reads its key from the credential manager's environment injection. Normal input widgets, shared workflows and the embedded response widget contain no API key. You also need an existing Minds account and ready Audiences with access to the Study API.
+
+### How is this related to Mosaic?
+
+This release calls the existing Minds Study API and its current model routing. It does not install a Mosaic model checkpoint or expose a model selector. Video input support is part of the integration's tested API workflow.
+
+### Where are the source code, examples and support?
+
+The [source repository](https://github.com/minds-ai-co/ComfyUI-Minds), [seven example workflows](https://github.com/minds-ai-co/ComfyUI-Minds/tree/main/example_workflows), [verification record](qa.md), and [issue tracker](https://github.com/minds-ai-co/ComfyUI-Minds/issues) provide installation details, reproducible examples and support. The [Minds API documentation](https://getminds.ai/docs/api) covers the research platform behind the node.
