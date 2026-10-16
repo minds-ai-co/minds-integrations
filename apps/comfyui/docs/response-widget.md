@@ -15,6 +15,10 @@ The build fails if the published artifact has changed. Updating its hash require
 
 A sandboxed iframe is created for each completed result. The official MCP Apps `AppBridge` sends the validated run artifact's actual `outputData` through `sendToolInput` and `sendToolResult`. A fresh iframe respects the widget's immutable completed-result identity when a later test completes. Removing a node or starting a new test closes its bridge and clears the previous frame. Result payloads are not added to serialized workflow widgets.
 
+The host reports the iframe's actual CSS width and height through MCP Apps `containerDimensions`, including resize updates. This keeps the shared response widget's internal scroll viewport within the node, including when the ComfyUI canvas is zoomed. Resize tracking is removed with the frame.
+
+Run `node scripts/test_response_layout.mjs` after installing the widget-build dependencies to check the real pinned HTML at short, tall, narrow and zoomed sizes. It uses illustrative results and makes no research API calls. An optional second argument replays a private completed ComfyUI output JSON; keep those snapshots outside the repository.
+
 The browser receives no API key. The bridge exposes no server tools, resource proxy or authenticated requests. Its only host action opens links on the exact `https://getminds.ai` origin. The iframe has scripts and external popups enabled, without same-origin access to ComfyUI. If initialization fails, a link opens the Study in Minds; the graph's JSON/native outputs remain available.
 
 The public Minds page disallows direct cross-origin framing. Serving the pinned build locally lets ComfyUI host the same interface without changing the webapp's framing policy or deploying a new endpoint.
