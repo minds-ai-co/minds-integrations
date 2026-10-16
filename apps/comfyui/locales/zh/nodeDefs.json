@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · 图像候选",
+    "inputs": {
+      "images": {
+        "name": "图像"
+      },
+      "labels_json": {
+        "name": "标签（JSON）"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "创意素材"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · 视频候选",
+    "inputs": {
+      "video": {
+        "name": "视频"
+      },
+      "label": {
+        "name": "标签"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "创意素材"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · 托管素材 / 概念",
+    "inputs": {
+      "assets_json": {
+        "name": "素材（JSON）"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "创意素材"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · 合并候选",
+    "inputs": {
+      "first": {
+        "name": "第一组候选"
+      },
+      "second": {
+        "name": "第二组候选"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "创意素材"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · 查找受众",
+    "inputs": {
+      "search": {
+        "name": "搜索"
+      },
+      "offset": {
+        "name": "起始位置"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "受众 ID"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · 准备创意测试",
+    "inputs": {
+      "creatives": {
+        "name": "创意素材"
+      },
+      "audience_ids": {
+        "name": "受众 ID"
+      },
+      "question": {
+        "name": "问题"
+      },
+      "context": {
+        "name": "背景"
+      },
+      "study_locale": {
+        "name": "研究语言"
+      },
+      "request_id": {
+        "name": "请求 ID"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "草稿"
+      },
+      "1": {
+        "name": "审核（JSON）"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · 运行已审核测试",
+    "inputs": {
+      "draft": {
+        "name": "草稿"
+      },
+      "reviewed_draft": {
+        "name": "已批准草稿"
+      },
+      "timeout_seconds": {
+        "name": "等待上限（秒）"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "偏好结果"
+      },
+      "1": {
+        "name": "已测试素材"
+      },
+      "2": {
+        "name": "偏好结果"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · 选择创意素材",
+    "inputs": {
+      "preference_result": {
+        "name": "偏好结果"
+      },
+      "tested_creatives": {
+        "name": "已测试素材"
+      },
+      "audience_id": {
+        "name": "受众 ID"
+      },
+      "top_k": {
+        "name": "入选数量"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "已选素材"
+      },
+      "1": {
+        "name": "标签（JSON）"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · 已选图像",
+    "inputs": {
+      "selected_creatives": {
+        "name": "已选素材"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "图像"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · 已选视频",
+    "inputs": {
+      "selected_creatives": {
+        "name": "已选素材"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "视频"
+      }
+    }
+  }
+}

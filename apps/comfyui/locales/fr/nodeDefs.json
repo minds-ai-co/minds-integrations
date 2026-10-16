@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · Variantes d’image",
+    "inputs": {
+      "images": {
+        "name": "Images"
+      },
+      "labels_json": {
+        "name": "Libellés (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Créations"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · Variante vidéo",
+    "inputs": {
+      "video": {
+        "name": "Vidéo"
+      },
+      "label": {
+        "name": "Libellé"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Créations"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · Supports hébergés / concepts",
+    "inputs": {
+      "assets_json": {
+        "name": "Supports (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Créations"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · Combiner les variantes",
+    "inputs": {
+      "first": {
+        "name": "Premières variantes"
+      },
+      "second": {
+        "name": "Secondes variantes"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Créations"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · Trouver des audiences",
+    "inputs": {
+      "search": {
+        "name": "Recherche"
+      },
+      "offset": {
+        "name": "Décalage"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Identifiants des audiences"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · Préparer le test créatif",
+    "inputs": {
+      "creatives": {
+        "name": "Créations"
+      },
+      "audience_ids": {
+        "name": "Identifiants des audiences"
+      },
+      "question": {
+        "name": "Question"
+      },
+      "context": {
+        "name": "Contexte"
+      },
+      "study_locale": {
+        "name": "Langue de l’étude"
+      },
+      "request_id": {
+        "name": "Identifiant de requête"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Brouillon"
+      },
+      "1": {
+        "name": "Vérification (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · Exécuter le test approuvé",
+    "inputs": {
+      "draft": {
+        "name": "Brouillon"
+      },
+      "reviewed_draft": {
+        "name": "Brouillon approuvé"
+      },
+      "timeout_seconds": {
+        "name": "Attente maximale (secondes)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Résultat de préférence"
+      },
+      "1": {
+        "name": "Créations testées"
+      },
+      "2": {
+        "name": "Résultat de préférence"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · Sélectionner les créations",
+    "inputs": {
+      "preference_result": {
+        "name": "Résultat de préférence"
+      },
+      "tested_creatives": {
+        "name": "Créations testées"
+      },
+      "audience_id": {
+        "name": "Identifiant de l’audience"
+      },
+      "top_k": {
+        "name": "Taille de la sélection"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Créations sélectionnées"
+      },
+      "1": {
+        "name": "Libellés (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · Images sélectionnées",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Créations sélectionnées"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Images"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · Vidéo sélectionnée",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Créations sélectionnées"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Vidéo"
+      }
+    }
+  }
+}

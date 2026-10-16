@@ -1,0 +1,22 @@
+[project]
+name = "comfyui-minds"
+version = "0.1.0"
+description = "Audience preference tests for image and video creatives through the Minds API."
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["requests>=2.32.5,<3", "Pillow>=11.3,<13"]
+
+[project.urls]
+Repository = "https://github.com/minds-ai-co/ComfyUI-Minds"
+Documentation = "https://github.com/minds-ai-co/ComfyUI-Minds/blob/main/docs/usage.md"
+
+[tool.comfy]
+PublisherId = "minds"
+DisplayName = "Minds — Audience Creative Tests"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

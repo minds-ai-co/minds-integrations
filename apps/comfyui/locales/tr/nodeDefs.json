@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · Görsel adayları",
+    "inputs": {
+      "images": {
+        "name": "Görseller"
+      },
+      "labels_json": {
+        "name": "Etiketler (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Kreatifler"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · Video adayı",
+    "inputs": {
+      "video": {
+        "name": "Video"
+      },
+      "label": {
+        "name": "Etiket"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Kreatifler"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · Barındırılan içerikler / konseptler",
+    "inputs": {
+      "assets_json": {
+        "name": "İçerikler (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Kreatifler"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · Adayları birleştir",
+    "inputs": {
+      "first": {
+        "name": "İlk adaylar"
+      },
+      "second": {
+        "name": "İkinci adaylar"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Kreatifler"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · Kitleleri bul",
+    "inputs": {
+      "search": {
+        "name": "Ara"
+      },
+      "offset": {
+        "name": "Başlangıç konumu"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Kitle kimlikleri"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · Kreatif testi hazırla",
+    "inputs": {
+      "creatives": {
+        "name": "Kreatifler"
+      },
+      "audience_ids": {
+        "name": "Kitle kimlikleri"
+      },
+      "question": {
+        "name": "Soru"
+      },
+      "context": {
+        "name": "Bağlam"
+      },
+      "study_locale": {
+        "name": "Araştırma dili"
+      },
+      "request_id": {
+        "name": "İstek kimliği"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Taslak"
+      },
+      "1": {
+        "name": "İnceleme (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · İncelenen testi çalıştır",
+    "inputs": {
+      "draft": {
+        "name": "Taslak"
+      },
+      "reviewed_draft": {
+        "name": "Onaylanan taslak"
+      },
+      "timeout_seconds": {
+        "name": "Bekleme sınırı (saniye)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Tercih sonucu"
+      },
+      "1": {
+        "name": "Test edilen kreatifler"
+      },
+      "2": {
+        "name": "Tercih sonucu"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · Kreatifleri seç",
+    "inputs": {
+      "preference_result": {
+        "name": "Tercih sonucu"
+      },
+      "tested_creatives": {
+        "name": "Test edilen kreatifler"
+      },
+      "audience_id": {
+        "name": "Kitle kimliği"
+      },
+      "top_k": {
+        "name": "Seçim sayısı"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Seçilen kreatifler"
+      },
+      "1": {
+        "name": "Etiketler (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · Seçilen görseller",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Seçilen kreatifler"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Görseller"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · Seçilen video",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Seçilen kreatifler"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Video"
+      }
+    }
+  }
+}

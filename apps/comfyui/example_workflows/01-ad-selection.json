@@ -1,0 +1,513 @@
+{
+  "last_node_id": 11,
+  "last_link_id": 10,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [
+        80,
+        100
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "minds-sample-a.png",
+        "image"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [
+        470,
+        100
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "minds-sample-b.png",
+        "image"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "MindsCreativeImages",
+      "pos": [
+        860,
+        100
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "creatives",
+          "type": "MINDS_CREATIVES",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsCreativeImages"
+      },
+      "widgets_values": [
+        "[\"Ad A\"]"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "MindsCreativeImages",
+      "pos": [
+        1250,
+        100
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "creatives",
+          "type": "MINDS_CREATIVES",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsCreativeImages"
+      },
+      "widgets_values": [
+        "[\"Ad B\"]"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "MindsCombineCreatives",
+      "pos": [
+        80,
+        430
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "first",
+          "type": "MINDS_CREATIVES",
+          "link": 3
+        },
+        {
+          "name": "second",
+          "type": "MINDS_CREATIVES",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "creatives",
+          "type": "MINDS_CREATIVES",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsCombineCreatives"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 6,
+      "type": "MindsPrepareCreativeTest",
+      "pos": [
+        470,
+        430
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "creatives",
+          "type": "MINDS_CREATIVES",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "draft",
+          "type": "MINDS_CREATIVE_DRAFT",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "review_json",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsPrepareCreativeTest"
+      },
+      "widgets_values": [
+        "",
+        "Which ad makes you more interested in the product?",
+        "",
+        "en",
+        ""
+      ]
+    },
+    {
+      "id": 7,
+      "type": "MindsRunCreativeTest",
+      "pos": [
+        860,
+        430
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "draft",
+          "type": "MINDS_CREATIVE_DRAFT",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "preference_result",
+          "type": "MINDS_CREATIVE_RESULT",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "tested_creatives",
+          "type": "MINDS_CREATIVES",
+          "links": [
+            8
+          ]
+        },
+        {
+          "name": "results_json",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsRunCreativeTest"
+      },
+      "widgets_values": [
+        "",
+        900
+      ]
+    },
+    {
+      "id": 8,
+      "type": "MindsSelectCreatives",
+      "pos": [
+        1250,
+        430
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "preference_result",
+          "type": "MINDS_CREATIVE_RESULT",
+          "link": 7
+        },
+        {
+          "name": "tested_creatives",
+          "type": "MINDS_CREATIVES",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "selected_creatives",
+          "type": "MINDS_CREATIVES",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "selected_labels_json",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsSelectCreatives"
+      },
+      "widgets_values": [
+        "",
+        1
+      ]
+    },
+    {
+      "id": 9,
+      "type": "MindsSelectedImages",
+      "pos": [
+        80,
+        760
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "selected_creatives",
+          "type": "MINDS_CREATIVES",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MindsSelectedImages"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "SaveImage",
+      "pos": [
+        470,
+        760
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Minds/selected"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "Note",
+      "pos": [
+        860,
+        760
+      ],
+      "size": [
+        350,
+        260
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "Ad creative selection\n\nChoose source files and Audience IDs. Queue once to prepare. On Run Reviewed Test, open Review draft and approve. Queue again to run. Use New test request after changing inputs. API key stays in the server environment."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      3,
+      0,
+      5,
+      0,
+      "MINDS_CREATIVES"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      1,
+      "MINDS_CREATIVES"
+    ],
+    [
+      5,
+      5,
+      0,
+      6,
+      0,
+      "MINDS_CREATIVES"
+    ],
+    [
+      6,
+      6,
+      0,
+      7,
+      0,
+      "MINDS_CREATIVE_DRAFT"
+    ],
+    [
+      7,
+      7,
+      0,
+      8,
+      0,
+      "MINDS_CREATIVE_RESULT"
+    ],
+    [
+      8,
+      7,
+      1,
+      8,
+      1,
+      "MINDS_CREATIVES"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "MINDS_CREATIVES"
+    ],
+    [
+      10,
+      9,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "minds_example": "01-ad-selection"
+  },
+  "version": 0.4
+}
