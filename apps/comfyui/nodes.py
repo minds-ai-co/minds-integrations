@@ -1,8 +1,10 @@
 from .nodes_inputs import Assets, Combine, Images, Video
 from .nodes_outputs import SelectCreatives, SelectedImages, SelectedVideo
+from .nodes_preference import Preference
 from .nodes_research import Audiences, Prepare, Run
 
 NODE_CLASS_MAPPINGS = {
+    "MindsPreference": Preference,
     "MindsCreativeImages": Images,
     "MindsCreativeVideo": Video,
     "MindsCreativeAssets": Assets,
@@ -15,7 +17,12 @@ NODE_CLASS_MAPPINGS = {
     "MindsSelectedVideo": SelectedVideo,
 }
 
+for _name, _node in NODE_CLASS_MAPPINGS.items():
+    if _node is not Preference and _name != "MindsAudiences":
+        _node.DEPRECATED = True
+
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "MindsPreference": "Minds · Audience Preferences",
     "MindsCreativeImages": "Minds · Image Candidates",
     "MindsCreativeVideo": "Minds · Video Candidate",
     "MindsCreativeAssets": "Minds · Hosted Assets / Concepts",

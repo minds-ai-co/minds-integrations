@@ -38,65 +38,43 @@ class Graph:
         source["outputs"][slot]["links"].append(index)
         target["inputs"][target_slot]["link"] = index
 
-    def research(self, creatives, question, context):
-        prepare = self.node(
-            "MindsPrepareCreativeTest",
-            [("creatives", "MINDS_CREATIVES")],
-            [("draft", "MINDS_CREATIVE_DRAFT"), ("review_json", "STRING")],
-            ["", question, context, "en", ""],
-        )
-        run = self.node(
-            "MindsRunCreativeTest",
-            [("draft", "MINDS_CREATIVE_DRAFT")],
+    def research(self, labels, question, context="", assets=None):
+        return self.node(
+            "MindsPreference",
+            [("images", "IMAGE"), ("images_b", "IMAGE"), ("videos", "VIDEO"), ("videos_b", "VIDEO")],
             [
-                ("preference_result", "MINDS_CREATIVE_RESULT"),
-                ("tested_creatives", "MINDS_CREATIVES"),
+                ("selected_images", "IMAGE"),
+                ("selected_videos", "VIDEO"),
                 ("results_json", "STRING"),
+                ("preference_result", "MINDS_CREATIVE_RESULT"),
+                ("selected_creatives", "MINDS_CREATIVES"),
             ],
-            ["", 900],
+            ["", question, context, json.dumps(labels), json.dumps(assets or []), "en", "", 1, "", "", 900],
         )
-        self.link(creatives, 0, prepare, 0)
-        self.link(prepare, 0, run, 0)
-        return run
 
-    def selector(self, run, *, audience="", native="image"):
-        select = self.node(
-            "MindsSelectCreatives",
-            [("preference_result", "MINDS_CREATIVE_RESULT"), ("tested_creatives", "MINDS_CREATIVES")],
-            [("selected_creatives", "MINDS_CREATIVES"), ("selected_labels_json", "STRING")],
-            [audience, 1],
+    def selector(self, node, native="image"):
+        datatype = "IMAGE" if native == "image" else "VIDEO"
+        save = self.node(
+            "SaveImage" if native == "image" else "SaveVideo",
+            [("images" if native == "image" else "video", datatype)],
+            [],
+            ["Minds/selected"] if native == "image" else ["Minds/selected", "mp4", "auto"],
         )
-        self.link(run, 0, select, 0)
-        self.link(run, 1, select, 1)
-        if native:
-            datatype = "IMAGE" if native == "image" else "VIDEO"
-            output = self.node(
-                "MindsSelectedImages" if native == "image" else "MindsSelectedVideo",
-                [("selected_creatives", "MINDS_CREATIVES")],
-                [(native, datatype)],
-                [],
-            )
-            self.link(select, 0, output, 0)
-            save = self.node(
-                "SaveImage" if native == "image" else "SaveVideo",
-                [(native + "s" if native == "image" else native, datatype)],
-                [],
-                ["Minds/selected"] if native == "image" else ["Minds/selected", "mp4", "auto"],
-            )
-            self.link(output, 0, save, 0)
-        return select
+        self.link(node, 0 if native == "image" else 1, save, 0)
+        return save
 
     def save(self, slug):
-        self.node(
+        note = self.node(
             "Note",
             [],
             [],
             [
                 self.title + "\n\nChoose source files and Audience IDs. Queue once to prepare. "
-                "On Run Reviewed Test, open Review draft and approve. Queue again to run. "
+                "Read the review dialog and approve. Queue again to run and see results inside Minds. "
                 "Use New test request after changing inputs. API key stays in the server environment."
             ],
         )
+        note["pos"] = [1180, 500]
         result = {
             "last_node_id": len(self.nodes),
             "last_link_id": len(self.links),
@@ -112,33 +90,21 @@ class Graph:
         path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
 
 
-def image_graph(title, labels):
+def image_graph(title, labels, question):
     graph = Graph(title)
-    first = graph.node(
-        "LoadImage", [], [("IMAGE", "IMAGE"), ("MASK", "MASK")], ["minds-sample-a.png", "image"]
-    )
-    second = graph.node(
-        "LoadImage", [], [("IMAGE", "IMAGE"), ("MASK", "MASK")], ["minds-sample-b.png", "image"]
-    )
-    candidates = []
-    for source, label in zip((first, second), labels, strict=True):
-        candidate = graph.node(
-            "MindsCreativeImages",
-            [("images", "IMAGE")],
-            [("creatives", "MINDS_CREATIVES")],
-            [json.dumps([label])],
-        )
-        graph.link(source, 0, candidate, 0)
-        candidates.append(candidate)
-    creatives = graph.node(
-        "MindsCombineCreatives",
-        [("first", "MINDS_CREATIVES"), ("second", "MINDS_CREATIVES")],
-        [("creatives", "MINDS_CREATIVES")],
-        [],
-    )
-    for index, candidate in enumerate(candidates):
-        graph.link(candidate, 0, creatives, index)
-    return graph, creatives
+    sources = [
+        graph.node("LoadImage", [], [("IMAGE", "IMAGE"), ("MASK", "MASK")], [file, "image"])
+        for file in ("minds-sample-a.png", "minds-sample-b.png")
+    ]
+    node = graph.research(labels, question)
+    node["pos"] = [480, 60]
+    node["size"] = [620, 1100]
+    for index, source in enumerate(sources):
+        source["pos"] = [40, 80 + index * 380]
+        graph.link(source, 0, node, index)
+    save = graph.selector(node)
+    save["pos"] = [1180, 100]
+    return graph, node
 
 
 def main():
@@ -175,46 +141,34 @@ def main():
         ),
     ]
     for slug, title, labels, question in examples:
-        graph, creatives = image_graph(title, labels)
-        run = graph.research(creatives, question, "")
-        graph.selector(run)
+        graph, node = image_graph(title, labels, question)
         if slug == "04-audience-differences":
-            graph.selector(run)
+            node["title"] = "Minds · Compare Audience preferences"
         graph.save(slug)
     graph = Graph("Video concept preference before production")
     concepts = [
         {"label": "Demonstration", "text": "Show the product being used in one continuous shot."},
         {"label": "Story", "text": "A customer explains the problem and demonstrates the solution."},
     ]
-    creatives = graph.node(
-        "MindsCreativeAssets", [], [("creatives", "MINDS_CREATIVES")], [json.dumps(concepts)]
+    node = graph.research(
+        [], "Which video concept would you prefer to watch?", "Compare the supplied concepts.", concepts
     )
-    run = graph.research(
-        creatives, "Which video concept would you prefer to watch?", "Compare the supplied concepts."
-    )
-    graph.selector(run, native=None)
+    node["pos"], node["size"] = [100, 60], [620, 1100]
     graph.save("06-video-concepts")
     graph = Graph("Compare native videos, including their audio")
-    candidates = []
-    for label, file in (("Video A", "minds-sample-a.mp4"), ("Video B", "minds-sample-b.mp4")):
-        load = graph.node("LoadVideo", [], [("video", "VIDEO")], [file])
-        candidate = graph.node(
-            "MindsCreativeVideo", [("video", "VIDEO")], [("creatives", "MINDS_CREATIVES")], [label]
-        )
-        graph.link(load, 0, candidate, 0)
-        candidates.append(candidate)
-    combined = graph.node(
-        "MindsCombineCreatives",
-        [("first", "MINDS_CREATIVES"), ("second", "MINDS_CREATIVES")],
-        [("creatives", "MINDS_CREATIVES")],
-        [],
+    sources = [
+        graph.node("LoadVideo", [], [("video", "VIDEO")], [file])
+        for file in ("minds-sample-a.mp4", "minds-sample-b.mp4")
+    ]
+    node = graph.research(
+        ["Video A", "Video B"], "Which video do you prefer?", "Consider the complete video, including audio."
     )
-    for index, candidate in enumerate(candidates):
-        graph.link(candidate, 0, combined, index)
-    run = graph.research(
-        combined, "Which video do you prefer?", "Consider the complete video, including audio."
-    )
-    graph.selector(run, native="video")
+    node["pos"], node["size"] = [480, 60], [620, 1100]
+    for index, source in enumerate(sources):
+        source["pos"] = [40, 80 + index * 380]
+        graph.link(source, 0, node, index + 2)
+    save = graph.selector(node, "video")
+    save["pos"] = [1180, 100]
     graph.save("07-native-video-selection")
 
 

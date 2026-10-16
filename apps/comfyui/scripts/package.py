@@ -13,6 +13,7 @@ FILES = {
     "nodes_inputs.py",
     "nodes_outputs.py",
     "nodes_research.py",
+    "nodes_preference.py",
     "pyproject.toml",
     "requirements.txt",
     "LICENSE",

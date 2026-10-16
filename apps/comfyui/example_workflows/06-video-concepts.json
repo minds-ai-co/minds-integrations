@@ -1,44 +1,93 @@
 {
-  "last_node_id": 5,
-  "last_link_id": 4,
+  "last_node_id": 2,
+  "last_link_id": 0,
   "nodes": [
     {
       "id": 1,
-      "type": "MindsCreativeAssets",
+      "type": "MindsPreference",
       "pos": [
-        80,
-        100
+        100,
+        60
       ],
       "size": [
-        350,
-        260
+        620,
+        1100
       ],
       "flags": {},
       "order": 0,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "images_b",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "videos",
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "name": "videos_b",
+          "type": "VIDEO",
+          "link": null
+        }
+      ],
       "outputs": [
         {
-          "name": "creatives",
+          "name": "selected_images",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "selected_videos",
+          "type": "VIDEO",
+          "links": []
+        },
+        {
+          "name": "results_json",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "preference_result",
+          "type": "MINDS_CREATIVE_RESULT",
+          "links": []
+        },
+        {
+          "name": "selected_creatives",
           "type": "MINDS_CREATIVES",
-          "links": [
-            1
-          ]
+          "links": []
         }
       ],
       "properties": {
-        "Node name for S&R": "MindsCreativeAssets"
+        "Node name for S&R": "MindsPreference"
       },
       "widgets_values": [
-        "[{\"label\": \"Demonstration\", \"text\": \"Show the product being used in one continuous shot.\"}, {\"label\": \"Story\", \"text\": \"A customer explains the problem and demonstrates the solution.\"}]"
+        "",
+        "Which video concept would you prefer to watch?",
+        "Compare the supplied concepts.",
+        "[]",
+        "[{\"label\": \"Demonstration\", \"text\": \"Show the product being used in one continuous shot.\"}, {\"label\": \"Story\", \"text\": \"A customer explains the problem and demonstrates the solution.\"}]",
+        "en",
+        "",
+        1,
+        "",
+        "",
+        900
       ]
     },
     {
       "id": 2,
-      "type": "MindsPrepareCreativeTest",
+      "type": "Note",
       "pos": [
-        470,
-        100
+        1180,
+        500
       ],
       "size": [
         350,
@@ -47,192 +96,17 @@
       "flags": {},
       "order": 1,
       "mode": 0,
-      "inputs": [
-        {
-          "name": "creatives",
-          "type": "MINDS_CREATIVES",
-          "link": 1
-        }
-      ],
-      "outputs": [
-        {
-          "name": "draft",
-          "type": "MINDS_CREATIVE_DRAFT",
-          "links": [
-            2
-          ]
-        },
-        {
-          "name": "review_json",
-          "type": "STRING",
-          "links": []
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MindsPrepareCreativeTest"
-      },
-      "widgets_values": [
-        "",
-        "Which video concept would you prefer to watch?",
-        "Compare the supplied concepts.",
-        "en",
-        ""
-      ]
-    },
-    {
-      "id": 3,
-      "type": "MindsRunCreativeTest",
-      "pos": [
-        860,
-        100
-      ],
-      "size": [
-        350,
-        260
-      ],
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "draft",
-          "type": "MINDS_CREATIVE_DRAFT",
-          "link": 2
-        }
-      ],
-      "outputs": [
-        {
-          "name": "preference_result",
-          "type": "MINDS_CREATIVE_RESULT",
-          "links": [
-            3
-          ]
-        },
-        {
-          "name": "tested_creatives",
-          "type": "MINDS_CREATIVES",
-          "links": [
-            4
-          ]
-        },
-        {
-          "name": "results_json",
-          "type": "STRING",
-          "links": []
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MindsRunCreativeTest"
-      },
-      "widgets_values": [
-        "",
-        900
-      ]
-    },
-    {
-      "id": 4,
-      "type": "MindsSelectCreatives",
-      "pos": [
-        1250,
-        100
-      ],
-      "size": [
-        350,
-        260
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "preference_result",
-          "type": "MINDS_CREATIVE_RESULT",
-          "link": 3
-        },
-        {
-          "name": "tested_creatives",
-          "type": "MINDS_CREATIVES",
-          "link": 4
-        }
-      ],
-      "outputs": [
-        {
-          "name": "selected_creatives",
-          "type": "MINDS_CREATIVES",
-          "links": []
-        },
-        {
-          "name": "selected_labels_json",
-          "type": "STRING",
-          "links": []
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MindsSelectCreatives"
-      },
-      "widgets_values": [
-        "",
-        1
-      ]
-    },
-    {
-      "id": 5,
-      "type": "Note",
-      "pos": [
-        80,
-        430
-      ],
-      "size": [
-        350,
-        260
-      ],
-      "flags": {},
-      "order": 4,
-      "mode": 0,
       "inputs": [],
       "outputs": [],
       "properties": {
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Video concept preference before production\n\nChoose source files and Audience IDs. Queue once to prepare. On Run Reviewed Test, open Review draft and approve. Queue again to run. Use New test request after changing inputs. API key stays in the server environment."
+        "Video concept preference before production\n\nChoose source files and Audience IDs. Queue once to prepare. Read the review dialog and approve. Queue again to run and see results inside Minds. Use New test request after changing inputs. API key stays in the server environment."
       ]
     }
   ],
-  "links": [
-    [
-      1,
-      1,
-      0,
-      2,
-      0,
-      "MINDS_CREATIVES"
-    ],
-    [
-      2,
-      2,
-      0,
-      3,
-      0,
-      "MINDS_CREATIVE_DRAFT"
-    ],
-    [
-      3,
-      3,
-      0,
-      4,
-      0,
-      "MINDS_CREATIVE_RESULT"
-    ],
-    [
-      4,
-      3,
-      1,
-      4,
-      1,
-      "MINDS_CREATIVES"
-    ]
-  ],
+  "links": [],
   "groups": [],
   "config": {},
   "extra": {

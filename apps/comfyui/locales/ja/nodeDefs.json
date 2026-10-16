@@ -182,5 +182,72 @@
         "name": "動画"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · オーディエンスの好み",
+    "inputs": {
+      "audience_ids": {
+        "name": "オーディエンスID"
+      },
+      "question": {
+        "name": "質問"
+      },
+      "context": {
+        "name": "文脈"
+      },
+      "study_locale": {
+        "name": "調査言語"
+      },
+      "request_id": {
+        "name": "リクエストID"
+      },
+      "reviewed_draft": {
+        "name": "承認した下書き"
+      },
+      "timeout_seconds": {
+        "name": "待機上限（秒）"
+      },
+      "labels_json": {
+        "name": "ラベル（JSON）"
+      },
+      "assets_json": {
+        "name": "素材（JSON）"
+      },
+      "selection_audience_id": {
+        "name": "オーディエンスID"
+      },
+      "top_k": {
+        "name": "選択数"
+      },
+      "images": {
+        "name": "画像"
+      },
+      "images_b": {
+        "name": "画像 B"
+      },
+      "videos": {
+        "name": "動画"
+      },
+      "videos_b": {
+        "name": "動画 B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "画像"
+      },
+      "1": {
+        "name": "動画"
+      },
+      "2": {
+        "name": "選好結果"
+      },
+      "3": {
+        "name": "選好結果"
+      },
+      "4": {
+        "name": "選択した素材"
+      }
+    }
   }
 }
