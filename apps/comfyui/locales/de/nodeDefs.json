@@ -182,5 +182,72 @@
         "name": "Video"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · Zielgruppenpräferenzen",
+    "inputs": {
+      "audience_ids": {
+        "name": "Zielgruppen-IDs"
+      },
+      "question": {
+        "name": "Frage"
+      },
+      "context": {
+        "name": "Kontext"
+      },
+      "study_locale": {
+        "name": "Studiensprache"
+      },
+      "request_id": {
+        "name": "Anfrage-ID"
+      },
+      "reviewed_draft": {
+        "name": "Bestätigter Entwurf"
+      },
+      "timeout_seconds": {
+        "name": "Wartezeit (Sekunden)"
+      },
+      "labels_json": {
+        "name": "Bezeichnungen (JSON)"
+      },
+      "assets_json": {
+        "name": "Materialien (JSON)"
+      },
+      "selection_audience_id": {
+        "name": "Zielgruppen-ID"
+      },
+      "top_k": {
+        "name": "Auswahlgröße"
+      },
+      "images": {
+        "name": "Bilder"
+      },
+      "images_b": {
+        "name": "Bilder B"
+      },
+      "videos": {
+        "name": "Video"
+      },
+      "videos_b": {
+        "name": "Video B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Bilder"
+      },
+      "1": {
+        "name": "Video"
+      },
+      "2": {
+        "name": "Präferenzergebnis"
+      },
+      "3": {
+        "name": "Präferenzergebnis"
+      },
+      "4": {
+        "name": "Ausgewählte Werbemittel"
+      }
+    }
   }
 }

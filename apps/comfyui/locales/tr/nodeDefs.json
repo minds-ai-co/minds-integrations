@@ -182,5 +182,72 @@
         "name": "Video"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · Kitle tercihleri",
+    "inputs": {
+      "audience_ids": {
+        "name": "Kitle kimlikleri"
+      },
+      "question": {
+        "name": "Soru"
+      },
+      "context": {
+        "name": "Bağlam"
+      },
+      "study_locale": {
+        "name": "Araştırma dili"
+      },
+      "request_id": {
+        "name": "İstek kimliği"
+      },
+      "reviewed_draft": {
+        "name": "Onaylanan taslak"
+      },
+      "timeout_seconds": {
+        "name": "Bekleme sınırı (saniye)"
+      },
+      "labels_json": {
+        "name": "Etiketler (JSON)"
+      },
+      "assets_json": {
+        "name": "İçerikler (JSON)"
+      },
+      "selection_audience_id": {
+        "name": "Kitle kimliği"
+      },
+      "top_k": {
+        "name": "Seçim sayısı"
+      },
+      "images": {
+        "name": "Görseller"
+      },
+      "images_b": {
+        "name": "Görseller B"
+      },
+      "videos": {
+        "name": "Video"
+      },
+      "videos_b": {
+        "name": "Video B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Görseller"
+      },
+      "1": {
+        "name": "Video"
+      },
+      "2": {
+        "name": "Tercih sonucu"
+      },
+      "3": {
+        "name": "Tercih sonucu"
+      },
+      "4": {
+        "name": "Seçilen kreatifler"
+      }
+    }
   }
 }

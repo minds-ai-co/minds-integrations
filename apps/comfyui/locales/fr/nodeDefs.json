@@ -182,5 +182,72 @@
         "name": "Vidéo"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · Préférences des audiences",
+    "inputs": {
+      "audience_ids": {
+        "name": "Identifiants des audiences"
+      },
+      "question": {
+        "name": "Question"
+      },
+      "context": {
+        "name": "Contexte"
+      },
+      "study_locale": {
+        "name": "Langue de l’étude"
+      },
+      "request_id": {
+        "name": "Identifiant de requête"
+      },
+      "reviewed_draft": {
+        "name": "Brouillon approuvé"
+      },
+      "timeout_seconds": {
+        "name": "Attente maximale (secondes)"
+      },
+      "labels_json": {
+        "name": "Libellés (JSON)"
+      },
+      "assets_json": {
+        "name": "Supports (JSON)"
+      },
+      "selection_audience_id": {
+        "name": "Identifiant de l’audience"
+      },
+      "top_k": {
+        "name": "Taille de la sélection"
+      },
+      "images": {
+        "name": "Images"
+      },
+      "images_b": {
+        "name": "Images B"
+      },
+      "videos": {
+        "name": "Vidéo"
+      },
+      "videos_b": {
+        "name": "Vidéo B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Images"
+      },
+      "1": {
+        "name": "Vidéo"
+      },
+      "2": {
+        "name": "Résultat de préférence"
+      },
+      "3": {
+        "name": "Résultat de préférence"
+      },
+      "4": {
+        "name": "Créations sélectionnées"
+      }
+    }
   }
 }

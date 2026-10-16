@@ -182,5 +182,72 @@
         "name": "Vídeo"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · Preferencias de las audiencias",
+    "inputs": {
+      "audience_ids": {
+        "name": "IDs de audiencias"
+      },
+      "question": {
+        "name": "Pregunta"
+      },
+      "context": {
+        "name": "Contexto"
+      },
+      "study_locale": {
+        "name": "Idioma del estudio"
+      },
+      "request_id": {
+        "name": "ID de solicitud"
+      },
+      "reviewed_draft": {
+        "name": "Borrador aprobado"
+      },
+      "timeout_seconds": {
+        "name": "Espera máxima (segundos)"
+      },
+      "labels_json": {
+        "name": "Etiquetas (JSON)"
+      },
+      "assets_json": {
+        "name": "Materiales (JSON)"
+      },
+      "selection_audience_id": {
+        "name": "ID de audiencia"
+      },
+      "top_k": {
+        "name": "Tamaño de selección"
+      },
+      "images": {
+        "name": "Imágenes"
+      },
+      "images_b": {
+        "name": "Imágenes B"
+      },
+      "videos": {
+        "name": "Vídeo"
+      },
+      "videos_b": {
+        "name": "Vídeo B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Imágenes"
+      },
+      "1": {
+        "name": "Vídeo"
+      },
+      "2": {
+        "name": "Resultado de preferencia"
+      },
+      "3": {
+        "name": "Resultado de preferencia"
+      },
+      "4": {
+        "name": "Creatividades seleccionadas"
+      }
+    }
   }
 }

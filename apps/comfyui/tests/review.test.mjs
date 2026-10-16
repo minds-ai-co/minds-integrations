@@ -12,7 +12,7 @@ function setup() {
   let extension, review;
   const elements = [];
   const document = { createElement(tag) {
-    const element = { tag, children: [], style: {}, textContent: "", append(...items) { this.children.push(...items); },
+    const element = { tag, replaceChildren() {}, children: [], style: {}, textContent: "", append(...items) { this.children.push(...items); },
       addEventListener() {}, close() {}, showModal() {}, remove() {} };
     elements.push(element); return element;
   }, body: { append() {} } };
@@ -25,6 +25,9 @@ function setup() {
       this.inputs = [{ name: "draft", link: 1 }]; }
     addWidget(type, label, value, callback) { this.widgets.push({ type, label, callback }); }
     setDirtyCanvas() {}
+    computeSize() { return [620, 1000]; }
+    setSize() {}
+    addDOMWidget(name, type, element) { this.widgets.push({ name, type, element }); }
   }
   return { extension, Node, elements, setReview: value => { review = value; } };
 }
@@ -67,4 +70,20 @@ test("loading a template fills its blank request ID after widget values are rest
   node.widgets[1].value = "saved-request";
   node.onConfigure({});
   assert.equal(node.widgets[1].value, "saved-request");
+});
+
+
+test("single node opens its own draft review and clears approval for a new test", async () => {
+  const env = setup();
+  await env.extension.beforeRegisterNodeDef(env.Node, { name: "MindsPreference" });
+  const node = new env.Node(); node.onNodeCreated();
+  assert.equal(node.widgets[0].type, "converted-widget");
+  node.onExecuted({ minds_review: [{ approval: "single-node-hash", locale: "en", audiences: [{ name: "Viewers" }],
+    question: { text: "Pick a creative" }, creativeLabels: ["A", "B"] }] });
+  assert.equal(node.widgets[0].value, "");
+  env.elements.find(item => item.textContent === "Approve this draft").onclick();
+  assert.equal(node.widgets[0].value, "single-node-hash");
+  node.widgets.find(widget => widget.label === "New test request").callback();
+  assert.equal(node.widgets[0].value, "");
+  assert.equal(node.mindsReview, null);
 });

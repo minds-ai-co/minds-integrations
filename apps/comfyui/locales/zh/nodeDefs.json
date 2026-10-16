@@ -182,5 +182,72 @@
         "name": "视频"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · 受众偏好",
+    "inputs": {
+      "audience_ids": {
+        "name": "受众 ID"
+      },
+      "question": {
+        "name": "问题"
+      },
+      "context": {
+        "name": "背景"
+      },
+      "study_locale": {
+        "name": "研究语言"
+      },
+      "request_id": {
+        "name": "请求 ID"
+      },
+      "reviewed_draft": {
+        "name": "已批准草稿"
+      },
+      "timeout_seconds": {
+        "name": "等待上限（秒）"
+      },
+      "labels_json": {
+        "name": "标签（JSON）"
+      },
+      "assets_json": {
+        "name": "素材（JSON）"
+      },
+      "selection_audience_id": {
+        "name": "受众 ID"
+      },
+      "top_k": {
+        "name": "入选数量"
+      },
+      "images": {
+        "name": "图像"
+      },
+      "images_b": {
+        "name": "图像 B"
+      },
+      "videos": {
+        "name": "视频"
+      },
+      "videos_b": {
+        "name": "视频 B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "图像"
+      },
+      "1": {
+        "name": "视频"
+      },
+      "2": {
+        "name": "偏好结果"
+      },
+      "3": {
+        "name": "偏好结果"
+      },
+      "4": {
+        "name": "已选素材"
+      }
+    }
   }
 }

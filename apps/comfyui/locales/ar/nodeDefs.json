@@ -182,5 +182,72 @@
         "name": "الفيديو"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · تفضيلات الجمهور",
+    "inputs": {
+      "audience_ids": {
+        "name": "معرّفات الجماهير"
+      },
+      "question": {
+        "name": "السؤال"
+      },
+      "context": {
+        "name": "السياق"
+      },
+      "study_locale": {
+        "name": "لغة الدراسة"
+      },
+      "request_id": {
+        "name": "معرّف الطلب"
+      },
+      "reviewed_draft": {
+        "name": "المسودة المعتمدة"
+      },
+      "timeout_seconds": {
+        "name": "الانتظار الأقصى (ثوانٍ)"
+      },
+      "labels_json": {
+        "name": "التسميات (JSON)"
+      },
+      "assets_json": {
+        "name": "المواد (JSON)"
+      },
+      "selection_audience_id": {
+        "name": "معرّف الجمهور"
+      },
+      "top_k": {
+        "name": "عدد الاختيارات"
+      },
+      "images": {
+        "name": "الصور"
+      },
+      "images_b": {
+        "name": "الصور B"
+      },
+      "videos": {
+        "name": "الفيديو"
+      },
+      "videos_b": {
+        "name": "الفيديو B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "الصور"
+      },
+      "1": {
+        "name": "الفيديو"
+      },
+      "2": {
+        "name": "نتيجة التفضيل"
+      },
+      "3": {
+        "name": "نتيجة التفضيل"
+      },
+      "4": {
+        "name": "المواد المختارة"
+      }
+    }
   }
 }

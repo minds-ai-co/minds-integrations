@@ -182,5 +182,72 @@
         "name": "Video"
       }
     }
+  },
+  "MindsPreference": {
+    "display_name": "Minds · Audience Preferences",
+    "inputs": {
+      "audience_ids": {
+        "name": "Audience IDs"
+      },
+      "question": {
+        "name": "Question"
+      },
+      "context": {
+        "name": "Context"
+      },
+      "study_locale": {
+        "name": "Study language"
+      },
+      "request_id": {
+        "name": "Request ID"
+      },
+      "reviewed_draft": {
+        "name": "Approved draft"
+      },
+      "timeout_seconds": {
+        "name": "Wait limit (seconds)"
+      },
+      "labels_json": {
+        "name": "Labels (JSON)"
+      },
+      "assets_json": {
+        "name": "Assets (JSON)"
+      },
+      "selection_audience_id": {
+        "name": "Audience ID"
+      },
+      "top_k": {
+        "name": "Shortlist size"
+      },
+      "images": {
+        "name": "Images"
+      },
+      "images_b": {
+        "name": "Images B"
+      },
+      "videos": {
+        "name": "Video"
+      },
+      "videos_b": {
+        "name": "Video B"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Images"
+      },
+      "1": {
+        "name": "Video"
+      },
+      "2": {
+        "name": "Preference result"
+      },
+      "3": {
+        "name": "Preference result"
+      },
+      "4": {
+        "name": "Selected creatives"
+      }
+    }
   }
 }
