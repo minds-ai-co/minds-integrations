@@ -1,6 +1,7 @@
 """Build a distribution containing only reviewed node-pack files."""
 
 import argparse
+import subprocess
 import zipfile
 from pathlib import Path
 
@@ -21,7 +22,13 @@ FILES = {
 
 
 def distribution_files():
-    for path in sorted(ROOT.rglob("*")):
+    tracked = (
+        subprocess.run(["git", "ls-files", "-z", "--", "."], cwd=ROOT, capture_output=True, check=True)
+        .stdout.decode()
+        .split("\0")
+    )
+    for filename in sorted(filter(None, tracked)):
+        path = ROOT / filename
         relative = path.relative_to(ROOT)
         if (
             not path.is_file()
