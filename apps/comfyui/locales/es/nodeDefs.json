@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · Variantes de imagen",
+    "inputs": {
+      "images": {
+        "name": "Imágenes"
+      },
+      "labels_json": {
+        "name": "Etiquetas (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatividades"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · Variante de vídeo",
+    "inputs": {
+      "video": {
+        "name": "Vídeo"
+      },
+      "label": {
+        "name": "Etiqueta"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatividades"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · Materiales alojados / conceptos",
+    "inputs": {
+      "assets_json": {
+        "name": "Materiales (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatividades"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · Combinar variantes",
+    "inputs": {
+      "first": {
+        "name": "Primeras variantes"
+      },
+      "second": {
+        "name": "Segundas variantes"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatividades"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · Buscar audiencias",
+    "inputs": {
+      "search": {
+        "name": "Buscar"
+      },
+      "offset": {
+        "name": "Desplazamiento"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "IDs de audiencias"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · Preparar prueba creativa",
+    "inputs": {
+      "creatives": {
+        "name": "Creatividades"
+      },
+      "audience_ids": {
+        "name": "IDs de audiencias"
+      },
+      "question": {
+        "name": "Pregunta"
+      },
+      "context": {
+        "name": "Contexto"
+      },
+      "study_locale": {
+        "name": "Idioma del estudio"
+      },
+      "request_id": {
+        "name": "ID de solicitud"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Borrador"
+      },
+      "1": {
+        "name": "Revisión (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · Ejecutar prueba revisada",
+    "inputs": {
+      "draft": {
+        "name": "Borrador"
+      },
+      "reviewed_draft": {
+        "name": "Borrador aprobado"
+      },
+      "timeout_seconds": {
+        "name": "Espera máxima (segundos)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Resultado de preferencia"
+      },
+      "1": {
+        "name": "Creatividades evaluadas"
+      },
+      "2": {
+        "name": "Resultado de preferencia"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · Seleccionar creatividades",
+    "inputs": {
+      "preference_result": {
+        "name": "Resultado de preferencia"
+      },
+      "tested_creatives": {
+        "name": "Creatividades evaluadas"
+      },
+      "audience_id": {
+        "name": "ID de audiencia"
+      },
+      "top_k": {
+        "name": "Tamaño de selección"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatividades seleccionadas"
+      },
+      "1": {
+        "name": "Etiquetas (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · Imágenes seleccionadas",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Creatividades seleccionadas"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Imágenes"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · Vídeo seleccionado",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Creatividades seleccionadas"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Vídeo"
+      }
+    }
+  }
+}

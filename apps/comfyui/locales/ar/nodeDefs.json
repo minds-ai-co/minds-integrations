@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · خيارات الصور",
+    "inputs": {
+      "images": {
+        "name": "الصور"
+      },
+      "labels_json": {
+        "name": "التسميات (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "المواد الإبداعية"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · خيار فيديو",
+    "inputs": {
+      "video": {
+        "name": "الفيديو"
+      },
+      "label": {
+        "name": "التسمية"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "المواد الإبداعية"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · مواد مستضافة / أفكار",
+    "inputs": {
+      "assets_json": {
+        "name": "المواد (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "المواد الإبداعية"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · دمج الخيارات",
+    "inputs": {
+      "first": {
+        "name": "الخيارات الأولى"
+      },
+      "second": {
+        "name": "الخيارات الثانية"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "المواد الإبداعية"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · البحث عن جماهير",
+    "inputs": {
+      "search": {
+        "name": "بحث"
+      },
+      "offset": {
+        "name": "موضع البداية"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "معرّفات الجماهير"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · إعداد اختبار إبداعي",
+    "inputs": {
+      "creatives": {
+        "name": "المواد الإبداعية"
+      },
+      "audience_ids": {
+        "name": "معرّفات الجماهير"
+      },
+      "question": {
+        "name": "السؤال"
+      },
+      "context": {
+        "name": "السياق"
+      },
+      "study_locale": {
+        "name": "لغة الدراسة"
+      },
+      "request_id": {
+        "name": "معرّف الطلب"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "المسودة"
+      },
+      "1": {
+        "name": "المراجعة (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · تشغيل الاختبار المعتمد",
+    "inputs": {
+      "draft": {
+        "name": "المسودة"
+      },
+      "reviewed_draft": {
+        "name": "المسودة المعتمدة"
+      },
+      "timeout_seconds": {
+        "name": "الانتظار الأقصى (ثوانٍ)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "نتيجة التفضيل"
+      },
+      "1": {
+        "name": "المواد المختبرة"
+      },
+      "2": {
+        "name": "نتيجة التفضيل"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · اختيار المواد الإبداعية",
+    "inputs": {
+      "preference_result": {
+        "name": "نتيجة التفضيل"
+      },
+      "tested_creatives": {
+        "name": "المواد المختبرة"
+      },
+      "audience_id": {
+        "name": "معرّف الجمهور"
+      },
+      "top_k": {
+        "name": "عدد الاختيارات"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "المواد المختارة"
+      },
+      "1": {
+        "name": "التسميات (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · الصور المختارة",
+    "inputs": {
+      "selected_creatives": {
+        "name": "المواد المختارة"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "الصور"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · الفيديو المختار",
+    "inputs": {
+      "selected_creatives": {
+        "name": "المواد المختارة"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "الفيديو"
+      }
+    }
+  }
+}

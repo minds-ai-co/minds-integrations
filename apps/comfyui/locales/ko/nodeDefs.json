@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · 이미지 후보",
+    "inputs": {
+      "images": {
+        "name": "이미지"
+      },
+      "labels_json": {
+        "name": "라벨 (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "크리에이티브"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · 동영상 후보",
+    "inputs": {
+      "video": {
+        "name": "동영상"
+      },
+      "label": {
+        "name": "라벨"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "크리에이티브"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · 호스팅 소재 / 콘셉트",
+    "inputs": {
+      "assets_json": {
+        "name": "소재 (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "크리에이티브"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · 후보 합치기",
+    "inputs": {
+      "first": {
+        "name": "첫 번째 후보"
+      },
+      "second": {
+        "name": "두 번째 후보"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "크리에이티브"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · 오디언스 찾기",
+    "inputs": {
+      "search": {
+        "name": "검색"
+      },
+      "offset": {
+        "name": "시작 위치"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "오디언스 ID"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · 크리에이티브 테스트 준비",
+    "inputs": {
+      "creatives": {
+        "name": "크리에이티브"
+      },
+      "audience_ids": {
+        "name": "오디언스 ID"
+      },
+      "question": {
+        "name": "질문"
+      },
+      "context": {
+        "name": "맥락"
+      },
+      "study_locale": {
+        "name": "조사 언어"
+      },
+      "request_id": {
+        "name": "요청 ID"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "초안"
+      },
+      "1": {
+        "name": "검토 (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · 검토한 테스트 실행",
+    "inputs": {
+      "draft": {
+        "name": "초안"
+      },
+      "reviewed_draft": {
+        "name": "승인한 초안"
+      },
+      "timeout_seconds": {
+        "name": "최대 대기 시간 (초)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "선호도 결과"
+      },
+      "1": {
+        "name": "테스트한 소재"
+      },
+      "2": {
+        "name": "선호도 결과"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · 소재 선택",
+    "inputs": {
+      "preference_result": {
+        "name": "선호도 결과"
+      },
+      "tested_creatives": {
+        "name": "테스트한 소재"
+      },
+      "audience_id": {
+        "name": "오디언스 ID"
+      },
+      "top_k": {
+        "name": "선택 개수"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "선택한 소재"
+      },
+      "1": {
+        "name": "라벨 (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · 선택한 이미지",
+    "inputs": {
+      "selected_creatives": {
+        "name": "선택한 소재"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "이미지"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · 선택한 동영상",
+    "inputs": {
+      "selected_creatives": {
+        "name": "선택한 소재"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "동영상"
+      }
+    }
+  }
+}

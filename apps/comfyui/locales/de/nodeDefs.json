@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · Bildvarianten",
+    "inputs": {
+      "images": {
+        "name": "Bilder"
+      },
+      "labels_json": {
+        "name": "Bezeichnungen (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Werbemittel"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · Videovariante",
+    "inputs": {
+      "video": {
+        "name": "Video"
+      },
+      "label": {
+        "name": "Bezeichnung"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Werbemittel"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · Gehostete Materialien / Konzepte",
+    "inputs": {
+      "assets_json": {
+        "name": "Materialien (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Werbemittel"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · Varianten kombinieren",
+    "inputs": {
+      "first": {
+        "name": "Erste Varianten"
+      },
+      "second": {
+        "name": "Zweite Varianten"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Werbemittel"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · Zielgruppen finden",
+    "inputs": {
+      "search": {
+        "name": "Suche"
+      },
+      "offset": {
+        "name": "Startposition"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Zielgruppen-IDs"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · Kreativtest vorbereiten",
+    "inputs": {
+      "creatives": {
+        "name": "Werbemittel"
+      },
+      "audience_ids": {
+        "name": "Zielgruppen-IDs"
+      },
+      "question": {
+        "name": "Frage"
+      },
+      "context": {
+        "name": "Kontext"
+      },
+      "study_locale": {
+        "name": "Studiensprache"
+      },
+      "request_id": {
+        "name": "Anfrage-ID"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Entwurf"
+      },
+      "1": {
+        "name": "Prüfung (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · Bestätigten Test ausführen",
+    "inputs": {
+      "draft": {
+        "name": "Entwurf"
+      },
+      "reviewed_draft": {
+        "name": "Bestätigter Entwurf"
+      },
+      "timeout_seconds": {
+        "name": "Wartezeit (Sekunden)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Präferenzergebnis"
+      },
+      "1": {
+        "name": "Getestete Werbemittel"
+      },
+      "2": {
+        "name": "Präferenzergebnis"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · Werbemittel auswählen",
+    "inputs": {
+      "preference_result": {
+        "name": "Präferenzergebnis"
+      },
+      "tested_creatives": {
+        "name": "Getestete Werbemittel"
+      },
+      "audience_id": {
+        "name": "Zielgruppen-ID"
+      },
+      "top_k": {
+        "name": "Auswahlgröße"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Ausgewählte Werbemittel"
+      },
+      "1": {
+        "name": "Bezeichnungen (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · Ausgewählte Bilder",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Ausgewählte Werbemittel"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Bilder"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · Ausgewähltes Video",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Ausgewählte Werbemittel"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Video"
+      }
+    }
+  }
+}

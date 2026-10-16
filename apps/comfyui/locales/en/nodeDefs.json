@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · Image Candidates",
+    "inputs": {
+      "images": {
+        "name": "Images"
+      },
+      "labels_json": {
+        "name": "Labels (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatives"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · Video Candidate",
+    "inputs": {
+      "video": {
+        "name": "Video"
+      },
+      "label": {
+        "name": "Label"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatives"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · Hosted Assets / Concepts",
+    "inputs": {
+      "assets_json": {
+        "name": "Assets (JSON)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatives"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · Combine Candidates",
+    "inputs": {
+      "first": {
+        "name": "First candidates"
+      },
+      "second": {
+        "name": "Second candidates"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Creatives"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · Find Audiences",
+    "inputs": {
+      "search": {
+        "name": "Search"
+      },
+      "offset": {
+        "name": "Offset"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Audience IDs"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · Prepare Creative Test",
+    "inputs": {
+      "creatives": {
+        "name": "Creatives"
+      },
+      "audience_ids": {
+        "name": "Audience IDs"
+      },
+      "question": {
+        "name": "Question"
+      },
+      "context": {
+        "name": "Context"
+      },
+      "study_locale": {
+        "name": "Study language"
+      },
+      "request_id": {
+        "name": "Request ID"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Draft"
+      },
+      "1": {
+        "name": "Review (JSON)"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · Run Reviewed Test",
+    "inputs": {
+      "draft": {
+        "name": "Draft"
+      },
+      "reviewed_draft": {
+        "name": "Approved draft"
+      },
+      "timeout_seconds": {
+        "name": "Wait limit (seconds)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Preference result"
+      },
+      "1": {
+        "name": "Tested creatives"
+      },
+      "2": {
+        "name": "Preference result"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · Select Creatives",
+    "inputs": {
+      "preference_result": {
+        "name": "Preference result"
+      },
+      "tested_creatives": {
+        "name": "Tested creatives"
+      },
+      "audience_id": {
+        "name": "Audience ID"
+      },
+      "top_k": {
+        "name": "Shortlist size"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Selected creatives"
+      },
+      "1": {
+        "name": "Labels (JSON)"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · Selected Images",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Selected creatives"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Images"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · Selected Video",
+    "inputs": {
+      "selected_creatives": {
+        "name": "Selected creatives"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Video"
+      }
+    }
+  }
+}

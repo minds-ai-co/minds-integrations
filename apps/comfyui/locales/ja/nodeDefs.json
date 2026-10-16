@@ -1,0 +1,186 @@
+{
+  "MindsCreativeImages": {
+    "display_name": "Minds · 画像候補",
+    "inputs": {
+      "images": {
+        "name": "画像"
+      },
+      "labels_json": {
+        "name": "ラベル（JSON）"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "クリエイティブ"
+      }
+    }
+  },
+  "MindsCreativeVideo": {
+    "display_name": "Minds · 動画候補",
+    "inputs": {
+      "video": {
+        "name": "動画"
+      },
+      "label": {
+        "name": "ラベル"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "クリエイティブ"
+      }
+    }
+  },
+  "MindsCreativeAssets": {
+    "display_name": "Minds · 公開素材・コンセプト",
+    "inputs": {
+      "assets_json": {
+        "name": "素材（JSON）"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "クリエイティブ"
+      }
+    }
+  },
+  "MindsCombineCreatives": {
+    "display_name": "Minds · 候補を結合",
+    "inputs": {
+      "first": {
+        "name": "最初の候補"
+      },
+      "second": {
+        "name": "次の候補"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "クリエイティブ"
+      }
+    }
+  },
+  "MindsAudiences": {
+    "display_name": "Minds · オーディエンスを検索",
+    "inputs": {
+      "search": {
+        "name": "検索"
+      },
+      "offset": {
+        "name": "開始位置"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "オーディエンスID"
+      }
+    }
+  },
+  "MindsPrepareCreativeTest": {
+    "display_name": "Minds · クリエイティブテストを準備",
+    "inputs": {
+      "creatives": {
+        "name": "クリエイティブ"
+      },
+      "audience_ids": {
+        "name": "オーディエンスID"
+      },
+      "question": {
+        "name": "質問"
+      },
+      "context": {
+        "name": "文脈"
+      },
+      "study_locale": {
+        "name": "調査言語"
+      },
+      "request_id": {
+        "name": "リクエストID"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "下書き"
+      },
+      "1": {
+        "name": "確認（JSON）"
+      }
+    }
+  },
+  "MindsRunCreativeTest": {
+    "display_name": "Minds · 承認したテストを実行",
+    "inputs": {
+      "draft": {
+        "name": "下書き"
+      },
+      "reviewed_draft": {
+        "name": "承認した下書き"
+      },
+      "timeout_seconds": {
+        "name": "待機上限（秒）"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "選好結果"
+      },
+      "1": {
+        "name": "テスト済み素材"
+      },
+      "2": {
+        "name": "選好結果"
+      }
+    }
+  },
+  "MindsSelectCreatives": {
+    "display_name": "Minds · 素材を選択",
+    "inputs": {
+      "preference_result": {
+        "name": "選好結果"
+      },
+      "tested_creatives": {
+        "name": "テスト済み素材"
+      },
+      "audience_id": {
+        "name": "オーディエンスID"
+      },
+      "top_k": {
+        "name": "選択数"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "選択した素材"
+      },
+      "1": {
+        "name": "ラベル（JSON）"
+      }
+    }
+  },
+  "MindsSelectedImages": {
+    "display_name": "Minds · 選択した画像",
+    "inputs": {
+      "selected_creatives": {
+        "name": "選択した素材"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "画像"
+      }
+    }
+  },
+  "MindsSelectedVideo": {
+    "display_name": "Minds · 選択した動画",
+    "inputs": {
+      "selected_creatives": {
+        "name": "選択した素材"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "動画"
+      }
+    }
+  }
+}
