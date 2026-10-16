@@ -12,6 +12,21 @@ permissions:
   contents: read
 
 jobs:
+  response-layout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix apps/comfyui/scripts/widget-build
+      - run: apps/comfyui/scripts/widget-build/node_modules/.bin/playwright install --with-deps chromium
+      - run: node apps/comfyui/scripts/test_response_layout.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ComfyUI-response-layout
+          path: /tmp/minds-comfy-response-layout
   test:
     runs-on: ubuntu-latest
     strategy:
