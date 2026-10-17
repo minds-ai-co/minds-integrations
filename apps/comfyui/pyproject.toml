@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-minds"
-version = "0.2.1"
+version = "0.2.2"
 description = """
 Official Minds integration for ComfyUI: test image and video creative preferences with selected AI-powered Audiences in one node.
 

@@ -2,16 +2,18 @@
 
 The node embeds the existing Minds MCP response UI, built from the shared `@minds-ai-co/ui` response surface. It does not implement a second response design or copy Vue component source.
 
-`web/response.html` is a pinned deployment artifact from `https://getminds.ai/_widgets/response.html`, retrieved on 2026-10-16. Upstream SHA-256: `7e519f650c845e212b46165ca8c1fd2b39eac000c5bb2a9edf17e0178d690f29`. The build inserts a read-only response configuration and binds optional lazy assets to the fixed Minds origin. The HTML includes its existing styles and fonts. Optional remote assets and links need internet access.
+`web/response.html` is the canonical MCP response artifact built from webapp revision `3a948e4915` with published `@minds-ai-co/ui@1.0.0-staging.192`. Its original HTML SHA-256 is `53492c6e399e0964d4efe0240acfb74c61d253ca6e1e49711ddb6c7cfdd82b0c`. The build inserts the read-only host configuration and serves the two content-pinned optional UI chunks locally. The chunks use `.mjs` so ComfyUI does not auto-import iframe-only modules into its parent graph.
 
 Reproduce it from this package directory:
 
 ```sh
 npm ci --prefix scripts/widget-build
-npm run build --prefix scripts/widget-build
+node scripts/widget-build/build.mjs /path/to/webapp/widgets/dist/response.html
 ```
 
-The build fails if the published artifact has changed. Updating its hash requires reviewing the new response widget before regenerating the artifact. The host bridge is bundled from the pinned official `@modelcontextprotocol/ext-apps` SDK, with its dependency lockfile. End users do not need Node.js or a frontend build.
+Build the source artifact with the webapp's canonical `pnpm run build:widgets` command and the exact package lock above. With no file argument, the builder downloads the published widget; it refuses an older production artifact until that webapp revision is promoted. Both input modes verify the HTML and chunk digests. Updating its hash requires reviewing the new response widget before regenerating the artifact. The host bridge is bundled from the pinned official `@modelcontextprotocol/ext-apps` SDK, with its dependency lockfile. End users do not need Node.js or a frontend build.
+
+The node projects the confirmed run's signed `questionAttachments` into the existing `questionStimuli` contract, matching creative labels by their explicit asset IDs. Those materials render through the same shared Study result and A/B comparison components used by MCP.
 
 A sandboxed iframe is created for each completed result. The official MCP Apps `AppBridge` sends the validated run artifact's actual `outputData` through `sendToolInput` and `sendToolResult`. A fresh iframe respects the widget's immutable completed-result identity when a later test completes. Removing a node or starting a new test closes its bridge and clears the previous frame. Result payloads are not added to serialized workflow widgets.
 

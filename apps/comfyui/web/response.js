@@ -10,7 +10,7 @@ export function mountResponse(container, payload, locale) {
   // The artifact is local; it is the same published response UI used by Minds MCP.
   // A fresh frame for each completed run respects the widget's sealed-result identity.
   const hostContext = { locale, displayMode: "inline", theme: "dark" };
-  const bridge = new AppBridge(null, { name: "ComfyUI Minds", version: "0.2.1" },
+  const bridge = new AppBridge(null, { name: "ComfyUI Minds", version: "0.2.2" },
     { openLinks: {} }, { hostContext: { ...hostContext,
       ...(iframe.clientWidth && iframe.clientHeight
         ? { containerDimensions: { width: iframe.clientWidth, height: iframe.clientHeight } } : {}) } });

@@ -20,3 +20,9 @@ node scripts/test_browser.mjs http://127.0.0.1:8197 /path/to/qa-audience.json /t
 This opt-in harness runs real research and consumes the account's existing usage. It persists request IDs in its output state file, so retries reuse the same runs. It asserts native media saving and actual iframe contents, and captures image/video workflows. No Minds key is supplied to the harness or browser.
 
 Comfy Cloud execution, Comfy Registry installation and native Partner Node listing are not covered by these checks. Registry publication is tracked separately and needs publisher authentication.
+
+## 0.2.2 question-attachment display check
+
+A fresh real ComfyUI run compared two Coca-Cola campaign visuals published in the company's newsroom: [the football campaign image](https://www.coca-colacompany.com/media-center/coca-cola-invites-gen-z-to-live-fully-in-the-moment) and [the Share a Coke campaign image](https://www.coca-colacompany.com/media-center/iconic-share-a-coke-is-back-for-a-new-generation.html). The original files were uploaded as question attachments, reviewed and approved, and evaluated by the existing five-Mind QA Audience. Ad A received one choice and Ad B four choices. This small integration test does not establish campaign effectiveness.
+
+The completed response carries the confirmed run's exact, signed question attachments into the canonical MCP widget. Browser verification requires both original images to decode, their A/B labels to match the result options, and the selected original image to reach SaveImage. The raw run and screenshots stay outside the repository. The node's browser receives no API credential.
