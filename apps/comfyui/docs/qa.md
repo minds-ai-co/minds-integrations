@@ -26,3 +26,10 @@ Comfy Cloud execution, Comfy Registry installation and native Partner Node listi
 A fresh real ComfyUI run compared two Coca-Cola campaign visuals published in the company's newsroom: [the football campaign image](https://www.coca-colacompany.com/media-center/coca-cola-invites-gen-z-to-live-fully-in-the-moment) and [the Share a Coke campaign image](https://www.coca-colacompany.com/media-center/iconic-share-a-coke-is-back-for-a-new-generation.html). The original files were uploaded as question attachments, reviewed and approved, and evaluated by the existing five-Mind QA Audience. Ad A received one choice and Ad B four choices. This small integration test does not establish campaign effectiveness.
 
 The completed response carries the confirmed run's exact, signed question attachments into the canonical MCP widget. Browser verification requires both original images to decode, their A/B labels to match the result options, and the selected original image to reach SaveImage. The raw run and screenshots stay outside the repository. The node's browser receives no API credential.
+
+
+## Native result scrolling and workflow-only captures
+
+Replayed the completed Coca-Cola image Study in native ComfyUI without starting another research run. A real mouse-wheel event moved the embedded result from the top to its final controls; the canvas scale and offset stayed unchanged. The result remained within the node, and no browser errors occurred. The standalone response-layout check now also uses real wheel events at four viewport/zoom combinations.
+
+The workflow-only and result-detail captures in `docs/images` reuse that completed result and its original saved winner. The taller documentation view shows the complete result at once; it is not the default node height. Both official campaign sources are linked in the usage guide. Account IDs are obscured; raw result payloads, signed media URLs and credentials are excluded.

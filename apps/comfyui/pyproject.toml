@@ -11,6 +11,9 @@ Use it for ad creative testing, thumbnails, packaging designs, video concepts an
 Requires a Minds account, ready Audiences and a server-side API key. Compare 2–20 alternatives. Results estimate synthetic preferences, not actual clicks or sales.
 
 Install, examples and FAQs: https://github.com/minds-ai-co/ComfyUI-Minds/blob/main/docs/usage.md
+Workflow screenshot: https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/workflow.png
+Complete results screenshot: https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/response.png
+Scroll inside the results with the mouse wheel or a two-finger trackpad gesture.
 Minds: https://getminds.ai
 """
 requires-python = ">=3.10"

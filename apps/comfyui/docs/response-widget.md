@@ -19,7 +19,7 @@ A sandboxed iframe is created for each completed result. The official MCP Apps `
 
 The host reports the iframe's actual CSS width and height through MCP Apps `containerDimensions`, including resize updates. This keeps the shared response widget's internal scroll viewport within the node, including when the ComfyUI canvas is zoomed. Resize tracking is removed with the frame.
 
-Run `node scripts/test_response_layout.mjs` after installing the widget-build dependencies to check the real pinned HTML at short, tall, narrow and zoomed sizes. It uses illustrative results and makes no research API calls. An optional second argument replays a private completed ComfyUI output JSON; keep those snapshots outside the repository.
+Run `node scripts/test_response_layout.mjs` after installing the widget-build dependencies to check the real pinned HTML at short, tall, narrow and zoomed sizes. It uses real mouse-wheel events to reach the final action row at each size, with illustrative results and no research API calls. A native ComfyUI replay of the completed Coca-Cola test also verified scrolling to the footer without changing the graph zoom or position. An optional second argument replays a private completed ComfyUI output JSON; keep those snapshots outside the repository.
 
 The browser receives no API key. The bridge exposes no server tools, resource proxy or authenticated requests. Its only host action opens links on the exact `https://getminds.ai` origin. The iframe has scripts and external popups enabled, without same-origin access to ComfyUI. If initialization fails, a link opens the Study in Minds; the graph's JSON/native outputs remain available.
 

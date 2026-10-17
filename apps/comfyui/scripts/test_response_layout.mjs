@@ -79,8 +79,21 @@ try {
       }
       throw new Error(`Widget did not adapt to ${height}px`);
     }, height);
-    const bounds = await frame.locator(".widget-content-scroll").evaluate(element => {
-      element.scrollTop = element.scrollHeight;
+    const scroller = frame.locator(".widget-content-scroll");
+    await scroller.evaluate(element => { element.scrollTop = 0; });
+    const pointer = await scroller.boundingBox();
+    assert.ok(pointer, "The result scroll area must be visible");
+    await page.mouse.move(pointer.x + pointer.width / 2, pointer.y + pointer.height / 2);
+    await page.mouse.wheel(0, 10000);
+    // Wait for the browser's real wheel event, including its compositor updates.
+    await scroller.evaluate(async element => {
+      for (let tries = 0; tries < 100; tries++) {
+        if (element.scrollTop + element.clientHeight >= element.scrollHeight - 2) return;
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      }
+      throw new Error("Mouse wheel did not reach the result footer");
+    });
+    const bounds = await scroller.evaluate(element => {
       return { viewport: innerHeight, height: element.clientHeight, scrollHeight: element.scrollHeight,
         bottomReachable: element.scrollTop + element.clientHeight >= element.scrollHeight - 2 };
     });
