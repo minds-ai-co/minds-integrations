@@ -2,7 +2,11 @@
 
 The official [Minds](https://getminds.ai) integration adds audience preference testing to [ComfyUI](https://www.comfy.org/). **Minds · Audience Preferences** compares image, video and concept alternatives with your selected Minds Audiences. Its ordinary node fields collect your question and inputs; the embedded Minds response widget shows the completed research. Selected original media can continue directly to Save, upscaling or video nodes.
 
-![One Minds node showing completed illustrative image preferences](images/workflow.png)
+![Coca-Cola campaign inputs, the complete Minds preference result, and the saved original winner](images/workflow.png)
+
+This workflow-only capture replays a completed live integration test with two published Coca-Cola campaign images. Ad B (Share a Coke) received 4 of 5 selections (80%); Ad A (football) received 1 (20%). The five-Mind QA Audience verifies the integration path, not campaign performance. Sources: [football campaign](https://www.coca-colacompany.com/media-center/coca-cola-invites-gen-z-to-live-fully-in-the-moment) and [Share a Coke](https://www.coca-colacompany.com/media-center/iconic-share-a-coke-is-back-for-a-new-generation.html).
+
+![Original campaign thumbnails, preference scores, summary and result controls](images/response.png)
 
 This integration uses the existing Minds Study API and its current model routing. It does not select or deploy a Mosaic checkpoint.
 
@@ -22,7 +26,7 @@ In Browse Templates, look for **ComfyUI-Minds**. Copy the illustrative files fro
 1. Connect an `IMAGE` batch or list to `images`, and optionally another to `images_b`. For native videos, use `videos` and optionally `videos_b`; each accepts a `VIDEO` or Comfy list. All images precede all videos in candidate order, with the first port before the second. These media inputs are optional when supplying hosted assets or concepts.
 2. Supply `labels_json` for all native candidates in that order. For two images, for example, use `["Original", "Revision"]`. Give every candidate a unique label. `assets_json` supplies additional hosted files or authored concepts; their own labels follow the native candidates.
 3. Enter existing `audience_ids`, comma-separated, and your preference question, context and Study language. Queue once. Read the exact question, alternatives and selected Audiences in the review dialog, then click **Approve this draft**. Preparation does not run research; downstream nodes stay blocked until approval.
-4. Queue again. The same node runs the approved draft and shows the actual Minds response interface: preference distributions, findings and available individual Mind responses. Read or scroll within the results area. The `results_json` and `preference_result` outputs provide the ranking for automation.
+4. Queue again. The same node runs the approved draft and shows the actual Minds response interface: preference distributions, findings and available individual Mind responses. Place the pointer over the results and use the mouse wheel or a two-finger trackpad gesture to scroll to the findings and bottom controls. The graph stays in place. The taller documentation capture shows the complete result at once; ordinary node results remain scrollable. The `results_json` and `preference_result` outputs provide the ranking for automation.
 5. Connect `selected_images` or `selected_videos` directly downstream. They emit lists of original native media, preserving video audio and supporting images with different dimensions. With multiple Audiences, results always stay separate; enter a matching `selection_audience_id` to enable downstream selection. Leaving it blank shows all Audience results and blocks selection. `top_k` controls the shortlist size.
 
 Equal preference shares remain ties, including ties at the shortlist boundary; more than `top_k` items may be returned. An absent native modality blocks only that media output. Hosted files and concepts are retained in `selected_creatives`, but cannot produce a native IMAGE/VIDEO output without the original objects.
