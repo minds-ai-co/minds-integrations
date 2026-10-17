@@ -5,6 +5,7 @@ import json
 from .minds.client import MindsError
 from .minds.contract import LOCALES, asset_manifest, audience_ids, creative_labels, validate_creatives
 from .minds.media import images_to_creatives, video_to_creative
+from .minds.response import question_stimuli
 from .minds.results import preference_results, selected_creatives
 from .nodes_research import workflow
 
@@ -41,6 +42,7 @@ def response_payload(run, prepared):
         "locale": prepared["review"]["locale"],
         "question": prepared["review"]["question"]["text"],
         "outputData": artifact["outputData"],
+        "questionStimuli": [question_stimuli(run, prepared, artifact["questionIndex"])],
     }
 
 

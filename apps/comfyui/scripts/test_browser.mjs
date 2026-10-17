@@ -74,6 +74,19 @@ try {
     const save = graph.nodes.find(node => node.type.startsWith("Save"));
     assert.ok(Object.keys(completed.outputs[String(save.id)] || {}).length, "Selected original media reached native Save node");
     const result = completed.outputs[String(node.id)].minds_response[0];
+    assert.equal(result.questionStimuli[0].length, 2, "The exact analyzed attachments accompany the result");
+    for (const stimulus of result.questionStimuli[0]) {
+      if (stimulus.mediaType === "video") {
+        await frame.locator('[data-testid="study-summary-shared-comparison-video"]').first().waitFor();
+      } else {
+        const image = frame.locator(`img[src=${JSON.stringify(stimulus.url)}]:visible`).first();
+        await image.scrollIntoViewIfNeeded();
+        await image.evaluate(async element => {
+          await element.decode();
+          if (!element.naturalWidth) throw new Error("Analyzed attachment preview failed to load");
+        });
+      }
+    }
     receipts.push({ template: file, studyId: result.studyId, runId: result.runId,
       audienceCount: result.outputData.audiences.length, mindCount: audience.mindCount, completed: true,
       originalMediaSaved: true, responseRendered: true });

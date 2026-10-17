@@ -70,6 +70,31 @@ class PreferenceNodeTests(unittest.TestCase):
         self.assertEqual(payload["status"], "completed")
         self.assertNotIn("authToken", payload)
 
+    def test_response_forwards_the_run_question_attachments_to_the_shared_widget(self):
+        self.engine.run.return_value["questionAttachments"] = [
+            {
+                "questionIndex": 0,
+                "files": [
+                    {
+                        "id": "creative-1",
+                        "url": "/api/uploads/chat/a.png?sig=example",
+                        "mimeType": "image/png",
+                    },
+                    {
+                        "id": "creative-2",
+                        "url": "/api/uploads/chat/b.png?sig=example",
+                        "mimeType": "image/png",
+                    },
+                ],
+            }
+        ]
+        self.inputs["reviewed_draft"] = ["exact-hash"]
+        payload = self.node.test(**self.inputs)["ui"]["minds_response"][0]
+        self.assertEqual(
+            [item["name"] for item in payload["questionStimuli"][0]], ["静かな映像", "Spoken story"]
+        )
+        self.assertIs(payload["outputData"], self.engine.run.return_value["artifacts"][0]["outputData"])
+
     def test_video_list_is_one_test_and_retains_native_objects(self):
         class Video:
             def save_to(self, stream, format):
