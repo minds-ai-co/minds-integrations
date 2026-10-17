@@ -2,19 +2,15 @@
 name = "comfyui-minds"
 version = "0.2.2"
 description = """
-Official Minds integration for ComfyUI: test image and video creative preferences with selected AI-powered Audiences in one node.
+Official Minds integration for ComfyUI: compare image and video creative preferences with selected AI-powered Audiences in one node.
 
-Compare generated images, videos with audio, hosted media or text concepts. Review the question and draft, then see separate Audience preference rankings and findings in the embedded Minds results widget. Send selected original images or videos directly downstream, preserving ties and audio.
+Connect images, videos with audio, hosted media or text concepts. Review the draft, see rankings and findings in the embedded Minds widget, then send selected original media downstream with audio preserved. Use it for ads, thumbnails, packaging and creative revisions.
 
-Use it for ad creative testing, thumbnails, packaging designs, video concepts and original-versus-revision comparisons.
+Requires a Minds account, ready Audiences and a server-side API key. Compare 2–20 alternatives. Results estimate synthetic preferences, not clicks or sales. Scroll inside results with the wheel or trackpad.
 
-Requires a Minds account, ready Audiences and a server-side API key. Compare 2–20 alternatives. Results estimate synthetic preferences, not actual clicks or sales.
-
-Install, examples and FAQs: https://github.com/minds-ai-co/ComfyUI-Minds/blob/main/docs/usage.md
-Workflow screenshot: https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/workflow.png
-Complete results screenshot: https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/response.png
-Scroll inside the results with the mouse wheel or a two-finger trackpad gesture.
-Minds: https://getminds.ai
+Guide: https://getminds.ai/guide/integration-comfyui
+Workflow: https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/workflow.png
+Results: https://raw.githubusercontent.com/minds-ai-co/ComfyUI-Minds/main/docs/images/response.png
 """
 requires-python = ">=3.10"
 license = {text = "MIT"}
