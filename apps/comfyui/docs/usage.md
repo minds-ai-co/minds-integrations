@@ -12,7 +12,7 @@ This integration uses the existing Minds Study API and its current model routing
 
 ## Install
 
-Find **comfyui-minds** by publisher **minds** in the [Comfy Registry](https://registry.comfy.org/nodes/comfyui-minds). Check the Registry version's verification status before installation. The [GitHub release](https://github.com/minds-ai-co/ComfyUI-Minds/releases/tag/v0.2.2) is available for direct installation.
+Find **comfyui-minds** by publisher **minds** in the [Comfy Registry](https://registry.comfy.org/nodes/comfyui-minds). Check the Registry version's verification status before installation. The [latest GitHub release](https://github.com/minds-ai-co/ComfyUI-Minds/releases/latest) is available for direct installation.
 
 
 Clone `https://github.com/minds-ai-co/ComfyUI-Minds` into your ComfyUI `custom_nodes/ComfyUI-Minds` directory. Install `requirements.txt` using **the same Python interpreter ComfyUI uses**, then restart ComfyUI. The pack uses ComfyUI's existing PyTorch installation.
