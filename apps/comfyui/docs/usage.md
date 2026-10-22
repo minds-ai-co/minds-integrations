@@ -23,8 +23,8 @@ In Browse Templates, look for **ComfyUI-Minds**. Copy the illustrative files fro
 
 ## Review and run
 
-1. Connect an `IMAGE` batch or list to `images`, and optionally another to `images_b`. For native videos, use `videos` and optionally `videos_b`; each accepts a `VIDEO` or Comfy list. All images precede all videos in candidate order, with the first port before the second. These media inputs are optional when supplying hosted assets or concepts.
-2. Supply `labels_json` for all native candidates in that order. For two images, for example, use `["Original", "Revision"]`. Give every candidate a unique label. `assets_json` supplies additional hosted files or authored concepts; their own labels follow the native candidates.
+1. Connect images or videos directly to the matching sockets. Connecting the last available image or video socket reveals another, so four separate videos or images can feed one comparison without a batching helper. Existing `IMAGE` batches and Comfy lists also work. All images precede all videos in candidate order, with sockets ordered first, second, third, and so on. These media inputs are optional when supplying hosted assets or concepts.
+2. Leave `labels_json` blank for automatic labels (`Creative 1`, `Creative 2`, …). To name the alternatives yourself, supply one unique label per native candidate in that order; for four inputs, for example, use `["Original", "Revision", "Story", "Product demo"]`. Saved workflows with explicit two-candidate labels keep those labels: clear the field to use automatic labels when adding more candidates. `assets_json` supplies additional hosted files or authored concepts; their own labels follow the native candidates.
 3. Enter existing `audience_ids`, comma-separated, and your preference question, context and Study language. Queue once. Read the exact question, alternatives and selected Audiences in the review dialog, then click **Approve this draft**. Preparation does not run research; downstream nodes stay blocked until approval.
 4. Queue again. The same node runs the approved draft and shows the actual Minds response interface: preference distributions, findings and available individual Mind responses. Place the pointer over the results and use the mouse wheel or a two-finger trackpad gesture to scroll to the findings and bottom controls. The graph stays in place. The taller documentation capture shows the complete result at once; ordinary node results remain scrollable. The `results_json` and `preference_result` outputs provide the ranking for automation.
 5. Connect `selected_images` or `selected_videos` directly downstream. They emit lists of original native media, preserving video audio and supporting images with different dimensions. With multiple Audiences, results always stay separate; enter a matching `selection_audience_id` to enable downstream selection. Leaving it blank shows all Audience results and blocks selection. `top_k` controls the shortlist size.
@@ -32,6 +32,16 @@ In Browse Templates, look for **ComfyUI-Minds**. Copy the illustrative files fro
 Equal preference shares remain ties, including ties at the shortlist boundary; more than `top_k` items may be returned. An absent native modality blocks only that media output. Hosted files and concepts are retained in `selected_creatives`, but cannot produce a native IMAGE/VIDEO output without the original objects.
 
 Use **New test request** after changing media, labels, question, context, language or Audiences. The node manages its request ID and approval fingerprint internally. Retain the saved workflow and ComfyUI receipts to resume a timeout or restart. Retrying the same approved request reuses its durable Study/run. Changing only the shortlist size or selection Audience reuses the completed research.
+
+### Compare four videos or images
+
+1. Open `08-four-image-selection.json` or `09-four-video-selection.json` from Browse Templates → ComfyUI-Minds.
+2. Choose your own different file in each of the four Load nodes. The included sample files are repeated placeholders to make the template loadable, not four distinct creatives.
+3. Enter your Audience IDs and comparison question. Leave `labels_json` blank; the four inputs become `Creative 1` through `Creative 4`.
+4. Click **New test request**, queue once, check all four alternatives in the draft and approve it.
+5. Queue again to run one comparison. Read the four preference shares inside the Minds node; the selected original continues to Save.
+
+For a fifth alternative, connect it to the new empty socket. Images and videos can also be mixed in the same comparison. The total remains 2–20 candidates, including every item in connected batches/lists and any hosted assets or concepts.
 
 ## Hosted files and concepts
 
@@ -100,4 +110,4 @@ This release calls the existing Minds Study API and its current model routing. I
 
 ### Where are the source code, examples and support?
 
-The [source repository](https://github.com/minds-ai-co/ComfyUI-Minds), [seven example workflows](https://github.com/minds-ai-co/ComfyUI-Minds/tree/main/example_workflows), [verification record](qa.md), and [issue tracker](https://github.com/minds-ai-co/ComfyUI-Minds/issues) provide installation details, reproducible examples and support. The [Minds API documentation](https://getminds.ai/docs/api) covers the research platform behind the node.
+The [source repository](https://github.com/minds-ai-co/ComfyUI-Minds), [nine example workflows](https://github.com/minds-ai-co/ComfyUI-Minds/tree/main/example_workflows), [verification record](qa.md), and [issue tracker](https://github.com/minds-ai-co/ComfyUI-Minds/issues) provide installation details, reproducible examples and support. The [Minds API documentation](https://getminds.ai/docs/api) covers the research platform behind the node.

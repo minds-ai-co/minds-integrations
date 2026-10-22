@@ -208,7 +208,8 @@
         "name": "Wait limit (seconds)"
       },
       "labels_json": {
-        "name": "Labels (JSON)"
+        "name": "Labels (JSON)",
+        "tooltip": "Leave blank for automatic numbered labels, or enter one label per native creative as a JSON array."
       },
       "assets_json": {
         "name": "Assets (JSON)"
@@ -230,6 +231,114 @@
       },
       "videos_b": {
         "name": "Video B"
+      },
+      "images_3": {
+        "name": "Images 3"
+      },
+      "images_4": {
+        "name": "Images 4"
+      },
+      "images_5": {
+        "name": "Images 5"
+      },
+      "images_6": {
+        "name": "Images 6"
+      },
+      "images_7": {
+        "name": "Images 7"
+      },
+      "images_8": {
+        "name": "Images 8"
+      },
+      "images_9": {
+        "name": "Images 9"
+      },
+      "images_10": {
+        "name": "Images 10"
+      },
+      "images_11": {
+        "name": "Images 11"
+      },
+      "images_12": {
+        "name": "Images 12"
+      },
+      "images_13": {
+        "name": "Images 13"
+      },
+      "images_14": {
+        "name": "Images 14"
+      },
+      "images_15": {
+        "name": "Images 15"
+      },
+      "images_16": {
+        "name": "Images 16"
+      },
+      "images_17": {
+        "name": "Images 17"
+      },
+      "images_18": {
+        "name": "Images 18"
+      },
+      "images_19": {
+        "name": "Images 19"
+      },
+      "images_20": {
+        "name": "Images 20"
+      },
+      "videos_3": {
+        "name": "Video 3"
+      },
+      "videos_4": {
+        "name": "Video 4"
+      },
+      "videos_5": {
+        "name": "Video 5"
+      },
+      "videos_6": {
+        "name": "Video 6"
+      },
+      "videos_7": {
+        "name": "Video 7"
+      },
+      "videos_8": {
+        "name": "Video 8"
+      },
+      "videos_9": {
+        "name": "Video 9"
+      },
+      "videos_10": {
+        "name": "Video 10"
+      },
+      "videos_11": {
+        "name": "Video 11"
+      },
+      "videos_12": {
+        "name": "Video 12"
+      },
+      "videos_13": {
+        "name": "Video 13"
+      },
+      "videos_14": {
+        "name": "Video 14"
+      },
+      "videos_15": {
+        "name": "Video 15"
+      },
+      "videos_16": {
+        "name": "Video 16"
+      },
+      "videos_17": {
+        "name": "Video 17"
+      },
+      "videos_18": {
+        "name": "Video 18"
+      },
+      "videos_19": {
+        "name": "Video 19"
+      },
+      "videos_20": {
+        "name": "Video 20"
       }
     },
     "outputs": {

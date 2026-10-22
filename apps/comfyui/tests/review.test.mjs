@@ -19,7 +19,8 @@ function setup() {
   const app = { ui: { settings: { getSettingValue: () => "en" } }, registerExtension(value) { extension = value; },
     graph: { links: { 1: { origin_id: 1 } }, getNodeById: () => ({ mindsReview: review }) },
     extensionManager: { toast: { add() {} } } };
-  vm.runInNewContext(source, { app, document, crypto: { randomUUID: () => "generated-id" }, STRINGS: strings });
+  vm.runInNewContext(source, { app, document, crypto: { randomUUID: () => "generated-id" }, STRINGS: strings,
+    installDynamicMediaInputs() {} });
   class Node {
     constructor() { this.widgets = [{ name: "reviewed_draft", value: "" }, { name: "request_id", value: "" }];
       this.inputs = [{ name: "draft", link: 1 }]; }

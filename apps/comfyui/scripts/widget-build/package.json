@@ -9,6 +9,7 @@
     "@modelcontextprotocol/ext-apps": "1.5.0"
   },
   "devDependencies": {
+    "@comfyorg/litegraph": "0.17.2",
     "esbuild": "0.28.2",
     "playwright": "1.60.0"
   }

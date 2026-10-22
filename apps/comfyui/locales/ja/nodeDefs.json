@@ -208,7 +208,8 @@
         "name": "待機上限（秒）"
       },
       "labels_json": {
-        "name": "ラベル（JSON）"
+        "name": "ラベル（JSON）",
+        "tooltip": "空欄の場合は自動で番号付きラベルが付きます。独自の名前を使う場合は、各ネイティブ素材のラベルをJSON配列で入力してください。"
       },
       "assets_json": {
         "name": "素材（JSON）"
@@ -230,6 +231,114 @@
       },
       "videos_b": {
         "name": "動画 B"
+      },
+      "images_3": {
+        "name": "画像 3"
+      },
+      "images_4": {
+        "name": "画像 4"
+      },
+      "images_5": {
+        "name": "画像 5"
+      },
+      "images_6": {
+        "name": "画像 6"
+      },
+      "images_7": {
+        "name": "画像 7"
+      },
+      "images_8": {
+        "name": "画像 8"
+      },
+      "images_9": {
+        "name": "画像 9"
+      },
+      "images_10": {
+        "name": "画像 10"
+      },
+      "images_11": {
+        "name": "画像 11"
+      },
+      "images_12": {
+        "name": "画像 12"
+      },
+      "images_13": {
+        "name": "画像 13"
+      },
+      "images_14": {
+        "name": "画像 14"
+      },
+      "images_15": {
+        "name": "画像 15"
+      },
+      "images_16": {
+        "name": "画像 16"
+      },
+      "images_17": {
+        "name": "画像 17"
+      },
+      "images_18": {
+        "name": "画像 18"
+      },
+      "images_19": {
+        "name": "画像 19"
+      },
+      "images_20": {
+        "name": "画像 20"
+      },
+      "videos_3": {
+        "name": "動画 3"
+      },
+      "videos_4": {
+        "name": "動画 4"
+      },
+      "videos_5": {
+        "name": "動画 5"
+      },
+      "videos_6": {
+        "name": "動画 6"
+      },
+      "videos_7": {
+        "name": "動画 7"
+      },
+      "videos_8": {
+        "name": "動画 8"
+      },
+      "videos_9": {
+        "name": "動画 9"
+      },
+      "videos_10": {
+        "name": "動画 10"
+      },
+      "videos_11": {
+        "name": "動画 11"
+      },
+      "videos_12": {
+        "name": "動画 12"
+      },
+      "videos_13": {
+        "name": "動画 13"
+      },
+      "videos_14": {
+        "name": "動画 14"
+      },
+      "videos_15": {
+        "name": "動画 15"
+      },
+      "videos_16": {
+        "name": "動画 16"
+      },
+      "videos_17": {
+        "name": "動画 17"
+      },
+      "videos_18": {
+        "name": "動画 18"
+      },
+      "videos_19": {
+        "name": "動画 19"
+      },
+      "videos_20": {
+        "name": "動画 20"
       }
     },
     "outputs": {

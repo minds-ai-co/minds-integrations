@@ -147,3 +147,93 @@ class PreferenceNodeTests(unittest.TestCase):
         with self.assertRaisesRegex(MODULE.MindsError, "shortlist"):
             self.node.test(**self.inputs)
         self.engine.prepare.assert_not_called()
+
+    def test_four_image_sockets_form_one_review_with_automatic_labels_in_socket_order(self):
+        self.inputs["labels_json"] = [""]
+        self.inputs["images_4"] = [torch.full((1, 3, 2, 3), 0.75)]
+        self.inputs["images_3"] = [torch.full((1, 2, 4, 3), 0.25)]
+        self.node.test(**self.inputs)
+        candidates = self.engine.prepare.call_args.args[0]
+        self.assertEqual([item["label"] for item in candidates], [f"Creative {n}" for n in range(1, 5)])
+        self.assertEqual(
+            [tuple(item["native"].shape) for item in candidates],
+            [(1, 2, 3, 3), (1, 4, 2, 3), (1, 2, 4, 3), (1, 3, 2, 3)],
+        )
+        self.engine.prepare.assert_called_once()
+        self.engine.run.assert_not_called()
+
+    def test_four_video_sockets_preserve_each_native_video_and_uploaded_bytes(self):
+        class Video:
+            def __init__(self, content):
+                self.content = content
+
+            def save_to(self, stream, format):
+                stream.write(self.content)
+
+        self.inputs.pop("images")
+        self.inputs.pop("images_b")
+        self.inputs["labels_json"] = [""]
+        originals = [Video(f"video-{n}-with-audio".encode()) for n in range(4)]
+        for name, video in zip(("videos", "videos_b", "videos_3", "videos_4"), originals, strict=True):
+            self.inputs[name] = [video]
+        self.node.test(**self.inputs)
+        candidates = self.engine.prepare.call_args.args[0]
+        self.assertEqual([item["native"] for item in candidates], originals)
+        self.assertEqual([item["content"] for item in candidates], [video.content for video in originals])
+        self.assertEqual(len({item["sha256"] for item in candidates}), 4)
+        self.engine.prepare.assert_called_once()
+
+    def test_batch_and_separate_socket_share_a_single_label_sequence(self):
+        self.inputs["labels_json"] = [""]
+        self.inputs["images"] = [torch.zeros((3, 2, 3, 3))]
+        candidates = MODULE.collect_candidates(self.inputs)
+        self.assertEqual([item["label"] for item in candidates], [f"Creative {n}" for n in range(1, 5)])
+
+    def test_twenty_candidate_limit_is_checked_before_encoding(self):
+        self.inputs["labels_json"] = [""]
+        self.inputs["images"] = [torch.zeros((20, 2, 3, 3))]
+        with patch.object(MODULE, "images_to_creatives") as encode:
+            with self.assertRaisesRegex(MODULE.MindsError, "2–20"):
+                MODULE.collect_candidates(self.inputs)
+            encode.assert_not_called()
+
+    def test_approved_four_image_result_selects_the_fourth_original_from_api_counts(self):
+        self.inputs["labels_json"] = [""]
+        self.inputs["images_3"] = [torch.full((1, 3, 4, 3), 0.25)]
+        fourth = torch.full((1, 4, 3, 3), 0.75)
+        self.inputs["images_4"] = [fourth]
+        candidates = MODULE.collect_candidates(self.inputs)
+        labels = [item["label"] for item in candidates]
+        self.draft["creatives"] = candidates
+        self.draft["review"]["creativeLabels"] = labels
+        self.draft["review"]["question"]["response"]["categoricalOptions"] = labels
+        api_output = self.engine.run.return_value["artifacts"][0]["outputData"]
+        api_output["audiences"][0]["distribution"] = dict(zip(labels, (1, 2, 3, 4), strict=True))
+        self.inputs["reviewed_draft"] = ["exact-hash"]
+        output = self.node.test(**self.inputs)
+        self.assertTrue(torch.equal(output["result"][0][0], fourth))
+        self.assertEqual(len(output["result"][3]["audiences"][0]["ranking"]), 4)
+        self.assertEqual(output["result"][3]["audiences"][0]["ranking"][0]["share"], 0.4)
+        self.assertIs(output["ui"]["minds_response"][0]["outputData"], api_output)
+
+    def test_sparse_numbered_sockets_keep_numeric_order_and_images_before_videos(self):
+        class Video:
+            def save_to(self, stream, format):
+                stream.write(b"video-with-audio")
+
+        self.inputs["labels_json"] = [""]
+        tenth = torch.full((1, 1, 2, 3), 0.9)
+        third = torch.full((1, 2, 1, 3), 0.2)
+        video = Video()
+        self.inputs.update(images_10=[tenth], videos_4=[video], images_3=[third])
+        candidates = MODULE.collect_candidates(self.inputs)
+        self.assertTrue(torch.equal(candidates[2]["native"], third))
+        self.assertTrue(torch.equal(candidates[3]["native"], tenth))
+        self.assertIs(candidates[4]["native"], video)
+        self.assertEqual([item["label"] for item in candidates], [f"Creative {n}" for n in range(1, 6)])
+
+    def test_explicit_labels_are_never_silently_replaced_for_extra_sockets(self):
+        self.inputs["images_3"] = [self.images[0]]
+        with self.assertRaisesRegex(MODULE.MindsError, "distinct"):
+            self.node.test(**self.inputs)
+        self.engine.prepare.assert_not_called()

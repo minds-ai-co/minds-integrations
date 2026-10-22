@@ -208,7 +208,8 @@
         "name": "최대 대기 시간 (초)"
       },
       "labels_json": {
-        "name": "라벨 (JSON)"
+        "name": "라벨 (JSON)",
+        "tooltip": "자동 번호 라벨을 사용하려면 비워 두세요. 직접 지정하려면 각 기본 소재의 라벨을 JSON 배열로 입력하세요."
       },
       "assets_json": {
         "name": "소재 (JSON)"
@@ -230,6 +231,114 @@
       },
       "videos_b": {
         "name": "동영상 B"
+      },
+      "images_3": {
+        "name": "이미지 3"
+      },
+      "images_4": {
+        "name": "이미지 4"
+      },
+      "images_5": {
+        "name": "이미지 5"
+      },
+      "images_6": {
+        "name": "이미지 6"
+      },
+      "images_7": {
+        "name": "이미지 7"
+      },
+      "images_8": {
+        "name": "이미지 8"
+      },
+      "images_9": {
+        "name": "이미지 9"
+      },
+      "images_10": {
+        "name": "이미지 10"
+      },
+      "images_11": {
+        "name": "이미지 11"
+      },
+      "images_12": {
+        "name": "이미지 12"
+      },
+      "images_13": {
+        "name": "이미지 13"
+      },
+      "images_14": {
+        "name": "이미지 14"
+      },
+      "images_15": {
+        "name": "이미지 15"
+      },
+      "images_16": {
+        "name": "이미지 16"
+      },
+      "images_17": {
+        "name": "이미지 17"
+      },
+      "images_18": {
+        "name": "이미지 18"
+      },
+      "images_19": {
+        "name": "이미지 19"
+      },
+      "images_20": {
+        "name": "이미지 20"
+      },
+      "videos_3": {
+        "name": "동영상 3"
+      },
+      "videos_4": {
+        "name": "동영상 4"
+      },
+      "videos_5": {
+        "name": "동영상 5"
+      },
+      "videos_6": {
+        "name": "동영상 6"
+      },
+      "videos_7": {
+        "name": "동영상 7"
+      },
+      "videos_8": {
+        "name": "동영상 8"
+      },
+      "videos_9": {
+        "name": "동영상 9"
+      },
+      "videos_10": {
+        "name": "동영상 10"
+      },
+      "videos_11": {
+        "name": "동영상 11"
+      },
+      "videos_12": {
+        "name": "동영상 12"
+      },
+      "videos_13": {
+        "name": "동영상 13"
+      },
+      "videos_14": {
+        "name": "동영상 14"
+      },
+      "videos_15": {
+        "name": "동영상 15"
+      },
+      "videos_16": {
+        "name": "동영상 16"
+      },
+      "videos_17": {
+        "name": "동영상 17"
+      },
+      "videos_18": {
+        "name": "동영상 18"
+      },
+      "videos_19": {
+        "name": "동영상 19"
+      },
+      "videos_20": {
+        "name": "동영상 20"
       }
     },
     "outputs": {

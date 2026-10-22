@@ -33,7 +33,7 @@ class PackageTests(unittest.TestCase):
 
     def test_examples_have_valid_bidirectional_links_and_require_explicit_approval(self):
         examples = list((ROOT / "example_workflows").glob("*.json"))
-        self.assertEqual(len(examples), 7)
+        self.assertEqual(len(examples), 9)
         for path in examples:
             graph = json.loads(path.read_text())
             nodes = {node["id"]: node for node in graph["nodes"]}
