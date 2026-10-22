@@ -1,6 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { STRINGS } from "./strings.js";
 import { mountResponse } from "./response.js";
+import { installDynamicMediaInputs } from "./inputs.js";
 
 const copy = () => STRINGS[app.ui.settings.getSettingValue("Comfy.Locale")] || STRINGS.en;
 
@@ -46,6 +47,7 @@ app.registerExtension({
   name: "minds.creative-tests",
   async beforeRegisterNodeDef(nodeType, nodeData) {
     const single = nodeData.name === "MindsPreference";
+    if (single) installDynamicMediaInputs(nodeType, nodeData);
     if (single || nodeData.name === "MindsPrepareCreativeTest") {
       const configured = nodeType.prototype.onConfigure;
       nodeType.prototype.onConfigure = function (...args) {

@@ -170,6 +170,37 @@ def main():
     save = graph.selector(node, "video")
     save["pos"] = [1180, 100]
     graph.save("07-native-video-selection")
+    for native, slug in (("image", "08-four-image-selection"), ("video", "09-four-video-selection")):
+        graph = Graph(f"Compare four {native}s in one Study")
+        kind, datatype, extension = (
+            ("LoadImage", "IMAGE", "png") if native == "image" else ("LoadVideo", "VIDEO", "mp4")
+        )
+        sources = [
+            graph.node(
+                kind,
+                [],
+                [("IMAGE", "IMAGE"), ("MASK", "MASK")] if native == "image" else [("video", "VIDEO")],
+                [f"minds-sample-{letter}.{extension}", "image"]
+                if native == "image"
+                else [f"minds-sample-{letter}.{extension}"],
+            )
+            for letter in ("a", "b", "a", "b")
+        ]
+        node = graph.research(
+            [],
+            f"Which {native} do you prefer?",
+            "Replace the four illustrative inputs with four different creatives before testing.",
+        )
+        node["widgets_values"][3] = ""  # Automatic labels follow the actual connected candidate count.
+        node["inputs"].extend({"name": f"{native}s_{n}", "type": datatype, "link": None} for n in (3, 4))
+        node["pos"], node["size"] = [480, 60], [620, 1100]
+        for index, source in enumerate(sources):
+            source["pos"] = [40, 50 + index * 280]
+            slot = (index if native == "image" else index + 2) if index < 2 else index + 2
+            graph.link(source, 0, node, slot)
+        save = graph.selector(node, native)
+        save["pos"] = [1180, 100]
+        graph.save(slug)
 
 
 if __name__ == "__main__":

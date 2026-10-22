@@ -1,5 +1,14 @@
 # ComfyUI 0.2.0 verification
 
+## 0.2.3 dynamic-input verification (2026-10-22)
+
+- Frontend checks cover progressive typed sockets, four separate videos, middle-input disconnection, sparse saved inputs, duplicate connection callbacks and the twenty-socket boundary.
+- A headless Chromium check exercises real graph connections, save/reload and disconnection against the published `@comfyorg/litegraph` 0.17.2 compatibility baseline. Current ComfyUI vendors its graph library; this check is not a full current-server E2E run.
+- The four-image and four-video templates have valid bidirectional graph links. Their sample assets repeat the two existing illustrative files; replace all four Load inputs with distinct creatives before research.
+- No new paid research was executed for this update. The live two-candidate results below remain historical smoke-test evidence.
+
+## Historical live verification
+
 Verified on 2026-10-16 with ComfyUI 0.41.0, frontend 1.55.17, Python 3.13 and CPU PyTorch 2.14.1. These are integration smoke tests with illustrative media and a small five-Mind Audience, rather than model-accuracy benchmarks.
 
 - All seven workflow templates load in the real browser with exactly one Minds research node and valid native links.

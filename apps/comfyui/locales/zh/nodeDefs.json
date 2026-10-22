@@ -208,7 +208,8 @@
         "name": "等待上限（秒）"
       },
       "labels_json": {
-        "name": "标签（JSON）"
+        "name": "标签（JSON）",
+        "tooltip": "留空以自动生成编号标签，或以 JSON 数组为每个原生素材输入一个标签。"
       },
       "assets_json": {
         "name": "素材（JSON）"
@@ -230,6 +231,114 @@
       },
       "videos_b": {
         "name": "视频 B"
+      },
+      "images_3": {
+        "name": "图像 3"
+      },
+      "images_4": {
+        "name": "图像 4"
+      },
+      "images_5": {
+        "name": "图像 5"
+      },
+      "images_6": {
+        "name": "图像 6"
+      },
+      "images_7": {
+        "name": "图像 7"
+      },
+      "images_8": {
+        "name": "图像 8"
+      },
+      "images_9": {
+        "name": "图像 9"
+      },
+      "images_10": {
+        "name": "图像 10"
+      },
+      "images_11": {
+        "name": "图像 11"
+      },
+      "images_12": {
+        "name": "图像 12"
+      },
+      "images_13": {
+        "name": "图像 13"
+      },
+      "images_14": {
+        "name": "图像 14"
+      },
+      "images_15": {
+        "name": "图像 15"
+      },
+      "images_16": {
+        "name": "图像 16"
+      },
+      "images_17": {
+        "name": "图像 17"
+      },
+      "images_18": {
+        "name": "图像 18"
+      },
+      "images_19": {
+        "name": "图像 19"
+      },
+      "images_20": {
+        "name": "图像 20"
+      },
+      "videos_3": {
+        "name": "视频 3"
+      },
+      "videos_4": {
+        "name": "视频 4"
+      },
+      "videos_5": {
+        "name": "视频 5"
+      },
+      "videos_6": {
+        "name": "视频 6"
+      },
+      "videos_7": {
+        "name": "视频 7"
+      },
+      "videos_8": {
+        "name": "视频 8"
+      },
+      "videos_9": {
+        "name": "视频 9"
+      },
+      "videos_10": {
+        "name": "视频 10"
+      },
+      "videos_11": {
+        "name": "视频 11"
+      },
+      "videos_12": {
+        "name": "视频 12"
+      },
+      "videos_13": {
+        "name": "视频 13"
+      },
+      "videos_14": {
+        "name": "视频 14"
+      },
+      "videos_15": {
+        "name": "视频 15"
+      },
+      "videos_16": {
+        "name": "视频 16"
+      },
+      "videos_17": {
+        "name": "视频 17"
+      },
+      "videos_18": {
+        "name": "视频 18"
+      },
+      "videos_19": {
+        "name": "视频 19"
+      },
+      "videos_20": {
+        "name": "视频 20"
       }
     },
     "outputs": {

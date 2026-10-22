@@ -2,19 +2,29 @@
 
 import json
 
-from .minds.client import MindsError
+from .minds.client import MAX_CANDIDATES, MindsError
 from .minds.contract import LOCALES, asset_manifest, audience_ids, creative_labels, validate_creatives
 from .minds.media import images_to_creatives, video_to_creative
+from .minds.media_inputs import media_input_names, media_input_types
 from .minds.response import question_stimuli
 from .minds.results import preference_results, selected_creatives
 from .nodes_research import workflow
 
 
 def collect_candidates(inputs):
-    image_batches = [*inputs.get("images", []), *inputs.get("images_b", [])]
-    videos = [*inputs.get("videos", []), *inputs.get("videos_b", [])]
+    image_batches = [batch for name in media_input_names("images") for batch in inputs.get(name, [])]
+    videos = [video for name in media_input_names("videos") for video in inputs.get(name, [])]
     count = sum(batch.shape[0] for batch in image_batches) + len(videos)
-    labels = creative_labels(inputs["labels_json"][0], count) if count else []
+    manifest = inputs["assets_json"][0].strip()
+    hosted = asset_manifest(manifest) if manifest and manifest != "[]" else []
+    if not 2 <= count + len(hosted) <= MAX_CANDIDATES:
+        raise MindsError(f"Supply 2–{MAX_CANDIDATES} creative candidates.")
+    label_text = inputs["labels_json"][0].strip()
+    labels = (
+        creative_labels(label_text, count)
+        if label_text and count
+        else [f"Creative {index + 1}" for index in range(count)]
+    )
     candidates, offset = [], 0
     for batch in image_batches:
         end = offset + batch.shape[0]
@@ -22,9 +32,7 @@ def collect_candidates(inputs):
         offset = end
     for video, label in zip(videos, labels[offset:], strict=True):
         candidates.extend(video_to_creative(video, label))
-    manifest = inputs["assets_json"][0].strip()
-    if manifest and manifest != "[]":
-        candidates.extend(asset_manifest(manifest))
+    candidates.extend(hosted)
     return validate_creatives(candidates, minimum=2)
 
 
@@ -69,7 +77,7 @@ class Preference:
                 "audience_ids": ("STRING", {"default": "", "multiline": True}),
                 "question": ("STRING", {"default": "Which creative do you prefer?", "multiline": True}),
                 "context": ("STRING", {"default": "", "multiline": True}),
-                "labels_json": ("STRING", {"default": '["Creative A", "Creative B"]', "multiline": True}),
+                "labels_json": ("STRING", {"default": "", "multiline": True}),
                 "assets_json": ("STRING", {"default": "[]", "multiline": True}),
                 "study_locale": (list(LOCALES), {"default": "en"}),
                 "selection_audience_id": ("STRING", {"default": ""}),
@@ -78,15 +86,7 @@ class Preference:
                 "reviewed_draft": ("STRING", {"default": ""}),
                 "timeout_seconds": ("INT", {"default": 900, "min": 5, "max": 3600}),
             },
-            "optional": {
-                name: (kind,)
-                for name, kind in (
-                    ("images", "IMAGE"),
-                    ("images_b", "IMAGE"),
-                    ("videos", "VIDEO"),
-                    ("videos_b", "VIDEO"),
-                )
-            },
+            "optional": media_input_types(),
         }
 
     @classmethod
