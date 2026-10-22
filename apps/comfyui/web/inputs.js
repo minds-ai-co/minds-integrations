@@ -11,6 +11,7 @@ export function installDynamicMediaInputs(nodeType, nodeData) {
     if (!node.graph || syncing.has(node)) return;
     syncing.add(node);
     try {
+      const previousHeight = node.computeSize()[1];
       for (const input of node.inputs || []) templates.set(input.name, { ...input });
       for (const group of groups) {
         let lastConnected = -1;
@@ -34,7 +35,8 @@ export function installDynamicMediaInputs(nodeType, nodeData) {
         }
       }
       const [width, height] = node.computeSize();
-      node.setSize([node.size?.[0] || width, Math.max(node.size?.[1] || 0, height)]);
+      node.setSize([node.size?.[0] || width,
+        Math.max(height, (node.size?.[1] || previousHeight) + height - previousHeight)]);
       node.setDirtyCanvas(true, true);
     } finally { syncing.delete(node); }
   }
