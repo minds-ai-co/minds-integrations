@@ -106,7 +106,7 @@ jobs:
           plain = {'SLACK_PUBLIC_URL','SLACK_AGENT_MODEL','SLACK_VERTEX_PROJECT','SLACK_VERTEX_LOCATION'}
           names = sorted(name for name in os.environ if name.startswith('SLACK_') and os.environ[name] and name not in {'SLACK_SPEC_FILE','SLACK_REGISTRY'})
           envs = [{'key':name,'value':os.environ[name],'scope':'RUN_TIME','type':'GENERAL' if name in plain else 'SECRET'} for name in names]
-          spec = {'name':'minds-slack','region':'fra','domains':[{'domain':urllib.parse.urlparse(os.environ['SLACK_PUBLIC_URL']).hostname,'type':'PRIMARY'}],
+          spec = {'name':'minds-slack','region':'fra','egress':{'type':'DEDICATED_IP'},'domains':[{'domain':urllib.parse.urlparse(os.environ['SLACK_PUBLIC_URL']).hostname,'type':'PRIMARY'}],
               'services':[{'name':'slack','instance_count':1,'instance_size_slug':'apps-s-1vcpu-1gb','http_port':3000,
                   'image':{'registry_type':'DOCR','registry':os.environ['SLACK_REGISTRY'],'repository':'minds-slack','tag':os.environ['GITHUB_SHA'],'deploy_on_push':{'enabled':False}},
                   'health_check':{'http_path':'/health','initial_delay_seconds':30},'routes':[{'path':'/'}],'envs':envs}]}
