@@ -1,4 +1,5 @@
-const { request, toZapierRecord, unwrapData } = require("../client");
+const { toZapierRecord } = require("../client");
+const { preparePlan } = require("../prepare-plan");
 const { studyIdField } = require("../study-fields");
 
 const STUDY_LOCALES = {
@@ -14,6 +15,7 @@ const STUDY_LOCALES = {
 };
 
 const perform = async (z, bundle) => {
+  if (!/^[\w-]{1,128}$/.test(bundle.inputData.idempotencyKey || "")) throw new Error("Map a stable source event identifier of up to 128 letters, digits, underscores or hyphens. Reuse it on retries.");
   const body = {
     request: bundle.inputData.request,
     studyLocale: bundle.inputData.studyLocale || "en",
@@ -32,19 +34,11 @@ const perform = async (z, bundle) => {
       content: bundle.inputData.sourceContent,
     };
   }
-  const headers = {};
-  if (bundle.inputData.idempotencyKey) {
-    if (!/^[\w-]{1,128}$/.test(bundle.inputData.idempotencyKey)) throw new Error("Use an idempotency key of up to 128 letters, digits, underscores or hyphens.");
-    headers["Idempotency-Key"] = bundle.inputData.idempotencyKey;
-  }
-  const payload = await request(z, {
-    method: "POST",
+  const data = await preparePlan(z, {
     path: `/studies/${encodeURIComponent(bundle.inputData.studyId)}/research-plans/preview`,
     body,
-    headers,
+    requestId: bundle.inputData.idempotencyKey,
   });
-  const data = unwrapData(payload);
-  if (!data.draftPlanId) throw new Error("Minds did not return a saved draft. Retry the same request identifier.");
   const reviewUrl = `https://getminds.ai/?${new URLSearchParams({ studyId: bundle.inputData.studyId, draftPlanId: data.draftPlanId })}`;
   return toZapierRecord({ ...data, studyId: bundle.inputData.studyId, reviewUrl }, `${bundle.inputData.studyId}-plan`);
 };
@@ -105,8 +99,8 @@ module.exports = {
         key: "idempotencyKey",
         label: "Preview Request Identifier",
         type: "string",
-        required: false,
-        helpText: "Optional stable ID from the source event. Reuse it for retries of the same Study, request and material; use a new ID when those change.",
+        required: true,
+        helpText: "Required stable ID from the source event. Reuse it for retries of the same Study, request and material; use a new ID when those change or intentionally preparing a new plan. Pending preparation retries safely with this same ID.",
       },
       {
         key: "sourceLabel",

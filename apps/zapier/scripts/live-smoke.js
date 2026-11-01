@@ -81,6 +81,7 @@ const perform = (operation, inputData = {}, meta = { page: 0 }) =>
         perform(App.creates.preview_research_plan, {
           studyId: created.id,
           request: "Which of two headlines makes the product benefit clearer?",
+          idempotencyKey: `zapier-smoke-${created.id}`,
           studyLocale: "en",
           sourceLabel: "Headlines",
           sourceContent: "A: Research in minutes, not weeks. B: Ask your customers before you build.",

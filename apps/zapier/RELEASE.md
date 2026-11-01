@@ -1,8 +1,12 @@
 # Releasing Minds for Zapier
 
+2026-11-01: the 1.3.0 candidate fixes the live 1.2.0 pending-preparation failure. Preview Request Identifier is now required: map a stable source-event ID, retain it on retries, and use a new ID for a new intended plan. The action observes the same accepted operation within a bounded runtime, then asks Zapier to retry if preparation is still pending. Never migrate existing Zaps automatically across this required-input change.
+
+Fresh 1.2.0 cloud checks passed authentication, New Study, Find Study, saved-preview replay, unconfirmed-results exclusion and empty-summary behavior. The first preview call exposed HTTP 202 handling and is the regression addressed by 1.3.0. The Zap editor login currently requires a human challenge. Version 1.0.0 has one user; 1.1.0 and 1.2.0 each have zero. These observations do not establish a completed research run or three-user publication eligibility.
+
 2026-10-01 update: existing integration 246865 has private version 1.2.0 uploaded, including material previews, stable retry identifiers, an exact-draft review URL and Get Completed Research Results. Native editor acceptance of the complete workflow awaits the paired webapp release. Version 1.0.0 remains private with one Zap user. Its public promotion was attempted; the returned checks passed except S001 (at least three users with live Zaps). The deploy key already exists in the vault; do not create a duplicate. See [creative launch record](../creative-marketplaces/LAUNCH.md).
 
-Current 1.2.0 validation reports 27 passing checks, no errors or publishing warnings, and one D004 general warning: its draft ID is mapped from the preview action because no draft-list API exists. Earlier live smoke evidence predates the complete-run return and does not establish its native acceptance. The package uses `zapier-platform-core` / `zapier-platform-cli` 19.1.0, the current release. Zapier runs 19.x on Node.js 22.
+Current 1.2.0 validation reports 27 passing checks, no errors or publishing warnings, and one D004 general warning: its draft ID is mapped from the preview action because no draft-list API exists. Earlier live smoke evidence predates the complete-run return and does not establish its native acceptance. The package uses `zapier-platform-core` / `zapier-platform-cli` 19.1.0. Zapier runs 19.x on Node.js 22.
 
 Registered on 2026-09-27 as integration 246865 (`.zapierapprc`) under the Minds-owned Zapier account developers@getminds.ai (password and deploy key in pass under `agents/zapier/getminds/`). Its email domain matches the homepage `getminds.ai`, which Zapier requires of an Admin before publishing (check M005). Zapier requires the first pushed version to be 0.0.x or 1.0.0, so the first release is 1.0.0.
 
