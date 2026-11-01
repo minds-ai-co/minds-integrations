@@ -14,14 +14,16 @@ workflow without creating a second research contract.
 | --- | --- | --- |
 | Shopify | Product purchase-barrier Studies | Restricted development pilot deployed; installed-browser acceptance pending |
 | VS Code | Plan research from selected text, inspect Groups | Buildable alpha |
-| Google Workspace | Ask a Group from Sheets rows and write results back | Review package in progress |
+| Google Workspace | Prepare one exact Study from Sheets rows; import only its confirmed, completed answers | Hosted repair and native consent/key/draft/unconfirmed-result checks passed 1 Nov; completed import covered by automated tests, not a new paid native run |
 | Looker Studio | Read Panel analytics into a report data source | Review package in progress |
 | Microsoft Power Platform | Curated REST connector for Panel workflows (OAuth 2.0 with PKCE) | Validated package, OAuth client and certification gates pending |
-| Zapier | Trigger on Studies, create and find Studies, preview text/creative plans, and retrieve summaries | App 246865; private releases; public promotion needs 3 users with live Zaps |
+| Zapier | Trigger on Studies, create/find Studies, preview plans and retrieve exact completed results | Private 1.3.0 uploaded with safe pending-preparation retries; native cloud checks passed; full editor acceptance and 3 genuine users still required |
 | Make | Watch, create, get and search Studies, preview research plans for review, read summaries | App minds-0q4qep v1.0.0 published on eu1.make.com (developers@getminds.ai); public app review requested 2026-10-01 |
-| Canva | Export design, review and confirm research, return and insert exact-run findings | Complete native production workflow verified; public marketplace review pending |
-| Figma | Selected-node creative review and findings import | Minds version 1 submitted to Figma Community review on 3 October 2026; approval and complete native workflow acceptance pending |
-| Adobe Express | Approved current-page creative review and completed findings | Private 0.1.10 complete native production workflow verified; public 0.1.11 draft validated, review pending |
+| Canva | Export design, review and confirm research, return and insert exact-run findings | Version 2 requires five review fixes; version 3 is a native draft awaiting exact feedback; historical native acceptance is separate |
+| Figma | Selected-node creative review and findings import | Community approved 7 Oct and OAuth approved 8 Oct; complete native workflow acceptance remains pending |
+| Adobe Express | Approved current-page creative review and completed findings | Public 0.1.12 passed Adobe package verification and was resubmitted 1 Nov; public approval pending; historical native workflow acceptance belongs to private 0.1.10 |
+| Slack | Minds research agent in Slack | Production restored and permanent database-pool recovery deployed 1 Nov; health and regression checks pass; live client thread round trip not repeated |
+| ComfyUI | Minds synthetic research in ComfyUI | 0.2.0 active; 0.2.1–0.2.3 flagged; six informational findings investigated and manual review followed up |
 | Adobe GenStudio | Selected email experience copy review | Development validation extension; Adobe entitlement/deployment and review pending |
 | Atlassian Forge | Review Jira or Confluence content | Architecture gate |
 | HubSpot | Research CRM segments and attach summaries | Pilot gate |
