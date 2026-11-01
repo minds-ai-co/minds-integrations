@@ -16,9 +16,9 @@ The integration uses the canonical Minds Study API (`/api/v1/studies`). The lega
 
 Preview Research Plan returns both the saved draft ID and its review URL. Map the same Study and draft IDs into Get Completed Research Results after a person opens that URL and explicitly confirms the reviewed revision in Minds. The aggregate-summary search is a separate operation and does not establish completion of the imported source event.
 
-The 1.3.0 candidate requires a stable Preview Request Identifier mapped from the source event. Pending plan preparation reuses that identifier and accepted operation, with bounded observation and safe Zapier retries. A new intended plan needs a new identifier.
+Private version 1.3.0 requires a stable Preview Request Identifier mapped from the source event. Pending plan preparation reuses that identifier and accepted operation, with bounded observation and safe Zapier retries. A new intended plan needs a new identifier.
 
-Version 1.2.0 is uploaded privately to the existing app 246865. Marketplace publication still requires three genuine users with live Zaps and provider review; see [the current candidate receipts](../creative-marketplaces/LAUNCH.md).
+Version 1.3.0 is uploaded privately to the existing app 246865. Native cloud checks passed saved-plan replay, pending deferral and exclusion of unconfirmed results. Full Zap editor acceptance still needs the provider's human sign-in check. Marketplace publication requires three genuine users with live Zaps and provider review; see [the current receipts](../creative-marketplaces/LAUNCH.md).
 
 The integration deliberately does not expose Study deletion or study execution. A user reviews and confirms consequential research work in Minds.
 

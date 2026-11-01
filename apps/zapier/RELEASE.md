@@ -1,12 +1,14 @@
 # Releasing Minds for Zapier
 
-2026-11-01: the 1.3.0 candidate fixes the live 1.2.0 pending-preparation failure. Preview Request Identifier is now required: map a stable source-event ID, retain it on retries, and use a new ID for a new intended plan. The action observes the same accepted operation within a bounded runtime, then asks Zapier to retry if preparation is still pending. Never migrate existing Zaps automatically across this required-input change.
+2026-11-01: private 1.3.0 is uploaded and fixes the live 1.2.0 pending-preparation failure. Preview Request Identifier is now required: map a stable source-event ID, retain it on retries, and use a new ID for a new intended plan. The action observes the same accepted operation within a bounded runtime, then asks Zapier to retry if preparation is still pending. Native cloud verification passed replay, pending deferral and retrieval of its saved draft, plus exclusion of unconfirmed results. Never migrate existing Zaps automatically across this required-input change.
+
+Current validation: 26 checks passed, zero errors or publishing warnings, and two general warnings (D004: map the draft ID from Preview; D027: SDK 19.3.0 is recommended while this package uses 19.1.0). See the [1 November acceptance record](../creative-marketplaces/qa/recovery-2026-11-01/acceptance.json).
 
 Fresh 1.2.0 cloud checks passed authentication, New Study, Find Study, saved-preview replay, unconfirmed-results exclusion and empty-summary behavior. The first preview call exposed HTTP 202 handling and is the regression addressed by 1.3.0. The Zap editor login currently requires a human challenge. Version 1.0.0 has one user; 1.1.0 and 1.2.0 each have zero. These observations do not establish a completed research run or three-user publication eligibility.
 
-2026-10-01 update: existing integration 246865 has private version 1.2.0 uploaded, including material previews, stable retry identifiers, an exact-draft review URL and Get Completed Research Results. Native editor acceptance of the complete workflow awaits the paired webapp release. Version 1.0.0 remains private with one Zap user. Its public promotion was attempted; the returned checks passed except S001 (at least three users with live Zaps). The deploy key already exists in the vault; do not create a duplicate. See [creative launch record](../creative-marketplaces/LAUNCH.md).
+Historical 2026-10-01 update: existing integration 246865 had private version 1.2.0 uploaded, including material previews, stable retry identifiers, an exact-draft review URL and Get Completed Research Results. Its earlier editor acceptance awaited the paired webapp release; current blockers are recorded above. Version 1.0.0 remains private with one Zap user. Its public promotion was attempted; the returned checks passed except S001 (at least three users with live Zaps). The deploy key already exists in the vault; do not create a duplicate. See [creative launch record](../creative-marketplaces/LAUNCH.md).
 
-Current 1.2.0 validation reports 27 passing checks, no errors or publishing warnings, and one D004 general warning: its draft ID is mapped from the preview action because no draft-list API exists. Earlier live smoke evidence predates the complete-run return and does not establish its native acceptance. The package uses `zapier-platform-core` / `zapier-platform-cli` 19.1.0. Zapier runs 19.x on Node.js 22.
+The package uses `zapier-platform-core` / `zapier-platform-cli` 19.1.0. Zapier runs 19.x on Node.js 22. Older smoke evidence does not establish full native editor acceptance.
 
 Registered on 2026-09-27 as integration 246865 (`.zapierapprc`) under the Minds-owned Zapier account developers@getminds.ai (password and deploy key in pass under `agents/zapier/getminds/`). Its email domain matches the homepage `getminds.ai`, which Zapier requires of an Admin before publishing (check M005). Zapier requires the first pushed version to be 0.0.x or 1.0.0, so the first release is 1.0.0.
 
@@ -56,12 +58,14 @@ Private testing:
 2. Invite testers by email, or share an invite link:
 
    ```bash
-   npx zapier-platform users:add colleague@getminds.ai 1.0.0 -f
+   npx zapier-platform users:add colleague@getminds.ai 1.3.0 -f
    npx zapier-platform users:links
    ```
 
    Email invites are capped at 200 users. The invite link cannot be revoked.
-3. Later versions: bump `version` in `package.json`, then `npx zapier-platform push`, and move users with `npx zapier-platform migrate 1.0.0 1.1.0 100`.
+3. Later versions: bump `version` in `package.json`, then `npx zapier-platform push`. Have each owner review compatibility, select the version, map any new required inputs and test their Zap before activation. Do not bulk-migrate existing Zaps across the new 1.3.0 identifier requirement.
+
+For pilot acceptance, map the source event ID into Preview Request Identifier and confirm that its saved plan opens in Minds with the intended Study and material. Research is reviewed and explicitly run in Minds. Test Get Completed Research Results later with the same Study and draft IDs after completion; an immediate lookup of an unconfirmed draft correctly finds nothing. Keep pending draft IDs in the workflow's own records when using a separate scheduled result lookup. No completion or user count may be fabricated to pass publication checks.
 
 ## 3. Going public (Zapier App Directory)
 
