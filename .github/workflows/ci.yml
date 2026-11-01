@@ -32,7 +32,8 @@ jobs:
       - name: Build Slack deployment image
         run: docker build -f apps/slack/Dockerfile -t minds-slack:ci .
   validate:
-    runs-on: ubuntu-latest
+    # Playwright 1.60 does not support the Ubuntu 26.04 image now used by latest.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
