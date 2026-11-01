@@ -1,6 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { previewBody, studyPath, CreativeReviewClient, reviewUrl, formatRunFindings } from '../src/index.js';
+
+test('cancelling a pending preparation stops polling without changing its retry identity', async () => {
+  const controller = new AbortController(); const calls = [];
+  const client = new CreativeReviewClient('https://getminds.ai/integrations/creative', async (_url, options) => {
+    calls.push(options);
+    setTimeout(() => controller.abort(), 10);
+    return new Response(JSON.stringify({ pending: true }), { headers: { 'Content-Type': 'application/json' } });
+  });
+  await assert.rejects(client.preview('study-a', { request: 'Review clarity', source: { kind: 'prompt', label: 'Copy', content: 'Test offer' } }, 'same-retry-key', { signal: controller.signal }), { name: 'AbortError' });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].signal.aborted, true);
+  assert.equal(calls[0].headers['Idempotency-Key'], 'same-retry-key');
+});
 test('exports only the selected source and never a run instruction', () => {
   const body = previewBody({ request: 'Evaluate clarity', source: { kind: 'document', label: 'Selected design', url: 'https://assets.example/design.pdf' }, run: true });
   assert.deepEqual(Object.keys(body), ['request', 'studyLocale', 'source']);
