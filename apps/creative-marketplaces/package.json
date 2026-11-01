@@ -7,7 +7,7 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "npm run build && node --test test/*.test.mjs",
-    "test:browser": "npm run build && node browser/figma-study.mjs"
+    "test:browser": "npm run build && node browser/figma-study.mjs && node browser/express-review.mjs"
   },
   "dependencies": {
     "@adobe/genstudio-extensibility-sdk": "4.8.0",

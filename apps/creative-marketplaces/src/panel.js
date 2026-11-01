@@ -1,7 +1,7 @@
 import { panelMessages, defaultText } from './messages.js';
 import { randomRequestId, CreativeReviewClient, reviewUrl, formatRunFindings } from '@minds/creative-review';
 
-export const styles = `body{padding:16px;font-size:14px}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}input,select,textarea{font:inherit;box-sizing:border-box;border:var(--stroke-hairline) solid var(--line-structural);border-radius:var(--radius);padding:8px;background:hsl(var(--background));color:hsl(var(--foreground))}.minds-control{display:inline-block;margin:8px 4px 0 0}button:disabled{cursor:wait}textarea,input,select{width:100%}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:hsl(var(--secondary));padding:10px}img{max-width:100%;max-height:180px}#status{min-height:24px}[hidden]{display:none!important}`;
+export const styles = `body{padding:16px;font-size:14px;user-select:none}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}input,select,textarea{font:inherit;box-sizing:border-box;border:var(--stroke-hairline) solid var(--line-structural);border-radius:var(--radius);padding:8px;background:hsl(var(--background));color:hsl(var(--foreground))}.minds-control{display:inline-block;margin:8px 4px 0 0}button:disabled{cursor:not-allowed}textarea,input,select{width:100%}textarea,input,pre{user-select:text}textarea::placeholder,input::placeholder{user-select:none}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:hsl(var(--secondary));padding:10px}img{max-width:100%;max-height:180px}#status{min-height:24px}[hidden]{display:none!important}`;
 
 // Each host supplies only explicit export/open/import operations.
 /** @param {any} options */
@@ -12,17 +12,18 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   const html = source => text(source).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
   root.innerHTML = `<h1>${html("Minds creative review")}</h1><p>${html("Review your artwork and copy with the AI personas in your Audience.")}</p>
     <button id="connect">${html("Connect Minds")}</button><button id="refresh">${html("Refresh Studies")}</button><button id="disconnect">${html("Disconnect")}</button>
+    <p id="connection" role="status">${html("Not connected.")}</p>
     <label for="study">${html("Study")}</label><select id="study"><option value="">${html("Connect and refresh Studies")}</option></select>
     <label for="request">${html("What do you want to learn?")}</label><textarea id="request" placeholder="${html("Which parts are clear, credible and persuasive?")}"></textarea>
     <label for="locale">${html("Study language")}</label><select id="locale"><option value="en">${html("English")}</option><option value="de">${html("German")}</option><option value="es">${html("Spanish")}</option><option value="fr">${html("French")}</option><option value="zh">${html("Chinese")}</option><option value="tr">${html("Turkish")}</option><option value="ar">${html("Arabic")}</option><option value="ja">${html("Japanese")}</option><option value="ko">${html("Korean")}</option></select>
     <button id="export">${html("Select material to review")}</button><p id="material">${html("No material selected.")}</p><img id="image" alt="${html("Selected artwork")}" hidden>
     <label><input id="consent" type="checkbox" style="width:auto"> ${html("Send this selected material to Minds to draft a research plan.")}</label>
-    <button id="preview">${html("Draft research plan")}</button><button id="open">${html("Open Study in Minds")}</button>
+    <button id="preview">${html("Draft research plan")}</button><button id="cancel" hidden>${html("Cancel preparation")}</button><button id="open">${html("Open Study in Minds")}</button>
     <p>${html("Review and run the saved plan in Minds, then return here to load its findings.")}</p>
     <button id="summary">${html("Load findings")}</button><button id="import" hidden>${html("Add findings to design")}</button><button id="comments" hidden>${html("Review Figma comments")}</button><pre id="result" hidden></pre><p id="status" role="status" aria-live="polite"></p>`;
   mountControls(root);
   const el = id => root.querySelector(`#${id}`);
-  let material, imageUrl, summary, previewKey, fingerprint, busy = false;
+  let material, imageUrl, summary, previewKey, fingerprint, activeOperation;
   let savedDraft, completedRun;
   const resetDraft = () => { savedDraft = summary = undefined; el('import').hidden = true; el('comments').hidden = true; completedRun = undefined; el('result').hidden = true; };
   const clearSelection = () => {
@@ -35,12 +36,30 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   let connected = false;
   const requireConnection = () => { if (!connected) throw new Error(text("Connect Minds and refresh your Studies first.")); };
   const studyId = () => { if (!el('study').value) throw new Error(text("Choose a Study.")); return el('study').value; };
-  const operation = fn => async () => {
-    if (busy) return; busy = true;
-    root.querySelectorAll('button,input,select,textarea').forEach(control => { control.disabled = true; });
+  const updateControls = () => {
+    root.querySelectorAll('button,input,select,textarea').forEach(control => { control.disabled = !!activeOperation; });
+    el('disconnect').disabled = !!activeOperation || !client.session;
+    el('refresh').disabled = !!activeOperation || !client.session;
+    el('cancel').hidden = !activeOperation?.cancellable;
+    el('cancel').disabled = !activeOperation?.cancellable;
+    el('connection').textContent = text(connected ? 'Connected to Minds.' : client.session ? 'Waiting for Minds authorization.' : 'Not connected.');
+  };
+  const cancelledText = () => text('Preparation stopped in this panel. A draft may still finish in Minds. Retry the same request to recover it.');
+  const operation = (fn, { cancellable = false } = {}) => async () => {
+    if (activeOperation) return;
+    const current = { controller: new AbortController(), cancellable };
+    activeOperation = current; updateControls();
     el('status').textContent = text("Working\u2026");
-    try { await fn(); } catch (error) { el('status').textContent = error.message || text("Unable to complete this action."); }
-    finally { busy = false; root.querySelectorAll('button,input,select,textarea').forEach(control => { control.disabled = false; }); }
+    try { await fn(current.controller.signal); }
+    catch (error) {
+      if (activeOperation === current) el('status').textContent = current.controller.signal.aborted ? cancelledText() : error.message || text("Unable to complete this action.");
+    }
+    finally { if (activeOperation === current) { activeOperation = undefined; updateControls(); } }
+  };
+  el('cancel').onclick = () => {
+    if (!activeOperation?.cancellable) return;
+    activeOperation.controller.abort(); activeOperation = undefined;
+    el('status').textContent = cancelledText(); updateControls();
   };
   async function refresh() {
     connected = (await client.status()).connected;
@@ -74,20 +93,22 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     el('material').textContent = text("{material} — selected from {host}", { material: material.label, host: hostName });
     el('status').textContent = text("Check the selected material, then choose whether to send it to Minds.");
   });
-  el('preview').onclick = operation(async () => {
+  el('preview').onclick = operation(async signal => {
     requireConnection(); const id = studyId();
     if (!material) throw new Error(text("Select material to review."));
     if (!el('consent').checked) throw new Error(text("Confirm that you want to send the selected material to Minds."));
     if (!el('request').value.trim()) throw new Error(text("Describe what you want to learn."));
     if (material.blob && !material.url) {
-      const uploaded = await client.upload(material.blob, `${material.label}.png`);
+      const uploaded = await client.upload(material.blob, `${material.label}.png`, { signal });
+      signal.throwIfAborted();
       material.url = uploaded.url;
     }
     const source = { kind: material.kind, label: material.label, url: material.url, content: material.content, mimeType: material.blob?.type || material.mimeType };
     const input = { request: el('request').value, studyLocale: el('locale').value, source };
     const nextFingerprint = JSON.stringify({ id, input });
     if (nextFingerprint !== fingerprint) { previewKey = randomRequestId(); fingerprint = nextFingerprint; }
-    const result = await client.preview(id, input, previewKey);
+    const result = await client.preview(id, input, previewKey, { signal });
+    signal.throwIfAborted();
     const draft = result.data || result;
     if (!draft.draftPlanId) throw new Error(text('Minds did not return a saved draft. Try again.'));
     savedDraft = { studyId: id, draftPlanId: draft.draftPlanId };
@@ -96,7 +117,7 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
       ...(draft.plan?.modules || []).flatMap(module => module.questions.map((question, index) => `${index + 1}. ${question.text}`)),
       ...(draft.plan?.confirmation?.missingInputs || [])].filter(Boolean).join('\n\n');
     el('status').textContent = text("Draft saved. Open it in Minds to review usage, confirm and run research.");
-  });
+  }, { cancellable: true });
   el('open').onclick = operation(async () => {
     if (!savedDraft) throw new Error(text('Draft a research plan first.'));
     await openUrl(reviewUrl(savedDraft.studyId, savedDraft.draftPlanId)); el('status').textContent = text("Minds opened.");
@@ -128,4 +149,5 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     if (!summary) throw new Error(text("Load findings first."));
     await importFindings(`${text("Minds research findings")}\n${summary}`); el('status').textContent = text("Findings added to your design.");
   });
+  updateControls();
 }

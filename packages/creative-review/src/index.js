@@ -74,12 +74,14 @@ export class CreativeReviewClient {
     this.request = request;
     this.session = null;
   }
-  async call(path, { body, method = 'GET', headers = {} } = {}) {
+  async call(path, { body, method = 'GET', headers = {}, signal } = {}) {
+    signal?.throwIfAborted();
     const response = await this.request(`${this.baseUrl}${path}`, {
       method, redirect: 'error', credentials: 'omit', cache: 'no-store',
       headers: { ...(this.session ? { Authorization: `Bearer ${this.session}` } : {}), ...headers },
-      body, signal: AbortSignal.timeout(90000),
+      body, signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(90000)]) : AbortSignal.timeout(90000),
     });
+    signal?.throwIfAborted();
     if (!(response.headers.get('content-type') || '').includes('json')) throw new Error('Minds is temporarily unavailable. Retry the same draft request.');
     const value = await response.json();
     if (!response.ok) {
@@ -110,19 +112,26 @@ export class CreativeReviewClient {
     return this.call('/figma-feedback', { method: 'POST', body: JSON.stringify(input), headers: { 'Content-Type': 'application/json' } });
   }
 
-  async upload(blob, name = 'creative.png') {
-    return this.call('/upload', { method: 'POST', body: blob, headers: { 'Content-Type': blob.type, 'X-Creative-Name': encodeURIComponent(name) } });
+  async upload(blob, name = 'creative.png', { signal } = {}) {
+    return this.call('/upload', { method: 'POST', body: blob, headers: { 'Content-Type': blob.type, 'X-Creative-Name': encodeURIComponent(name) }, signal });
   }
-  async preview(studyId, input, idempotencyKey) {
+  async preview(studyId, input, idempotencyKey, { signal } = {}) {
+    signal?.throwIfAborted();
     if (!idempotencyKey) throw new Error('Missing preview request identifier.');
     const body = previewBody(input);
     studyPath(studyId);
-    const options = { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey } };
+    const options = { method: 'POST', body: JSON.stringify({ studyId, ...body }), headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey }, signal };
     let result = await this.call('/preview', options);
     const deadline = Date.now() + 90000;
     while (result.pending) {
       if (Date.now() >= deadline) throw new Error('Draft preparation is taking longer. Retry the same request to check its saved result.');
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve, reject) => {
+        const cleanup = () => signal?.removeEventListener('abort', abort);
+        const timer = setTimeout(() => { cleanup(); resolve(); }, 2000);
+        const abort = () => { clearTimeout(timer); cleanup(); reject(signal.reason); };
+        signal?.addEventListener('abort', abort, { once: true });
+        if (signal?.aborted) abort();
+      });
       result = await this.call('/preview', options);
     }
     return result;

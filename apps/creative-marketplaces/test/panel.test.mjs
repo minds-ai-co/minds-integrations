@@ -29,9 +29,11 @@ test('the panel sends only explicitly selected and approved material; retries re
     openComments: async run => comments.push(run), openUrl: async url => opened.push(url), importFindings: async text => imported.push(text),
   });
   const el = id => document.querySelector(`#${id}`);
-  async function click(id) { el(id).click(); for (let n = 0; n < 20 && el(id).disabled; n++) await new Promise(resolve => setImmediate(resolve)); assert.equal(el(id).disabled, false); }
+  async function click(id) { el(id).click(); for (let n = 0; n < 20 && el('connect').disabled; n++) await new Promise(resolve => setImmediate(resolve)); assert.equal(el('connect').disabled, false); }
+  assert.equal(el('disconnect').disabled, true);
   assert.equal(exportCount, 0); assert.equal(calls.length, 0);
   await click('connect'); await click('refresh');
+  assert.equal(el('connection').textContent, 'Connected to Minds.');
   el('study').value = 'study-1'; el('request').value = 'Evaluate the design';
   await click('export'); assert.equal(exportCount, 1);
   await click('preview'); assert.ok(!calls.some(call => call.url.endsWith('/preview')));
@@ -55,6 +57,10 @@ test('the panel sends only explicitly selected and approved material; retries re
   assert.match(el('status').textContent, /do not match/);
   el('request').dispatchEvent(new dom.window.Event('input'));
   await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
+  await click('disconnect');
+  assert.equal(el('disconnect').disabled, true);
+  assert.equal(el('refresh').disabled, true);
+  assert.equal(el('connection').textContent, 'Not connected.');
   assert.ok(!calls.some(call => call.url.includes('/summary?')));
   assert.ok(!calls.some(call => /execute|confirm/.test(call.url)));
   globalThis.fetch = async (url, options) => new Response(JSON.stringify(options.method === 'DELETE' ? { message: 'Reconnect your Minds account.' } : { session: 'fresh', connectUrl: 'https://getminds.ai/connect' }), { status: options.method === 'DELETE' ? 401 : 200, headers: { 'Content-Type': 'application/json' } });
@@ -65,6 +71,48 @@ test('the panel sends only explicitly selected and approved material; retries re
   assert.equal(el('material').textContent, 'No material selected.');
   await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
 
+});
+
+test('cancel stops preparation immediately, ignores late success and retries the same draft identity', async t => {
+  const dom = new JSDOM('<main></main>');
+  const original = { document: globalThis.document, Option: globalThis.Option, fetch: globalThis.fetch };
+  globalThis.document = dom.window.document; globalThis.Option = dom.window.Option;
+  t.after(() => { Object.assign(globalThis, original); dom.window.close(); });
+  const previews = []; let release;
+  const response = value => new Response(JSON.stringify(value), { headers: { 'Content-Type': 'application/json' } });
+  globalThis.fetch = async (url, options) => {
+    if (url.endsWith('/sessions')) return response({ session: 'test-session', connectUrl: 'https://getminds.ai/connect' });
+    if (url.endsWith('/session')) return response({ connected: true });
+    if (url.endsWith('/studies')) return response({ data: [{ id: 'study-a' }] });
+    if (url.endsWith('/preview')) {
+      previews.push(options);
+      if (previews.length === 1) return new Promise(resolve => { release = () => resolve(response({ data: { draftPlanId: 'late-draft' } })); });
+      return response({ data: { draftPlanId: 'recovered-draft' } });
+    }
+    throw Error('Unexpected request');
+  };
+  const opened = [];
+  mountPanel({ root: document.querySelector('main'), gatewayUrl: 'https://getminds.ai/integrations/creative', hostName: 'Test',
+    exportMaterial: async () => ({ kind: 'document', label: 'Selected PDF', url: 'https://assets.example/design.pdf' }),
+    openUrl: async url => opened.push(url),
+  });
+  const el = id => document.querySelector(`#${id}`);
+  for (const id of ['connect', 'refresh', 'export']) { await el(id).onclick(); }
+  el('study').value = 'study-a'; el('request').value = 'Evaluate this design'; el('consent').checked = true;
+  const pending = el('preview').onclick();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(el('cancel').hidden, false); assert.equal(el('cancel').disabled, false);
+  el('cancel').click();
+  assert.equal(previews[0].signal.aborted, true);
+  assert.equal(el('request').disabled, false);
+  assert.match(el('status').textContent, /A draft may still finish/);
+  // Fetch deliberately ignores cancellation; stale success still cannot change the UI.
+  release(); await pending;
+  assert.equal(el('result').hidden, true);
+  await el('open').onclick(); assert.match(el('status').textContent, /Draft a research plan first/);
+  await el('preview').onclick();
+  assert.equal(previews[0].headers['Idempotency-Key'], previews[1].headers['Idempotency-Key']);
+  await el('open').onclick(); assert.match(opened.at(-1), /draftPlanId=recovered-draft/);
 });
 
 test('translated UI stays plain text and dynamic selection uses translated placeholders', async t => {

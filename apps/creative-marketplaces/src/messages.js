@@ -1,5 +1,30 @@
 // Shared descriptors also generate the Canva translation upload.
 export const panelMessages = {
+  "Not connected.": {
+    "id": "minds.creative.3b3d2796168bf388",
+    "defaultMessage": "Not connected.",
+    "description": "Connection state or cancellation control in the creative research panel. Preserve Minds brand name."
+},
+  "Connected to Minds.": {
+    "id": "minds.creative.e23114cfe1c00b7d",
+    "defaultMessage": "Connected to Minds.",
+    "description": "Connection state or cancellation control in the creative research panel. Preserve Minds brand name."
+},
+  "Waiting for Minds authorization.": {
+    "id": "minds.creative.db5de86416800b4e",
+    "defaultMessage": "Waiting for Minds authorization.",
+    "description": "Connection state or cancellation control in the creative research panel. Preserve Minds brand name."
+},
+  "Cancel preparation": {
+    "id": "minds.creative.e5013ddb039e9e6b",
+    "defaultMessage": "Cancel preparation",
+    "description": "Connection state or cancellation control in the creative research panel. Preserve Minds brand name."
+},
+  "Preparation stopped in this panel. A draft may still finish in Minds. Retry the same request to recover it.": {
+    "id": "minds.creative.2981de2caf1fc1e9",
+    "defaultMessage": "Preparation stopped in this panel. A draft may still finish in Minds. Retry the same request to recover it.",
+    "description": "Connection state or cancellation control in the creative research panel. Preserve Minds brand name."
+},
   "Minds creative review": {
     "id": "minds.creative.b2d844847c1e370c",
     "defaultMessage": "Minds creative review",
