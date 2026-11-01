@@ -18,6 +18,11 @@ export class Store {
     this.key = Buffer.from(encryptionKey, 'base64');
     if (this.key.length !== 32) throw new Error('SLACK_STORAGE_KEY must encode 32 random bytes');
     this.pool = new pg.Pool({ connectionString: url, max: 5, connectionTimeoutMillis: 5000, statement_timeout: 10000 });
+    // pg removes failed idle clients before emitting this event. Without a listener,
+    // EventEmitter terminates Node and can print the client, including credentials.
+    this.pool.on('error', () => {
+      console.error('Slack database connection lost; pool will reconnect; payload omitted');
+    });
   }
   seal(value: unknown, context: string): string {
     const iv = randomBytes(12);
