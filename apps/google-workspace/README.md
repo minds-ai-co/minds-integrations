@@ -5,6 +5,9 @@ Select up to 25 unique open-ended questions in the first column of a range
 the canonical Minds REST API and the key in Apps Script user properties.
 
 1. **Set Minds API key** verifies the key against `/api/v1/auth/me` before saving.
+   API actions first require the manifest's existing scopes, allowing Google's
+   native consent flow to request missing granular permissions. Complete that
+   flow before entering a key. Declining consent performs no API or cell write.
 2. **Prepare research from selected rows** asks for an existing Audience ID,
    then creates one private Study and an exact fixed-question draft. It does
    not start research. Request identities are saved before network mutations;

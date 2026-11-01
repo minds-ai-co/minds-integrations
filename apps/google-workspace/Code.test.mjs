@@ -27,7 +27,9 @@ function fixture() {
     showModalDialog: content => f.dialogs.push(content.html),
     createAddonMenu: () => ({ addItem(label, handler) { f.menu.push({ label, handler }); return this; }, addSeparator() { return this; }, addToUi() {} }),
   };
-  const sandbox = { console, SpreadsheetApp: { getUi: () => ui, getActiveRange: () => range },
+  const sandbox = { console,
+    ScriptApp: { AuthMode: { FULL: 'FULL' }, requireAllScopes: mode => { assert.equal(mode, 'FULL'); f.onAuthorize?.(); } },
+    SpreadsheetApp: { getUi: () => ui, getActiveRange: () => range },
     PropertiesService: { getUserProperties: () => ({ getProperty: key => f.props.get(key) ?? null, setProperty: (key, value) => f.props.set(key, value), deleteProperty: key => f.props.delete(key) }) },
     Utilities: { getUuid: randomUUID, DigestAlgorithm: { SHA_256: 'SHA256' }, Charset: { UTF_8: 'utf8' }, computeDigest: (_algorithm, value) => [...createHash('sha256').update(value).digest()] },
     LockService: { getUserLock: () => ({ tryLock() { if (f.locked) return false; f.locked = true; return true; }, releaseLock() { f.locked = false; } }) },
@@ -156,4 +158,16 @@ test('menu exposes separate preparation and completed-result actions', () => {
   assert.ok(f.menu.some(m => m.handler === 'askAudienceFromSelection'));
   assert.ok(f.menu.some(m => m.handler === 'loadCompletedMindsAnswers'));
   assert.doesNotMatch(source, /ask_audience|tools\/call/);
+});
+
+test('partial Google consent escapes to native authorization before prompts, API calls or writes', () => {
+  for (const name of ['setMindsApiKey', 'askAudienceFromSelection', 'loadCompletedMindsAnswers']) {
+    const f = fixture(); const original = [...f.props];
+    const authorization = new Error('Native authorization required');
+    f.onAuthorize = () => { throw authorization; };
+    assert.throws(() => f.app[name](), error => error === authorization);
+    assert.deepEqual(f.calls, []); assert.deepEqual(f.writes, []);
+    assert.deepEqual(f.alerts, []); assert.deepEqual(f.dialogs, []);
+    assert.deepEqual([...f.props], original);
+  }
 });

@@ -49,6 +49,7 @@ function mindsOwner_() {
   return owner.id;
 }
 function setMindsApiKey() {
+  ScriptApp.requireAllScopes(ScriptApp.AuthMode.FULL);
   const ui = SpreadsheetApp.getUi();
   const answer = ui.prompt("Minds API key", "Create a key at getminds.ai/settings/api-keys. It stays in your Apps Script user properties, never in cells.", ui.ButtonSet.OK_CANCEL);
   if (answer.getSelectedButton() !== ui.Button.OK) return;
@@ -152,6 +153,7 @@ function showMindsDraft_(job) {
   SpreadsheetApp.getUi().showModalDialog(HtmlService.createHtmlOutput(html).setWidth(420).setHeight(260), "Review your Minds research plan");
 }
 function askAudienceFromSelection() {
+  ScriptApp.requireAllScopes(ScriptApp.AuthMode.FULL);
   const ui = SpreadsheetApp.getUi();
   try {
     const selected = mindsSelection_();
@@ -201,6 +203,7 @@ function completedMindsAnswers_(selection, job) {
 }
 function literalMindsCell_(value) { return /^[=+\-@\t\r]/.test(value) ? "'" + value : value; }
 function loadCompletedMindsAnswers() {
+  ScriptApp.requireAllScopes(ScriptApp.AuthMode.FULL);
   const ui = SpreadsheetApp.getUi();
   try {
     const selected = mindsSelection_();
