@@ -179,6 +179,7 @@ test("previews a research plan without exposing a run action", async () => {
   const result = await App.creates.preview_research_plan.operation.perform(z, {
     inputData: {
       studyId: "study-1",
+      idempotencyKey: "event-1",
       request: "Evaluate the positioning",
       studyLocale: "de",
       sourceLabel: "Landing page copy",
@@ -196,7 +197,7 @@ test("returns an exact draft review link and finds only its completed run", asyn
   const draftPlanId = 'draft-new';
   const draft = { draftPlanId, draftStatus: 'confirmed', runId: 'run-new' };
   const preview = fakeZ(() => response({ data: draft }));
-  const result = await App.creates.preview_research_plan.operation.perform(preview, { inputData: { studyId: 'study-a', request: 'Review clarity' } });
+  const result = await App.creates.preview_research_plan.operation.perform(preview, { inputData: { studyId: 'study-a', request: 'Review clarity', idempotencyKey: 'event-1' } });
   assert.equal(result.reviewUrl, 'https://getminds.ai/?studyId=study-a&draftPlanId=draft-new');
   for (const status of ['running', 'partial', 'failed', 'completed']) {
     const z = fakeZ(options => response({ data: options.url.endsWith('/preview') ? draft : { runId: 'run-new', status, artifacts: [{ id: 'new-artifact' }], calculations: [] } }));
@@ -231,7 +232,46 @@ test("rejects ambiguous material and non-HTTPS URLs before making an API call", 
     { idempotencyKey: "bad key" },
   ]) {
     const z = fakeZ(() => { throw new Error("must not call"); });
-    await assert.rejects(App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: "study-1", request: "Review", ...input } }));
+    await assert.rejects(App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: "study-1", request: "Review", idempotencyKey: "event-1", ...input } }));
     assert.equal(z.calls.length, 0);
   }
+});
+
+test('observes accepted pending preparation using the same body, request and operation', async () => {
+  let calls = 0;
+  const operationId = '29a54cb5-4c9b-4883-b4f8-4e23be9a4744';
+  const z = fakeZ(() => ++calls === 1
+    ? response({ data: { status: 'pending', accepted: true, operationId, requestId: 'source-1' } }, 202)
+    : response({ data: { draftPlanId: 'draft-ready', draftStatus: 'draft' } }));
+  const draft = await App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: 'study-a', request: 'Review clarity', idempotencyKey: 'source-1' } });
+  assert.equal(draft.draftPlanId, 'draft-ready');
+  assert.deepEqual(z.calls[0].body, z.calls[1].body);
+  assert.equal(z.calls[1].headers['Idempotency-Key'], 'source-1');
+  assert.equal(z.calls[1].headers['X-Minds-Study-Plan-Protocol'], '1');
+  assert.equal(z.calls[1].headers['X-Minds-Study-Plan-Operation-Id'], operationId);
+  assert.equal(z.calls[0].headers['X-Minds-Study-Plan-Operation-Id'], undefined);
+  assert.ok(z.calls.every(call => call.timeout === 4500));
+});
+
+test('bounds pending preparation and asks Zapier to retry without returning a fake draft', async () => {
+  const z = fakeZ(() => response({ data: { status: 'capability-wait', accepted: false } }, 202));
+  await assert.rejects(() => App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: 'study-a', request: 'Review', idempotencyKey: 'source-1' } }), z.errors.ThrottledError);
+  assert.equal(z.calls.length, 4);
+  assert.ok(z.calls.every(call => call.headers['Idempotency-Key'] === 'source-1'));
+});
+
+test('rejects a changed preparation identity and requires an event identifier before requests', async () => {
+  const z = fakeZ(() => response({ data: { status: 'pending', accepted: true, operationId: '29a54cb5-4c9b-4883-b4f8-4e23be9a4744', requestId: 'different-event' } }, 202));
+  await assert.rejects(() => App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: 'study-a', request: 'Review', idempotencyKey: 'source-1' } }), /invalid planning receipt/);
+  assert.equal(z.calls.length, 1);
+  const empty = fakeZ(() => { throw new Error('must not request'); });
+  await assert.rejects(() => App.creates.preview_research_plan.operation.perform(empty, { inputData: { studyId: 'study-a', request: 'Review' } }), /stable source event/);
+  assert.equal(empty.calls.length, 0);
+});
+
+test('a timed out plan request uses Zapier retry rather than creating a new identity', async () => {
+  const z = fakeZ(() => { const error = new Error('timed out'); error.type = 'request-timeout'; throw error; });
+  await assert.rejects(() => App.creates.preview_research_plan.operation.perform(z, { inputData: { studyId: 'study-a', request: 'Review', idempotencyKey: 'source-1' } }), z.errors.ThrottledError);
+  assert.equal(z.calls.length, 1);
+  assert.equal(z.calls[0].headers['Idempotency-Key'], 'source-1');
 });
