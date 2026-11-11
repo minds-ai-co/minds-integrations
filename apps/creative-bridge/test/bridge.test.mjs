@@ -199,3 +199,62 @@ test('native input requests Audience read permission and rejects access before t
   assert.equal((await env.call('/confirm', { method: 'POST', headers, body: '{}' })).status, 400);
   assert.ok(!env.upstreamCalls.some(call => call.url.endsWith('/research-runs')));
 });
+
+// Minds v1 plan preview answers running work with a 202 receipt (webapp #9708).
+async function planningSetup(t, replies) {
+  const calls = [];
+  const server = createServer();
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  const request = async (url, options) => {
+    calls.push({ url, options });
+    if (url.endsWith('/oauth/register')) return Response.json({ client_id: 'test-client' });
+    if (url.endsWith('/oauth/token')) return Response.json({ access_token: 'fake-access', refresh_token: 'fake-refresh', expires_in: 3600 });
+    const [status, value] = replies.shift();
+    return Response.json(value, { status });
+  };
+  server.on('request', createBridge({ publicUrl: `${origin}/integrations/creative`, allowedOrigins: ['https://app.example'], request, planPollMs: 1 }));
+  t.after(() => new Promise(resolve => { server.close(resolve); server.closeAllConnections(); }));
+  const env = { call: (path, options = {}) => fetch(`${origin}/integrations/creative${path}`, { redirect: 'manual', ...options }) };
+  const { headers } = await authorize(env);
+  const options = { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': 'plan-1' },
+    body: JSON.stringify({ studyId: '11111111-1111-4111-8111-111111111111', request: 'Which headline is clearer?', source: { kind: 'prompt', label: 'Copy', content: 'Coffee' } }) };
+  async function settle() {
+    for (let attempt = 0; attempt < 200; attempt++) {
+      const response = await env.call('/preview', options);
+      if (response.status !== 202) return { status: response.status, value: await response.json() };
+      await new Promise(resolve => setTimeout(resolve, 5));
+    }
+    throw new Error('Preview never settled');
+  }
+  return { calls: () => calls.filter(call => call.url.endsWith('/research-plans/preview')), settle };
+}
+const operationId = '22222222-2222-4222-8222-222222222222';
+const draftPlanId = '33333333-3333-4333-8333-333333333333';
+const pending = { data: { status: 'pending', accepted: true, operationId, requestId: 'plan-1', stage: 'planning' } };
+
+test('a pending planning receipt is observed until Minds returns the saved draft', async t => {
+  const env = await planningSetup(t, [[202, pending], [202, pending], [200, { data: { draftPlanId, revision: 1, plan: { modules: [] } } }]]);
+  const result = await env.settle();
+  assert.equal(result.status, 200);
+  assert.equal(result.value.data.draftPlanId, draftPlanId);
+  const [first, ...later] = env.calls();
+  assert.equal(first.options.headers['X-Minds-Study-Plan-Protocol'], '1');
+  assert.equal(first.options.headers['Idempotency-Key'], 'plan-1');
+  assert.equal(first.options.headers['X-Minds-Study-Plan-Operation-Id'], undefined);
+  assert.equal(later.length, 2);
+  for (const call of later) {
+    assert.equal(call.options.headers['X-Minds-Study-Plan-Operation-Id'], operationId);
+    assert.equal(call.options.body, first.options.body);
+  }
+});
+test('a capability wait is retried and an invalid receipt is never shown as a draft', async t => {
+  const waited = await planningSetup(t, [[202, { data: { status: 'capability-wait', accepted: false } }], [200, { data: { draftPlanId, revision: 1 } }]]);
+  assert.equal((await waited.settle()).value.data.draftPlanId, draftPlanId);
+  const invalid = await planningSetup(t, [[202, { data: { status: 'pending', accepted: true, operationId, requestId: 'other' } }]]);
+  const failed = await invalid.settle();
+  assert.equal(failed.status, 502);
+  assert.equal(failed.value.message, 'Creative review is temporarily unavailable.');
+  const missing = await planningSetup(t, [[200, { data: { status: 'needs_input' } }]]);
+  assert.equal((await missing.settle()).status, 502);
+});

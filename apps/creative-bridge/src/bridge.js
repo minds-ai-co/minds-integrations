@@ -6,6 +6,10 @@ import { MINDS_ORIGIN, previewBody, studyPath } from '@minds/creative-review';
 const random = () => randomBytes(32).toString('base64url');
 const digest = value => createHash('sha256').update(value).digest('base64url');
 const fail = (status, message) => Object.assign(new Error(message), { status });
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// Minds answers a planning request that is still running with a 202 receipt.
+// The bridge keeps observing that receipt until the saved draft exists.
+const PLAN_PROTOCOL = { header: 'X-Minds-Study-Plan-Protocol', version: '1', operation: 'X-Minds-Study-Plan-Operation-Id' };
 const json = (res, status, value) => { res.writeHead(status, { 'Content-Type': 'application/json' }).end(JSON.stringify(value)); };
 async function bytes(req, max) {
   const chunks = []; let length = 0;
@@ -18,7 +22,7 @@ async function bytes(req, max) {
 }
 
 /** Ephemeral OAuth gateway. Restart disconnects clients; there is no token file. */
-export function createBridge({ publicUrl, allowedOrigins, clientId, request = fetch, now = Date.now, capacity = 1000, previewConcurrency = 8 }) {
+export function createBridge({ publicUrl, allowedOrigins, clientId, request = fetch, now = Date.now, capacity = 1000, previewConcurrency = 8, planPollMs = 1500, planDeadlineMs = 10 * 60 * 1000 }) {
   const base = new URL(publicUrl);
   if (base.search || base.hash || base.username || base.password || !(base.protocol === 'https:' || (base.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(base.hostname)))) throw new Error('Invalid public gateway URL');
   if (!Array.isArray(allowedOrigins) || !allowedOrigins.length || allowedOrigins.includes('*')) throw new Error('Configure exact adapter origins');
@@ -32,7 +36,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
   function prune() {
     for (const map of [sessions, tickets, states]) for (const [key, value] of map) if (value.expiresAt <= now()) map.delete(key);
   }
-  async function upstream(path, options = {}) {
+  async function upstreamResponse(path, options = {}) {
     const response = await request(`${MINDS_ORIGIN}${path}`, { ...options, redirect: 'error', signal: AbortSignal.timeout(85000) });
     if (!response.ok) {
       // Do not pass provider errors through: they can contain URLs/tokens/material.
@@ -47,7 +51,31 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
       };
       throw fail(messages[response.status] ? response.status : 502, messages[response.status] || 'Minds could not complete this request.');
     }
-    return response.json();
+    return { status: response.status, value: await response.json() };
+  }
+  async function upstream(path, options = {}) {
+    return (await upstreamResponse(path, options)).value;
+  }
+  // Observes one accepted planning operation; retries reuse the same identifiers.
+  async function prepareDraft(target, body, key, authorization) {
+    const headers = { 'Content-Type': 'application/json', 'Idempotency-Key': key, [PLAN_PROTOCOL.header]: PLAN_PROTOCOL.version };
+    const stop = now() + planDeadlineMs;
+    for (;;) {
+      const { status, value } = await upstreamResponse(target, { method: 'POST', headers: { ...(await authorization()), ...headers }, body });
+      const data = value?.data;
+      if (status !== 202) {
+        if (!data?.draftPlanId) throw fail(502, 'Minds did not return a saved draft. Try again.');
+        return value;
+      }
+      if (data?.status === 'pending' && data.accepted === true && data.requestId === key && UUID.test(data.operationId || '')) {
+        if (headers[PLAN_PROTOCOL.operation] && headers[PLAN_PROTOCOL.operation] !== data.operationId) throw fail(502, 'Minds returned a different planning operation.');
+        headers[PLAN_PROTOCOL.operation] = data.operationId;
+      } else if (data?.status !== 'capability-wait' || data.accepted !== false) {
+        throw fail(502, 'Minds returned an invalid planning receipt.');
+      }
+      if (now() >= stop) throw fail(504, 'Draft preparation is taking longer. Retry the same request to check its saved result.');
+      await new Promise(resolve => setTimeout(resolve, planPollMs));
+    }
   }
   async function register() {
     if (registered) return registered;
@@ -213,8 +241,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
           const pending = job;
           pendingPreviews++;
           void importCanvaPdf(body, { request, upload: form => upstream('/api/uploads/proxy', { method: 'POST', headers, body: form }) })
-            .then(prepared => upstream(target, { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': key },
-              body: JSON.stringify(prepared) })).then(result => { pending.result = result; }, error => { pending.error = error; }).finally(() => { pendingPreviews--; });
+            .then(prepared => prepareDraft(target, JSON.stringify(prepared), key, async () => ({ Authorization: `Bearer ${await access(session)}` }))).then(result => { pending.result = result; }, error => { pending.error = error; }).finally(() => { pendingPreviews--; });
         }
         if (job.error) throw job.error;
         json(res, job.result ? 200 : 202, job.result || { pending: true }); return;
