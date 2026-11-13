@@ -309,6 +309,41 @@ export const panelMessages = {
     "id": "minds.creative.ec0c04dde67fae5e",
     "defaultMessage": "Review the comment preview in Minds before posting to Figma.",
     "description": "Figma feedback return action. Native posting requires explicit preview review in Minds."
+  },
+  "Connected to Minds as {account}.": {
+    "id": "minds.creative.1db8908f426247da",
+    "defaultMessage": "Connected to Minds as {account}.",
+    "description": "Connection state showing the connected Minds account email or name. Preserve Minds brand name and {account}."
+  },
+  "No Studies yet. Create a Study with an Audience in Minds, then select Refresh Studies.": {
+    "id": "minds.creative.ea8ab46c25e9f292",
+    "defaultMessage": "No Studies yet. Create a Study with an Audience in Minds, then select Refresh Studies.",
+    "description": "Guidance when the connected Minds account has no Studies. Preserve Minds brand name."
+  },
+  "No Studies yet": {
+    "id": "minds.creative.98c3c1b8c9f488ea",
+    "defaultMessage": "No Studies yet",
+    "description": "Study dropdown placeholder when the account has no Studies."
+  },
+  "Create a Study in Minds": {
+    "id": "minds.creative.b2b038f3a91c8801",
+    "defaultMessage": "Create a Study in Minds",
+    "description": "Button that opens Minds to create a Study. Preserve Minds brand name."
+  },
+  "View Minds plans": {
+    "id": "minds.creative.f6ec9d85b0102bfa",
+    "defaultMessage": "View Minds plans",
+    "description": "Button that opens the Minds pricing page. Preserve Minds brand name."
+  },
+  "Running research requires a paid Minds plan.": {
+    "id": "minds.creative.b8552a9639805c57",
+    "defaultMessage": "Running research requires a paid Minds plan.",
+    "description": "Payment note in the creative research panel. Preserve Minds brand name."
+  },
+  "Sign in with the account you want to use, then select Refresh Studies.": {
+    "id": "minds.creative.9123fc032fc7f6ca",
+    "defaultMessage": "Sign in with the account you want to use, then select Refresh Studies.",
+    "description": "Instruction after reconnecting to choose a different Minds account."
   }
 
 };

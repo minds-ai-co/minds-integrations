@@ -5,7 +5,7 @@ const body = { request: 'Review', source: { kind: 'document', label: 'Coffee des
 test('approved Canva PDF is uploaded as an owned document without exposing Minds credentials to Canva', async () => {
   const prepared = await importCanvaPdf(body, {
     request: async (url, options) => { assert.equal(options.headers, undefined); assert.equal(options.redirect, 'error'); return new Response('%PDF-test', { headers: { 'Content-Type': 'application/pdf' } }); },
-    upload: async form => { assert.equal(form.get('folder'), 'chat'); assert.equal(form.get('file').type, 'application/pdf'); assert.equal(form.get('file').name, 'Coffee design.pdf'); return { url: '/api/uploads/chat/owner/coffee.pdf?sig=test' }; },
+    upload: async (bytes, type, name) => { assert.equal(bytes.subarray(0, 4).toString(), '%PDF'); assert.equal(type, 'application/pdf'); assert.equal(name, 'Coffee design.pdf'); return { url: '/api/uploads/chat/owner/coffee.pdf?sig=test' }; },
   });
   assert.equal(prepared.source.label, body.source.label);
   assert.equal(prepared.source.url, '/api/uploads/chat/owner/coffee.pdf?sig=test');

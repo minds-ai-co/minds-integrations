@@ -15,7 +15,7 @@ test('the panel sends only explicitly selected and approved material; retries re
   globalThis.fetch = async (url, options) => {
     calls.push({ url, options });
     const value = url.endsWith('/sessions') ? { session: 'session', connectUrl: 'https://getminds.ai/connect' }
-      : url.endsWith('/session') ? { connected: true }
+      : url.endsWith('/session') ? { connected: true, account: { email: 'reviewer@example.com' } }
       : url.endsWith('/studies') ? { data: [{ id: 'study-1', name: 'Creative study' }] }
       : url.endsWith('/preview') ? { data: { status: 'needs_confirmation', draftPlanId: 'draft-a' } }
       : url.includes('/run?') ? { data: { status: 'completed', draftPlanId: 'draft-a', runId: 'draft-a', artifacts: [{ kind: 'responses', outputData: { title: 'Clarity', summary: 'A clear message' } }] } }
@@ -29,11 +29,15 @@ test('the panel sends only explicitly selected and approved material; retries re
     openComments: async run => comments.push(run), openUrl: async url => opened.push(url), importFindings: async text => imported.push(text),
   });
   const el = id => document.querySelector(`#${id}`);
-  async function click(id) { el(id).click(); for (let n = 0; n < 20 && el('connect').disabled; n++) await new Promise(resolve => setImmediate(resolve)); assert.equal(el('connect').disabled, false); }
+  async function click(id) { el(id).click(); for (let n = 0; n < 20 && el('plans').disabled; n++) await new Promise(resolve => setImmediate(resolve)); assert.equal(el('plans').disabled, false); }
   assert.equal(el('disconnect').disabled, true);
   assert.equal(exportCount, 0); assert.equal(calls.length, 0);
   await click('connect'); await click('refresh');
-  assert.equal(el('connection').textContent, 'Connected to Minds.');
+  assert.equal(el('connection').textContent, 'Connected to Minds as reviewer@example.com.');
+  assert.equal(el('connect').disabled, true);
+  assert.equal(el('create').hidden, true);
+  assert.equal(calls.find(call => call.url.endsWith('/sessions')).options.body, undefined);
+  await click('plans'); assert.equal(opened.at(-1), 'https://getminds.ai/pricing');
   el('study').value = 'study-1'; el('request').value = 'Evaluate the design';
   await click('export'); assert.equal(exportCount, 1);
   await click('preview'); assert.ok(!calls.some(call => call.url.endsWith('/preview')));
@@ -61,12 +65,16 @@ test('the panel sends only explicitly selected and approved material; retries re
   assert.equal(el('disconnect').disabled, true);
   assert.equal(el('refresh').disabled, true);
   assert.equal(el('connection').textContent, 'Not connected.');
+  assert.equal(el('connect').disabled, false);
   assert.ok(!calls.some(call => call.url.includes('/summary?')));
   assert.ok(!calls.some(call => /execute|confirm/.test(call.url)));
-  globalThis.fetch = async (url, options) => new Response(JSON.stringify(options.method === 'DELETE' ? { message: 'Reconnect your Minds account.' } : { session: 'fresh', connectUrl: 'https://getminds.ai/connect' }), { status: options.method === 'DELETE' ? 401 : 200, headers: { 'Content-Type': 'application/json' } });
+  const reconnect = [];
+  globalThis.fetch = async (url, options) => { reconnect.push({ url, options }); return new Response(JSON.stringify(options.method === 'DELETE' ? { message: 'Reconnect your Minds account.' } : { session: 'fresh', connectUrl: 'https://getminds.ai/connect' }), { status: options.method === 'DELETE' ? 401 : 200, headers: { 'Content-Type': 'application/json' } }); };
   el('consent').checked = true;
   await click('connect');
   assert.equal(opened.at(-1), 'https://getminds.ai/connect');
+  // After Disconnect the next connection asks Minds to sign in again.
+  assert.deepEqual(JSON.parse(reconnect.find(call => call.url.endsWith('/sessions')).options.body), { switchAccount: true });
   assert.equal(el('study').value, ''); assert.equal(el('consent').checked, false);
   assert.equal(el('material').textContent, 'No material selected.');
   await click('open'); assert.match(el('status').textContent, /Draft a research plan first/);
@@ -131,4 +139,23 @@ test('translated UI stays plain text and dynamic selection uses translated place
   const button = document.querySelector('#export'); button.click();
   for (let n = 0; n < 20 && button.disabled; n++) await new Promise(resolve => setImmediate(resolve));
   assert.equal(document.querySelector('#material').textContent, 'Test: Selected PDF');
+});
+
+test('an account without Studies gets guidance to create one in Minds', async t => {
+  const dom = new JSDOM('<main></main>');
+  const original = { document: globalThis.document, Option: globalThis.Option, fetch: globalThis.fetch };
+  globalThis.document = dom.window.document; globalThis.Option = dom.window.Option;
+  t.after(() => { Object.assign(globalThis, original); dom.window.close(); });
+  globalThis.fetch = async url => new Response(JSON.stringify(url.endsWith('/sessions') ? { session: 's', connectUrl: 'https://getminds.ai/connect' }
+    : url.endsWith('/session') ? { connected: true, account: { name: 'Free Tester' } } : { data: [] }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  const opened = [];
+  mountPanel({ root: document.querySelector('main'), gatewayUrl: 'https://getminds.ai/integrations/creative', hostName: 'Test', exportMaterial: async () => undefined, openUrl: async url => opened.push(url) });
+  const el = id => document.querySelector(`#${id}`);
+  const click = async id => { el(id).click(); for (let n = 0; n < 20 && el('plans').disabled; n++) await new Promise(resolve => setImmediate(resolve)); };
+  await click('connect'); await click('refresh');
+  assert.equal(el('connection').textContent, 'Connected to Minds as Free Tester.');
+  assert.equal(el('study').options[0].textContent, 'No Studies yet');
+  assert.match(el('status').textContent, /Create a Study with an Audience in Minds/);
+  assert.equal(el('create').hidden, false);
+  await click('create'); assert.equal(opened.at(-1), 'https://getminds.ai/');
 });

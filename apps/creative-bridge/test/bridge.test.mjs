@@ -8,11 +8,19 @@ async function setup(t, config = {}) {
   const server = createServer();
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const origin = `http://127.0.0.1:${server.address().port}`;
+  const imported = [];
   const request = async (url, options) => {
     upstreamCalls.push({ url, options });
+    if (url.endsWith('/api/v1/uploads/import')) {
+      // Minds reads the approved bytes from the one-time bridge URL, as production does.
+      const [file] = JSON.parse(options.body).files;
+      const read = await fetch(file.url);
+      imported.push({ file, status: read.status, bytes: Buffer.from(await read.arrayBuffer()), again: (await fetch(file.url)).status });
+      return Response.json({ data: { files: [{ name: file.name, path: 'chat/owner/a.png', url: '/api/uploads/chat/owner/a.png?sig=fake', mimeType: file.type }] } });
+    }
     const value = url.endsWith('/oauth/register') ? { client_id: 'test-client' }
+      : url.endsWith('/api/v1/auth/me') ? { id: 'user-1', email: 'reviewer@example.com', name: 'Ada Reviewer' }
       : url.endsWith('/oauth/token') ? { access_token: 'fake-access', refresh_token: 'fake-refresh', expires_in: 3600 }
-      : url.endsWith('/api/uploads/proxy') ? { path: 'chat/owner/a.png', url: '/api/uploads/chat/owner/a.png?sig=fake' }
       : url.includes('/preview') ? { data: { draftPlanId: 'draft', status: 'needs_confirmation' } }
       : { data: [{ id: 'study-1', name: 'Creative review' }] };
     return new Response(JSON.stringify(value), { status: 200 });
@@ -20,7 +28,7 @@ async function setup(t, config = {}) {
   server.on('request', createBridge({ publicUrl: `${origin}/integrations/creative`, allowedOrigins: ['https://app.example', 'null'], request, ...config }));
   t.after(() => new Promise(resolve => { server.close(resolve); server.closeAllConnections(); }));
   const call = (path, options = {}) => fetch(`${origin}/integrations/creative${path}`, { redirect: 'manual', ...options });
-  return { origin, call, upstreamCalls };
+  return { origin, call, upstreamCalls, imported };
 }
 async function authorize(env, origin = 'https://app.example') {
   const created = await env.call('/sessions', { method: 'POST', headers: { Origin: origin } });
@@ -64,7 +72,8 @@ test('OAuth is cookie-bound, uses PKCE and never returns Minds tokens to the ada
   const start = await fetch(session.connectUrl, { redirect: 'manual' });
   const params = new URL(start.headers.get('location')).searchParams;
   assert.equal(params.get('code_challenge_method'), 'S256');
-  assert.equal(params.get('scope'), 'openid flows:read flows:write');
+  assert.equal(params.get('scope'), 'openid email profile flows:read flows:write');
+  assert.equal(params.get('prompt'), null);
   assert.equal((await fetch(session.connectUrl, { redirect: 'manual' })).status, 400);
   const callback = `/callback?state=${params.get('state')}&code=code`;
   assert.equal((await env.call(callback)).status, 400);
@@ -72,7 +81,7 @@ test('OAuth is cookie-bound, uses PKCE and never returns Minds tokens to the ada
   assert.equal((await env.call(callback, { headers: { Cookie: cookie } })).status, 200);
   assert.equal((await env.call(callback, { headers: { Cookie: cookie } })).status, 400);
   const response = await env.call('/session', { headers: { Origin: 'https://app.example', Authorization: `Bearer ${session.session}` } });
-  assert.deepEqual(await response.json(), { connected: true });
+  assert.deepEqual(await response.json(), { connected: true, account: { email: 'reviewer@example.com', name: 'Ada Reviewer' } });
   const exchange = env.upstreamCalls.find(call => call.url.endsWith('/oauth/token'));
   assert.equal(exchange.options.body.get('code_verifier').length, 43);
 });
@@ -88,8 +97,18 @@ test('rejects unknown origins, stolen cross-origin sessions and disconnected acc
 });
 test('uploads PNG bytes as owner-scoped material and previews with an idempotency key', async t => {
   const env = await setup(t); const { headers } = await authorize(env);
-  const upload = await env.call('/upload', { method: 'POST', headers: { ...headers, 'Content-Type': 'image/png' }, body: Buffer.from([137,80,78,71,13,10,26,10,0]) });
+  const png = Buffer.from([137,80,78,71,13,10,26,10,0]);
+  const upload = await env.call('/upload', { method: 'POST', headers: { ...headers, 'Content-Type': 'image/png', 'X-Creative-Name': 'Frame.png' }, body: png });
   assert.equal(upload.status, 200);
+  // OAuth may call only /api/v1: the bytes go through v1 import from a one-time bridge URL.
+  assert.ok(!env.upstreamCalls.some(call => call.url.includes('/api/uploads/proxy')));
+  const [handoff] = env.imported;
+  assert.match(handoff.file.url, /\/integrations\/creative\/material\/[A-Za-z0-9_-]{43}$/);
+  assert.equal(handoff.file.type, 'image/png');
+  assert.equal(handoff.status, 200);
+  assert.deepEqual(handoff.bytes, png);
+  assert.equal((await env.call(new URL(handoff.file.url).pathname.replace('/integrations/creative', ''))).status, 404);
+  assert.equal((await env.call(`/material/${'x'.repeat(43)}`)).status, 404);
   const source = { kind: 'image', label: 'Frame', url: (await upload.json()).url };
   const preview = await env.call('/preview', { method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'Idempotency-Key': 'event-1' }, body: JSON.stringify({ studyId: 'study-1', request: 'Evaluate clarity', source, run: true }) });
   assert.equal(preview.status, 202);
@@ -191,7 +210,7 @@ test('native input requests Audience read permission and rejects access before t
   assert.equal((await env.call('/study', { method: 'POST', headers, body: '{}' })).status, 401);
   const start = await fetch(session.connectUrl, { redirect: 'manual' });
   const params = new URL(start.headers.get('location')).searchParams;
-  assert.equal(params.get('scope'), 'openid sparks:read flows:read flows:write');
+  assert.equal(params.get('scope'), 'openid email profile sparks:read flows:read flows:write');
   const callback = `/callback?state=${params.get('state')}&code=code`;
   assert.equal((await env.call(callback, { headers: { Cookie: start.headers.get('set-cookie').split(';')[0] } })).status, 200);
   assert.equal((await env.call('/audiences?offset=100', { headers })).status, 200);
@@ -210,6 +229,7 @@ async function planningSetup(t, replies) {
     calls.push({ url, options });
     if (url.endsWith('/oauth/register')) return Response.json({ client_id: 'test-client' });
     if (url.endsWith('/oauth/token')) return Response.json({ access_token: 'fake-access', refresh_token: 'fake-refresh', expires_in: 3600 });
+    if (url.endsWith('/api/v1/auth/me')) return Response.json({ id: 'user-1' });
     const [status, value] = replies.shift();
     return Response.json(value, { status });
   };
@@ -257,4 +277,12 @@ test('a capability wait is retried and an invalid receipt is never shown as a dr
   assert.equal(failed.value.message, 'Creative review is temporarily unavailable.');
   const missing = await planningSetup(t, [[200, { data: { status: 'needs_input' } }]]);
   assert.equal((await missing.settle()).status, 502);
+});
+
+test('Disconnect then Connect asks Minds to sign in again so another account can be chosen', async t => {
+  const env = await setup(t);
+  const switched = await (await env.call('/sessions', { method: 'POST', headers: { Origin: 'https://app.example', 'Content-Type': 'application/json' }, body: JSON.stringify({ switchAccount: true }) })).json();
+  const params = new URL((await fetch(switched.connectUrl, { redirect: 'manual' })).headers.get('location')).searchParams;
+  assert.equal(params.get('prompt'), 'login');
+  assert.equal((await env.call('/sessions', { method: 'POST', headers: { Origin: 'https://app.example' }, body: JSON.stringify({ switchAccount: false }) })).status, 400);
 });

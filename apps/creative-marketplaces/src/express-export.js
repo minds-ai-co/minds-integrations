@@ -1,12 +1,12 @@
-// Use Adobe's entitlement/upgrade APIs before exporting any premium artwork.
+// Use Adobe's entitlement/upgrade APIs before exporting any paid Adobe artwork.
 // Preview-only renditions must never be uploaded to Minds as research material.
 export async function exportExpressPage(sdk) {
   const { app, constants } = sdk;
   const range = constants.Range.currentPage;
   const upgrade = async () => {
     const result = await app.showModalDialog({
-      variant: 'error', title: 'Adobe Express Premium required',
-      description: 'This page contains Adobe Express Premium content. Replace those assets or upgrade Adobe Express before sending the page to Minds. A Minds subscription does not include Adobe Express Premium.',
+      variant: 'error', title: 'Adobe Express upgrade required',
+      description: 'This page contains Adobe Express content that needs an upgrade. Replace those assets or upgrade Adobe Express before sending the page to Minds. A Minds plan does not include Adobe Express upgrades.',
       buttonLabels: { secondary: 'Upgrade Adobe Express' },
     });
     if (result.buttonType !== constants.ButtonType.secondary) return false;
