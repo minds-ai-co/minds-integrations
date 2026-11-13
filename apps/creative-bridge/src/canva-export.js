@@ -1,4 +1,4 @@
-/** Transfer an approved Canva PDF through the existing owner-authenticated upload API. */
+/** Transfer an approved Canva PDF into the owner's Minds storage through the bridge's v1 import. */
 export async function importCanvaPdf(body, { request, upload }) {
   const source = body.source;
   if (source.kind !== 'document' || source.mimeType !== 'application/pdf' || !source.url) return body;
@@ -18,10 +18,7 @@ export async function importCanvaPdf(body, { request, upload }) {
   const bytes = Buffer.concat(chunks);
   if (bytes.subarray(0, 4).toString() !== '%PDF') throw new Error('Canva export is not a PDF.');
   const name = source.label.replace(/[^\p{L}\p{N} ._-]/gu, '_').slice(0, 170).replace(/\.pdf$/i, '') + '.pdf';
-  const form = new FormData();
-  form.append('folder', 'chat');
-  form.append('file', new Blob([bytes], { type: 'application/pdf' }), name);
-  const uploaded = await upload(form);
+  const uploaded = await upload(bytes, 'application/pdf', name);
   if (typeof uploaded.url !== 'string' || !uploaded.url.startsWith('/api/uploads/chat/')) throw new Error('Invalid owned document upload.');
   return { ...body, source: { ...source, url: uploaded.url } };
 }

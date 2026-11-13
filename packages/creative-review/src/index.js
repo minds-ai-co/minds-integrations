@@ -91,8 +91,10 @@ export class CreativeReviewClient {
     }
     return value;
   }
-  async connect(nativeStudy = false) {
-    const value = await this.call('/sessions', { method: 'POST', ...(nativeStudy ? { body: JSON.stringify({ nativeStudy: true }), headers: { 'Content-Type': 'application/json' } } : {}) });
+  // switchAccount asks Minds to sign in again, so a different account can be chosen.
+  async connect(nativeStudy = false, { switchAccount = false } = {}) {
+    const input = { ...(nativeStudy ? { nativeStudy: true } : {}), ...(switchAccount ? { switchAccount: true } : {}) };
+    const value = await this.call('/sessions', { method: 'POST', ...(Object.keys(input).length ? { body: JSON.stringify(input), headers: { 'Content-Type': 'application/json' } } : {}) });
     this.session = value.session;
     return value.connectUrl;
   }

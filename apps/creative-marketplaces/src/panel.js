@@ -1,5 +1,5 @@
 import { panelMessages, defaultText } from './messages.js';
-import { randomRequestId, CreativeReviewClient, reviewUrl, formatRunFindings } from '@minds/creative-review';
+import { randomRequestId, CreativeReviewClient, reviewUrl, formatRunFindings, MINDS_ORIGIN } from '@minds/creative-review';
 
 export const styles = `body{padding:16px;font-size:14px;user-select:none}main{max-width:640px;margin:auto}h1{font-size:20px;margin:0 0 8px}label{display:block;margin:12px 0 4px}input,select,textarea{font:inherit;box-sizing:border-box;border:var(--stroke-hairline) solid var(--line-structural);border-radius:var(--radius);padding:8px;background:hsl(var(--background));color:hsl(var(--foreground))}.minds-control{display:inline-block;margin:8px 4px 0 0}button:disabled{cursor:not-allowed}textarea,input,select{width:100%}textarea,input,pre{user-select:text}textarea::placeholder,input::placeholder{user-select:none}textarea{min-height:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:hsl(var(--secondary));padding:10px}img{max-width:100%;max-height:180px}#status{min-height:24px}[hidden]{display:none!important}`;
 
@@ -13,7 +13,8 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
   root.innerHTML = `<h1>${html("Minds creative review")}</h1><p>${html("Review your artwork and copy with the AI personas in your Audience.")}</p>
     <button id="connect">${html("Connect Minds")}</button><button id="refresh">${html("Refresh Studies")}</button><button id="disconnect">${html("Disconnect")}</button>
     <p id="connection" role="status">${html("Not connected.")}</p>
-    <label for="study">${html("Study")}</label><select id="study"><option value="">${html("Connect and refresh Studies")}</option></select>
+    <p>${html("Running research requires a paid Minds plan.")} <button id="plans">${html("View Minds plans")}</button></p>
+    <label for="study">${html("Study")}</label><select id="study"><option value="">${html("Connect and refresh Studies")}</option></select><button id="create" hidden>${html("Create a Study in Minds")}</button>
     <label for="request">${html("What do you want to learn?")}</label><textarea id="request" placeholder="${html("Which parts are clear, credible and persuasive?")}"></textarea>
     <label for="locale">${html("Study language")}</label><select id="locale"><option value="en">${html("English")}</option><option value="de">${html("German")}</option><option value="es">${html("Spanish")}</option><option value="fr">${html("French")}</option><option value="zh">${html("Chinese")}</option><option value="tr">${html("Turkish")}</option><option value="ar">${html("Arabic")}</option><option value="ja">${html("Japanese")}</option><option value="ko">${html("Korean")}</option></select>
     <button id="export">${html("Select material to review")}</button><p id="material">${html("No material selected.")}</p><img id="image" alt="${html("Selected artwork")}" hidden>
@@ -33,16 +34,19 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     imageUrl = undefined; el('image').hidden = true;
     el('material').textContent = text("No material selected."); el('consent').checked = false;
   };
-  let connected = false;
+  let connected = false, account, switchAccount = false;
   const requireConnection = () => { if (!connected) throw new Error(text("Connect Minds and refresh your Studies first.")); };
   const studyId = () => { if (!el('study').value) throw new Error(text("Choose a Study.")); return el('study').value; };
   const updateControls = () => {
     root.querySelectorAll('button,input,select,textarea').forEach(control => { control.disabled = !!activeOperation; });
+    // Connect is available only while no account is connected.
+    el('connect').disabled = !!activeOperation || connected;
     el('disconnect').disabled = !!activeOperation || !client.session;
     el('refresh').disabled = !!activeOperation || !client.session;
     el('cancel').hidden = !activeOperation?.cancellable;
     el('cancel').disabled = !activeOperation?.cancellable;
-    el('connection').textContent = text(connected ? 'Connected to Minds.' : client.session ? 'Waiting for Minds authorization.' : 'Not connected.');
+    el('connection').textContent = connected && account ? text('Connected to Minds as {account}.', { account })
+      : text(connected ? 'Connected to Minds.' : client.session ? 'Waiting for Minds authorization.' : 'Not connected.');
   };
   const cancelledText = () => text('Preparation stopped in this panel. A draft may still finish in Minds. Retry the same request to recover it.');
   const operation = (fn, { cancellable = false } = {}) => async () => {
@@ -62,24 +66,35 @@ export function mountPanel({ root, gatewayUrl, exportMaterial, openUrl, importFi
     el('status').textContent = cancelledText(); updateControls();
   };
   async function refresh() {
-    connected = (await client.status()).connected;
+    const status = await client.status();
+    connected = status.connected; account = connected ? status.account?.email || status.account?.name : undefined;
     requireConnection();
     const value = await client.studies();
     const list = value.data?.studies || value.data?.items || value.data || [];
     if (!Array.isArray(list)) throw new Error(text("Minds returned an unexpected Studies list."));
+    el('create').hidden = list.length > 0;
+    if (!list.length) {
+      el('study').replaceChildren(new Option(text("No Studies yet"), ''));
+      el('status').textContent = text("No Studies yet. Create a Study with an Audience in Minds, then select Refresh Studies.");
+      return;
+    }
     el('study').replaceChildren(new Option(text("Choose a Study"), ''));
     for (const study of list) el('study').append(new Option(study.name || study.title || study.id, study.id));
     el('status').textContent = text("Choose an existing Study with your Audience in Minds.");
   }
   el('connect').onclick = operation(async () => {
-    if (client.session) await client.disconnect();
-    connected = false; clearSelection();
-    const url = await client.connect(); await openUrl(url);
-    el('status').textContent = text("Approve the connection in your browser, then select Refresh Studies.");
+    if (client.session) { await client.disconnect(); switchAccount = true; }
+    connected = false; account = undefined; clearSelection();
+    const url = await client.connect(false, { switchAccount }); await openUrl(url);
+    el('status').textContent = text(switchAccount ? "Sign in with the account you want to use, then select Refresh Studies." : "Approve the connection in your browser, then select Refresh Studies.");
   });
+  el('plans').onclick = operation(async () => { await openUrl(`${MINDS_ORIGIN}/pricing`); el('status').textContent = text("Minds opened."); });
+  el('create').onclick = operation(async () => { await openUrl(`${MINDS_ORIGIN}/`); el('status').textContent = text("Minds opened."); });
   el('refresh').onclick = operation(refresh);
   el('disconnect').onclick = operation(async () => {
-    await client.disconnect(); connected = false;
+    await client.disconnect(); connected = false; account = undefined;
+    // The next Connect lets the person sign in with a different account.
+    switchAccount = true; el('create').hidden = true;
     clearSelection();
     el('status').textContent = text("Disconnected.");
   });

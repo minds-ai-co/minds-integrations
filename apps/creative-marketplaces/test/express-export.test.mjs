@@ -33,7 +33,7 @@ for (const chooseUpgrade of [false, true]) test(`premium content is never export
   const f = fixture({ premiumContent: true, chooseUpgrade });
   assert.equal(await exportExpressPage(f.sdk), null);
   assert.equal(f.calls.some(([name]) => name === 'render'), false);
-  assert.match(f.calls.find(([name]) => name === 'dialog')[1].description, /Minds subscription does not include/);
+  assert.match(f.calls.find(([name]) => name === 'dialog')[1].description, /Minds plan does not include Adobe Express upgrades/);
 });
 test('successful native upgrade rechecks entitlement before exporting', async () => {
   const f = fixture({ premiumContent: true, chooseUpgrade: true, upgradeSucceeds: true });

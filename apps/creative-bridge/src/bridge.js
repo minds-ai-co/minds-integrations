@@ -33,8 +33,10 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
   let registered = clientId;
   let registering;
   let pendingPreviews = 0;
+  // Approved material waits here only until Minds imports it through v1.
+  const materials = new Map();
   function prune() {
-    for (const map of [sessions, tickets, states]) for (const [key, value] of map) if (value.expiresAt <= now()) map.delete(key);
+    for (const map of [sessions, tickets, states, materials]) for (const [key, value] of map) if (value.expiresAt <= now()) map.delete(key);
   }
   async function upstreamResponse(path, options = {}) {
     const response = await request(`${MINDS_ORIGIN}${path}`, { ...options, redirect: 'error', signal: AbortSignal.timeout(85000) });
@@ -76,6 +78,28 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
       if (now() >= stop) throw fail(504, 'Draft preparation is taking longer. Retry the same request to check its saved result.');
       await new Promise(resolve => setTimeout(resolve, planPollMs));
     }
+  }
+  // OAuth grants may call only /api/v1, so approved bytes are imported by Minds
+  // from a one-time, unguessable bridge URL instead of the internal upload API.
+  async function importMaterial(authorization, bytes, type, name) {
+    if (materials.size >= 100) throw fail(429, 'Minds is busy. Try again shortly.');
+    const token = random();
+    materials.set(digest(token), { bytes, type, expiresAt: now() + 5 * 60 * 1000 });
+    try {
+      const value = await upstream('/api/v1/uploads/import', { method: 'POST', headers: { ...authorization, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files: [{ url: `${publicUrl.replace(/\/$/, '')}/material/${token}`, name, type }] }) });
+      const file = value?.data?.files?.[0];
+      if (typeof file?.url !== 'string' || !file.url.startsWith('/api/uploads/chat/')) throw fail(502, 'Minds could not store the selected material.');
+      return { url: file.url, path: file.path };
+    } finally { materials.delete(digest(token)); }
+  }
+  async function account(accessToken) {
+    try {
+      const me = await upstream('/api/v1/auth/me', { headers: { Authorization: `Bearer ${accessToken}` } });
+      const email = typeof me?.email === 'string' ? me.email.slice(0, 320) : undefined;
+      const name = typeof me?.name === 'string' ? me.name.slice(0, 200) : undefined;
+      return email || name ? { ...(email ? { email } : {}), ...(name ? { name } : {}) } : undefined;
+    } catch { return undefined; }
   }
   async function register() {
     if (registered) return registered;
@@ -127,15 +151,21 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
       }
       if (req.method === 'OPTIONS') { res.writeHead(204).end(); return; }
       if (path === '/health' && req.method === 'GET') { json(res, 200, { status: 'ok' }); return; }
+      if (path.startsWith('/material/') && (req.method === 'GET' || req.method === 'HEAD')) {
+        const item = materials.get(digest(path.slice('/material/'.length)));
+        if (!item) throw fail(404, 'Not found.');
+        res.writeHead(200, { 'Content-Type': item.type, 'Content-Length': String(item.bytes.length) }).end(req.method === 'HEAD' ? undefined : item.bytes); return;
+      }
       if (path === '/sessions' && req.method === 'POST') {
         if (!origin) throw fail(403, 'Open this from an enabled creative app.');
         if (sessions.size >= capacity) throw fail(429, 'Too many connections. Try again later.');
         const data = await bytes(req, 1024);
         const input = data.length ? JSON.parse(data.toString('utf8')) : {};
-        if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => key !== 'nativeStudy') || (input.nativeStudy !== undefined && input.nativeStudy !== true)) throw fail(400, 'Invalid connection request.');
+        if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => key !== 'nativeStudy' && key !== 'switchAccount')
+          || (input.nativeStudy !== undefined && input.nativeStudy !== true) || (input.switchAccount !== undefined && input.switchAccount !== true)) throw fail(400, 'Invalid connection request.');
         const capability = random(), ticket = random();
         const key = digest(capability);
-        sessions.set(key, { expiresAt: now() + expiry, origin, nativeStudy: input.nativeStudy === true, previews: new Map() });
+        sessions.set(key, { expiresAt: now() + expiry, origin, nativeStudy: input.nativeStudy === true, switchAccount: input.switchAccount === true, previews: new Map() });
         tickets.set(digest(ticket), { key, expiresAt: now() + 600000 });
         json(res, 201, { session: capability, connectUrl: `${publicUrl.replace(/\/$/, '')}/connect?ticket=${ticket}` }); return;
       }
@@ -148,7 +178,9 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         states.set(digest(state), { key: ticket.key, verifier, cookie: digest(cookie), expiresAt: now() + 600000 });
         res.setHeader('Set-Cookie', `${cookieName}=${cookie}; ${cookieFlags}`);
         const params = new URLSearchParams({ response_type: 'code', client_id: id, redirect_uri: callback,
-          scope: sessions.get(ticket.key).nativeStudy ? 'openid sparks:read flows:read flows:write' : 'openid flows:read flows:write', state, code_challenge: digest(verifier), code_challenge_method: 'S256', resource: `${MINDS_ORIGIN}/mcp` });
+          scope: sessions.get(ticket.key).nativeStudy ? 'openid email profile sparks:read flows:read flows:write' : 'openid email profile flows:read flows:write', state, code_challenge: digest(verifier), code_challenge_method: 'S256', resource: `${MINDS_ORIGIN}/mcp`,
+          // After Disconnect the person chooses the account again instead of reusing the browser's session.
+          ...(sessions.get(ticket.key).switchAccount ? { prompt: 'login' } : {}) });
         res.writeHead(302, { Location: `${MINDS_ORIGIN}/oauth/authorize?${params}` }).end(); return;
       }
       if (path === '/callback' && req.method === 'GET') {
@@ -164,7 +196,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
           redirect_uri: callback, code_verifier: state.verifier, resource: `${MINDS_ORIGIN}/mcp` });
         // Disconnect during exchange must not resurrect a removed session.
         if (!sessions.has(state.key)) throw fail(400, 'Connection was disconnected.');
-        Object.assign(session, token);
+        Object.assign(session, token, { account: await account(token.accessToken) });
         res.setHeader('Set-Cookie', `${cookieName}=; ${cookieFlags.replace('Max-Age=600', 'Max-Age=0')}`);
         res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Minds connected. Return to your creative app and select Refresh Studies.'); return;
       }
@@ -172,7 +204,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
       const key = digest(raw || ''); const session = sessions.get(key);
       if (!session) throw fail(401, 'Reconnect your Minds account.');
       if (origin !== session.origin) throw fail(403, 'Connection belongs to another app origin.');
-      if (path === '/session' && req.method === 'GET') { json(res, 200, { connected: !!session.accessToken }); return; }
+      if (path === '/session' && req.method === 'GET') { json(res, 200, { connected: !!session.accessToken, ...(session.accessToken && session.account ? { account: session.account } : {}) }); return; }
       if (path === '/session' && req.method === 'DELETE') {
         sessions.delete(key);
         for (const map of [tickets, states]) for (const [entryKey, value] of map) if (value.key === key) map.delete(entryKey);
@@ -212,8 +244,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
         const data = await bytes(req, 25 * 1024 * 1024);
         if (!data.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) throw fail(400, 'Selected artwork is not a PNG.');
         const name = decodeURIComponent(req.headers['x-creative-name'] || 'creative.png').replace(/[^\p{L}\p{N} ._-]/gu, '_').slice(0, 180) || 'creative.png';
-        const form = new FormData(); form.append('folder', 'chat'); form.append('file', new Blob([data], { type: 'image/png' }), name);
-        json(res, 200, await upstream('/api/uploads/proxy', { method: 'POST', headers, body: form })); return;
+        json(res, 200, await importMaterial(headers, data, 'image/png', name)); return;
       }
       if (path === '/preview' && req.method === 'GET') {
         const job = session.previews.get(url.searchParams.get('requestId'));
@@ -240,7 +271,7 @@ export function createBridge({ publicUrl, allowedOrigins, clientId, request = fe
           // Planning continues independently of the platform's short HTTP ingress timeout.
           const pending = job;
           pendingPreviews++;
-          void importCanvaPdf(body, { request, upload: form => upstream('/api/uploads/proxy', { method: 'POST', headers, body: form }) })
+          void importCanvaPdf(body, { request, upload: (bytes, type, name) => importMaterial(headers, bytes, type, name) })
             .then(prepared => prepareDraft(target, JSON.stringify(prepared), key, async () => ({ Authorization: `Bearer ${await access(session)}` }))).then(result => { pending.result = result; }, error => { pending.error = error; }).finally(() => { pendingPreviews--; });
         }
         if (job.error) throw job.error;

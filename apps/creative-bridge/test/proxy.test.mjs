@@ -55,3 +55,14 @@ test('native Study endpoints pass the same isolated proxy boundary', async () =>
   }
 }
 );
+
+test('proxy forwards only GET/HEAD for a well-formed one-time material URL', async () => {
+  const token = 'm'.repeat(43);
+  let forwarded = 0;
+  const upstreamFetch = async url => { forwarded++; assert.equal(url.pathname, `/integrations/creative/material/${token}`); return new Response('png'); };
+  assert.equal((await proxy(new Request(`https://getminds.ai/integrations/creative/material/${token}`), env, upstreamFetch)).status, 200);
+  assert.equal((await proxy(new Request(`https://getminds.ai/integrations/creative/material/${token}`, { method: 'POST', body: 'x' }), env, upstreamFetch)).status, 404);
+  assert.equal((await proxy(new Request('https://getminds.ai/integrations/creative/material/short'), env, upstreamFetch)).status, 404);
+  assert.equal((await proxy(new Request(`https://getminds.ai/integrations/creative/material/${token}/x`), env, upstreamFetch)).status, 404);
+  assert.equal(forwarded, 1);
+});

@@ -11,7 +11,10 @@ export async function proxy(request, env, upstreamFetch = fetch) {
     'Content-Type': 'application/json', 'Cache-Control': 'no-store',
     ...(allowed.includes(origin) ? { 'Access-Control-Allow-Origin': origin, Vary: 'Origin' } : {}),
   } });
-  if (url.hostname !== 'getminds.ai' || !url.pathname.startsWith(prefix) || !paths.has(url.pathname.slice(prefix.length))) return reply(404, 'Not found.');
+  const route = url.pathname.slice(prefix.length);
+  // Minds' v1 import reads approved material once from an unguessable bridge URL.
+  const material = /^material\/[A-Za-z0-9_-]{43}$/.test(route) && ['GET', 'HEAD'].includes(request.method);
+  if (url.hostname !== 'getminds.ai' || !url.pathname.startsWith(prefix) || !(paths.has(route) || material)) return reply(404, 'Not found.');
   if (origin && !allowed.includes(origin)) return reply(403, 'This app origin is not enabled.');
   const rate = await env.RATE_LIMITER.limit({ key: request.headers.get('cf-connecting-ip') || 'unknown' });
   if (!rate.success) return reply(429, 'Too many requests. Try again shortly.');
